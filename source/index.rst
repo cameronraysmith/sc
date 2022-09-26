@@ -10,5 +10,7 @@
    :glob:
    
    plotting
-   applied-probabilistic-inference/*
+   01-anndata-review
+   02-analysis-review
+   03-velocity-review
    references

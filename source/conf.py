@@ -18,8 +18,8 @@
 # -- Project information -----------------------------------------------------
 master_doc = 'index'
 
-project = 'nbsphinx template'
-copyright = '2021, Cameron Smith'
+project = 'Single cell analysis'
+copyright = '2022, Cameron Smith'
 author = 'Cameron Smith'
 
 
@@ -31,7 +31,7 @@ author = 'Cameron Smith'
 extensions = [
     'nbsphinx',
     'sphinxcontrib.bibtex',        # for bibliographic references
-#     'sphinx_copybutton',           # for adding “copy to clipboard” buttons to all text/code boxes | commented due to multiple scrollbar issue https://github.com/cameronraysmith/nbsphinx-template/issues/1
+#     'sphinx_copybutton',           # for adding “copy to clipboard” buttons to all text/code boxes | commented due to multiple scrollbar issue https://github.com/cameronraysmith/sc/issues/1
     'sphinxcontrib.rsvgconverter', # for SVG->PDF conversion in LaTeX output
     # 'sphinx_last_updated_by_git',  # get "last updated" from Git
 ]
@@ -53,8 +53,8 @@ nbsphinx_prolog = r"""
 
     <div class="admonition note">
       This page was generated from
-      <a class="reference external" href="https://github.com/cameronraysmith/nbsphinx-template/blob/master/{{ docname|e }}">{{ docname|e }}</a>.
-      <span style="white-space: nowrap;"><a href="https://mybinder.org/v2/gh/cameronraysmith/nbsphinx-template/master?filepath={{ docname|e }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a> or </span>
+      <a class="reference external" href="https://github.com/cameronraysmith/sc/blob/master/{{ docname|e }}">{{ docname|e }}</a>.
+      <span style="white-space: nowrap;"><a href="https://mybinder.org/v2/gh/cameronraysmith/sc/master?filepath={{ docname|e }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a> or </span>
       <script>
         if (document.location.host) {
           $(document.currentScript).replaceWith(
