@@ -1,0 +1,783 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Basic single-cell analysis &#8212; Single cell analysis</title>
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/insipid.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
+    <script defer src="_static/insipid.js"></script>
+    <script defer src="_static/insipid-sidebar.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="RNA Velocity review" href="03-velocity-review.html" />
+    <link rel="prev" title="AnnData review" href="01-anndata-review.html" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+  </head><body>
+    <script type="text/javascript">
+        document.body.classList.add('js');
+    </script>
+    <input type="checkbox" id="sidebar-checkbox" style="display: none;">
+    <label id="overlay" for="sidebar-checkbox"></label>
+    <div class="sidebar-resize-handle"></div>
+    <script type="text/javascript">
+        try {
+            let sidebar = localStorage.getItem('sphinx-sidebar');
+            const sidebar_width = localStorage.getItem('sphinx-sidebar-width');
+            if (sidebar_width) {
+                document.documentElement.style.setProperty('--sidebar-width', sidebar_width);
+            }
+            // show sidebar on wide screen
+            if (!sidebar && window.matchMedia('(min-width: 100rem)').matches) {
+                sidebar = 'visible';
+                // NB: We don't store the value in localStorage!
+            }
+            if (sidebar === 'visible') {
+                document.getElementById('sidebar-checkbox').checked = true;
+            }
+        } catch(e) {
+            console.info(e);
+        }
+    </script>
+    <header id="topbar-placeholder">
+      <div id="topbar">
+        <div id="titlebar">
+          <div class="buttons">
+            <label for="sidebar-checkbox" id="sidebar-button" role="button" tabindex="0" aria-controls="sphinxsidebar" accesskey="M">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"/></svg>
+            </label>
+            <button id="search-button" type="button" title="Search" aria-label="Search" aria-expanded="false" aria-controls="search-form" accesskey="S">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"/></svg>
+            </button>
+          </div>
+          <div class="title">
+            <a class="parent" href="index.html" accesskey="U">Single cell analysis</a>
+            <a class="top" href="#">Basic single-cell analysis</a>
+          </div>
+          <div class="buttons">
+            <button id="fullscreen-button" type="button" aria-hidden="true">
+              <span class="enable">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M212.686 315.314L120 408l32.922 31.029c15.12 15.12 4.412 40.971-16.97 40.971h-112C10.697 480 0 469.255 0 456V344c0-21.382 25.803-32.09 40.922-16.971L72 360l92.686-92.686c6.248-6.248 16.379-6.248 22.627 0l25.373 25.373c6.249 6.248 6.249 16.378 0 22.627zm22.628-118.628L328 104l-32.922-31.029C279.958 57.851 290.666 32 312.048 32h112C437.303 32 448 42.745 448 56v112c0 21.382-25.803 32.09-40.922 16.971L376 152l-92.686 92.686c-6.248 6.248-16.379 6.248-22.627 0l-25.373-25.373c-6.249-6.248-6.249-16.378 0-22.627z"/></svg>
+              </span>
+              <span class="disable">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M4.686 427.314L104 328l-32.922-31.029C55.958 281.851 66.666 256 88.048 256h112C213.303 256 224 266.745 224 280v112c0 21.382-25.803 32.09-40.922 16.971L152 376l-99.314 99.314c-6.248 6.248-16.379 6.248-22.627 0L4.686 449.941c-6.248-6.248-6.248-16.379 0-22.627zM443.314 84.686L344 184l32.922 31.029c15.12 15.12 4.412 40.971-16.97 40.971h-112C234.697 256 224 245.255 224 232V120c0-21.382 25.803-32.09 40.922-16.971L296 136l99.314-99.314c6.248-6.248 16.379-6.248 22.627 0l25.373 25.373c6.248 6.248 6.248 16.379 0 22.627z"/></svg>
+              </span>
+            </button>
+          </div>
+        </div>
+        <div id="searchbox" role="search">
+          <form id="search-form" class="search" style="display: none" action="search.html" method="get">
+            <input type="search" name="q" placeholder="Search ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+            <button>Go</button>
+          </form>
+        </div>
+      </div>
+    </header>
+    <nav>
+      <a href="01-anndata-review.html" class="nav-icon previous" title="previous:&#13;AnnData review" aria-label="Previous topic" accesskey="P" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"/></svg>
+      </a>
+      <a href="03-velocity-review.html" class="nav-icon next" title="next:&#13;RNA Velocity review" aria-label="Next topic" accesskey="N" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"/></svg>
+      </a>
+    </nav>
+
+    <nav class="relbar">
+      <a class="previous" href="01-anndata-review.html" aria-label="Previous topic" >
+        <div class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"/></svg>
+        </div>
+        <div class="title">
+          <span class="text">
+            <span class="direction">previous</span>
+            AnnData review
+          </span>
+        </div>
+      </a>
+      <a class="next" href="03-velocity-review.html" aria-label="Next topic" >
+        <div class="title">
+          <span class="text">
+            <span class="direction">next</span>
+            RNA Velocity review
+          </span>
+        </div>
+        <div class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6 0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25 .4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24 24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z"/></svg>
+        </div>
+      </a>
+    </nav>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt .copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+.jp-RenderedHTMLCommon thead,
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+.jp-RenderedHTMLCommon th,
+div.rendered_html th {
+  font-weight: bold;
+}
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+.jp-RenderedHTMLCommon tbody tr:hover,
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<div class="admonition note">
+  This page was generated from
+  <a class="reference external" href="https://github.com/cameronraysmith/sc/blob/master/source/02-analysis-review.ipynb">source/02-analysis-review.ipynb</a>.
+  <span style="white-space: nowrap;"><a href="https://mybinder.org/v2/gh/cameronraysmith/sc/master?filepath=source/02-analysis-review.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a> or </span>
+  <script>
+    if (document.location.host) {
+      $(document.currentScript).replaceWith(
+        '<a class="reference external" ' +
+        'href="https://nbviewer.jupyter.org/url' +
+        (window.location.protocol == 'https:' ? 's/' : '/') +
+        window.location.host +
+        window.location.pathname.slice(0, -4) +
+        'ipynb"><em>nbviewer</em></a>.'
+      );
+    }
+  </script>
+</div><section id="Basic-single-cell-analysis">
+<h1>Basic single-cell analysis<a class="headerlink" href="#Basic-single-cell-analysis" title="Permalink to this headline">¶</a></h1>
+<section id="Overview">
+<h2>Overview<a class="headerlink" href="#Overview" title="Permalink to this headline">¶</a></h2>
+<p>In this notebook, we will illustrate a simple instance of single-nucleus RNA sequencing analysis using data from the following paper</p>
+<blockquote>
+<div><p>Melms JC, Biermann J, Huang H, Wang Y, Nair A, Tagore S, et al. A molecular single-cell lung atlas of lethal COVID-19. Nature. 2021;595: 114–119. <a class="reference external" href="https://doi.org/10.1038/s41586-021-03569-0">doi:10.1038/s41586-021-03569-0</a></p>
+</div></blockquote>
+<p>This paper examined 116,000 nuclei from the lungs of nineteen patients who underwent autopsy following death in association with COVID-19. Findings reported in the abstract of the paper include:</p>
+<ol class="arabic simple">
+<li><p>activated monocyte-derived macrophages and alveolar macrophages</p></li>
+<li><p>impaired T cell activation</p></li>
+<li><p>monocyte/macrophage-derived interleukin-1β and epithelial cell-derived interleukin-6</p></li>
+<li><p>alveolar type 2 cells adopted an inflammation-associated transient progenitor cell state and failed to undergo full transition into alveolar type 1 cells</p></li>
+<li><p>expansion of CTHRC1+ pathological fibroblasts</p></li>
+<li><p>protein activity and ligand–receptor interactions suggest putative drug targets</p></li>
+</ol>
+</section>
+<section id="Setup">
+<h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this headline">¶</a></h2>
+<section id="Import-libraries">
+<h3>Import libraries<a class="headerlink" href="#Import-libraries" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">getmembers</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">FunctionType</span>
+
+<span class="kn">import</span> <span class="nn">scanpy</span> <span class="k">as</span> <span class="nn">sc</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Setup-plotting">
+<h3>Setup plotting<a class="headerlink" href="#Setup-plotting" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.font_manager</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># import matplotlib_inline</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># fonts_path = &quot;/usr/share/texmf/fonts/opentype/public/lm/&quot; #ubuntu</span>
+<span class="c1"># fonts_path = &quot;~/Library/Fonts/&quot; # macos</span>
+<span class="n">fonts_path</span> <span class="o">=</span> <span class="s2">&quot;/usr/share/fonts/OTF/&quot;</span>  <span class="c1"># arch</span>
+<span class="c1"># user_path = &quot;$HOME/&quot; # user</span>
+<span class="c1"># fonts_path = user_path + &quot;fonts/latinmodern/opentype/public/lm/&quot;  # home</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">font_manager</span><span class="o">.</span><span class="n">fontManager</span><span class="o">.</span><span class="n">addfont</span><span class="p">(</span><span class="n">fonts_path</span> <span class="o">+</span> <span class="s2">&quot;lmsans10-regular.otf&quot;</span><span class="p">)</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">font_manager</span><span class="o">.</span><span class="n">fontManager</span><span class="o">.</span><span class="n">addfont</span><span class="p">(</span><span class="n">fonts_path</span> <span class="o">+</span> <span class="s2">&quot;lmroman10-regular.otf&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># https://stackoverflow.com/a/36622238/446907</span>
+<span class="o">%</span><span class="k">config</span> InlineBackend.figure_formats = [&#39;svg&#39;]
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>  <span class="c1"># reset default parameters</span>
+<span class="c1"># https://stackoverflow.com/a/3900167/446907</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;font.size&quot;</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span>
+        <span class="s2">&quot;font.family&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;sans-serif&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;font.serif&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Latin Modern Roman&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;font.serif&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;font.sans-serif&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Latin Modern Sans&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;font.sans-serif&quot;</span><span class="p">],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Utility-functions">
+<h3>Utility functions<a class="headerlink" href="#Utility-functions" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">attributes</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    get object attributes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">disallowed_names</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">name</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">getmembers</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">FunctionType</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;_&quot;</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">disallowed_names</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">print_attributes</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    print object attributes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pprint</span><span class="p">(</span><span class="n">attributes</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="Import-data">
+<h2>Import data<a class="headerlink" href="#Import-data" title="Permalink to this headline">¶</a></h2>
+<p>Here we review how the data were downloaded, and proceed to import and inspect the data.</p>
+<section id="Data-download">
+<h3>Data download<a class="headerlink" href="#Data-download" title="Permalink to this headline">¶</a></h3>
+<p>Data with GEO accession <a class="reference external" href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE171524">GSE171524</a> was downloaded using <a class="reference external" href="./data/download_geo_data.sh">./data/download_geo_data.sh</a> with parameters</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./download_geo_data.sh <span class="se">\</span>
+       -a GSE132771 <span class="se">\</span>
+       -f <span class="s1">&#39;ftp.*RAW.*&#39;</span> <span class="se">\</span>
+       -j <span class="s1">&#39;..|.supplementary_files?|..|.url?|select(length&gt;0)&#39;</span>
+</pre></div>
+</div>
+<p>A skeleton of this script that may work in this case is</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env bash</span>
+
+<span class="c1">#-- debugging (comment to reduce stderr output)</span>
+<span class="c1">#-- https://wiki.bash-hackers.org/scripting/debuggingtips</span>
+<span class="nb">export</span> <span class="nv">PS4</span><span class="o">=</span><span class="s1">&#39;+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }&#39;</span>
+<span class="nb">set</span> -o xtrace
+
+<span class="c1"># get metadata</span>
+<span class="c1"># Melms JC, Biermann J, Huang H, Wang Y, Nair A, Tagore S, et al.</span>
+<span class="c1"># A molecular single-cell lung atlas of lethal COVID-19.</span>
+<span class="c1"># Nature. 2021;595: 114–119. doi:10.1038/s41586-021-03569-0</span>
+<span class="c1"># GSE171524</span>
+ffq -l <span class="m">1</span> -o GSE171524.json GSE171524
+
+<span class="c1"># download raw data</span>
+wget ftp://ftp.ncbi.nlm.nih.gov/geo/series/GSE171nnn/GSE171524/suppl/GSE171524_RAW.tar
+
+<span class="c1"># list contents</span>
+tar -tvf GSE171524_RAW.tar
+
+<span class="c1"># untar</span>
+mkdir -p GSE171524 <span class="o">&amp;&amp;</span> <span class="se">\</span>
+tar -xvf GSE171524_RAW.tar -C GSE171524
+</pre></div>
+</div>
+</section>
+<section id="Data-load">
+<h3>Data load<a class="headerlink" href="#Data-load" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">adata</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;data/GSE171524/supplementary/GSM5226574_C51ctr_raw_counts.csv.gz&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="n">adata</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+AnnData object with n_obs × n_vars = 6099 × 34546
+</pre></div></div>
+</div>
+<p>Note the <code class="docutils literal notranslate"><span class="pre">scanpy.read_csv</span></code> function accepts gzipped files.</p>
+</section>
+<section id="Data-properties">
+<h3>Data properties<a class="headerlink" href="#Data-properties" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">adata</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+anndata._core.anndata.AnnData
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+anndata._core.anndata.AnnData
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">print_attributes</span><span class="p">(</span><span class="n">adata</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;T&#39;: AnnData object with n_obs × n_vars = 34546 × 6099,
+ &#39;X&#39;: array([[0., 0., 0., ..., 0., 0., 0.],
+       [0., 0., 0., ..., 0., 0., 0.],
+       [0., 0., 0., ..., 0., 0., 0.],
+       ...,
+       [0., 0., 0., ..., 0., 0., 0.],
+       [0., 0., 0., ..., 0., 0., 0.],
+       [0., 0., 0., ..., 0., 0., 0.]], dtype=float32),
+ &#39;file&#39;: Backing file manager: no file is set.,
+ &#39;filename&#39;: None,
+ &#39;is_view&#39;: False,
+ &#39;isbacked&#39;: False,
+ &#39;isview&#39;: False,
+ &#39;layers&#39;: Layers with keys: ,
+ &#39;n_obs&#39;: 6099,
+ &#39;n_vars&#39;: 34546,
+ &#39;obs&#39;: Empty DataFrame
+Columns: []
+Index: [TAGGTACCATGGCCAC-1_1, ATTCACTGTAACAGGC-1_1, TAACTTCCAACCACGC-1_1, TTGGGTACACGACAAG-1_1, AGGCCACAGAGTCACG-1_1, CACTGAAGTCGAAGCA-1_1, ACTGATGTCTGCACCT-1_1, TTACCGCCACTCAGAT-1_1, TTGGTTTTCCTAGCTC-1_1, TGGGAAGTCAGTGATC-1_1, CCACGAGTCTCTTAAC-1_1, ACTTCCGCACAACGCC-1_1, GGGAAGTAGCGACCCT-1_1, TGGTAGTTCCCGTGTT-1_1, CGCATAACATGCCGGT-1_1, TCTATCACAAGGCTTT-1_1, ATCCACCAGAGGTATT-1_1, TAACGACAGATGACCG-1_1, TCTTAGTGTATGAGGC-1_1, CACTTCGCAGTACTAC-1_1, GTCAAACAGAACGTGC-1_1, GCAACCGAGGGCAGGA-1_1, CATACTTTCATCACTT-1_1, AAGAACATCGGATTAC-1_1, GGGTATTGTACGATGG-1_1, CTGTAGATCAACGTGT-1_1, GTCATTTGTATCTCGA-1_1, CCTTGTGCAGAGGGTT-1_1, AAGTTCGCAACACGTT-1_1, TCATTCACAAATCAAG-1_1, TCCATGCCAACGACTT-1_1, TCCTTCTCAGTTTCAG-1_1, TGTGAGTCAAATGATG-1_1, AAACGAAGTACAGAGC-1_1, CAACCAAAGTATTCCG-1_1, CTTCTCTCAGAGACTG-1_1, TACAACGGTGGCTGAA-1_1, AACGGGACATGCCGGT-1_1, AACCAACGTTGGGAAC-1_1, TATATCCAGCGTCAGA-1_1, AGACAAACATCCCGTT-1_1, ATGACCAGTCTTCATT-1_1, CTTACCGTCAGACATC-1_1, CGGGACTGTTAGTTCG-1_1, ATTCATCCACTGAGTT-1_1, TCATGAGAGAGGCGGA-1_1, TCCCACATCTAGTACG-1_1, CTTCCTTCATATCTCT-1_1, CCGGACACACTCGATA-1_1, ACACGCGCACCTGTCT-1_1, GAATCGTCAGAAGTGC-1_1, GGTGGCTCAAGCTCTA-1_1, CCTGCATCACATATGC-1_1, GTGGGAAGTTAAAGTG-1_1, CGTTCTGGTACTAGCT-1_1, ACCCTCACAATAGTCC-1_1, GCCCGAACAAACTAAG-1_1, GTGGAAGCACATGACT-1_1, GTTGTGACATCGATAC-1_1, GACAGCCCAGGTCCGT-1_1, TAAGCACGTTGGCTAT-1_1, GGGACAAGTCACCACG-1_1, CTGGCAGGTTCGGTAT-1_1, GACTCAACACTGTGAT-1_1, GCCAGTGGTGTGGTCC-1_1, TCTAACTGTAGGCAGT-1_1, GAAGAATGTAGCTTGT-1_1, TCACTCGCAATCTCTT-1_1, CAAGACTTCCCACAGG-1_1, CAGATACGTGACTCTA-1_1, TGGGATTAGAGGGTCT-1_1, ACCTGAACACTCCTTG-1_1, GACACGCCACTCGATA-1_1, CTCATCGTCACCGCTT-1_1, AGGTAGGGTCCCTGTT-1_1, TACCCGTCAACACTAC-1_1, TGCTGAAAGACGGATC-1_1, ACACCAACACAACGCC-1_1, AAGATAGCAAATGGAT-1_1, CTTCAATGTGACAGGT-1_1, GAAGCGAAGAGTTGAT-1_1, GCCGTGACACAAGCCC-1_1, CCTCAACCATACAGGG-1_1, ACAAAGATCCACAGGC-1_1, CAGATACAGTCCCAGC-1_1, GGCAGTCTCCGGTTCT-1_1, TAAGTCGAGCTGAGCA-1_1, GAGACCCGTCTGTGCG-1_1, TAACACGCATGTGTCA-1_1, TCAATTCGTTCTCGCT-1_1, GCTTTCGCACAGTGTT-1_1, AACCAACAGATAACAC-1_1, ATCGGCGCACATCATG-1_1, TCATCCGCACGAGGAT-1_1, CTGATCCTCTTTACAC-1_1, TCACACCCAACTTCTT-1_1, TGAGGGACACCGTACG-1_1, GTGCACGTCATCTGTT-1_1, GGTAATCAGTTGCATC-1_1, ATACTTCCAAGGTCTT-1_1, ...]
+
+[6099 rows x 0 columns],
+ &#39;obs_names&#39;: Index([&#39;TAGGTACCATGGCCAC-1_1&#39;, &#39;ATTCACTGTAACAGGC-1_1&#39;, &#39;TAACTTCCAACCACGC-1_1&#39;,
+       &#39;TTGGGTACACGACAAG-1_1&#39;, &#39;AGGCCACAGAGTCACG-1_1&#39;, &#39;CACTGAAGTCGAAGCA-1_1&#39;,
+       &#39;ACTGATGTCTGCACCT-1_1&#39;, &#39;TTACCGCCACTCAGAT-1_1&#39;, &#39;TTGGTTTTCCTAGCTC-1_1&#39;,
+       &#39;TGGGAAGTCAGTGATC-1_1&#39;,
+       ...
+       &#39;AAGTCGTGTGTGAATA-1_1&#39;, &#39;GTCGTTCTCCAAGGGA-1_1&#39;, &#39;GTTTGGATCGGCCTTT-1_1&#39;,
+       &#39;GTACAGTCACGTATAC-1_1&#39;, &#39;TCATGCCCAAGAGGTC-1_1&#39;, &#39;CGCCATTGTTTGCCGG-1_1&#39;,
+       &#39;CACTGGGGTCTACGTA-1_1&#39;, &#39;CATACTTGTAGAGGAA-1_1&#39;, &#39;TTTGGTTTCCACGGAC-1_1&#39;,
+       &#39;ATGCATGAGTCATGAA-1_1&#39;],
+      dtype=&#39;object&#39;, length=6099),
+ &#39;obsm&#39;: AxisArrays with keys: ,
+ &#39;obsp&#39;: PairwiseArrays with keys: ,
+ &#39;raw&#39;: None,
+ &#39;shape&#39;: (6099, 34546),
+ &#39;uns&#39;: OverloadedDict, wrapping:
+        OrderedDict()
+With overloaded keys:
+        [&#39;neighbors&#39;].,
+ &#39;var&#39;: Empty DataFrame
+Columns: []
+Index: [AL627309.1, AL627309.5, AL627309.4, AL669831.2, LINC01409, FAM87B, LINC01128, LINC00115, FAM41C, AL645608.6, AL645608.2, LINC02593, SAMD11, NOC2L, KLHL17, PLEKHN1, PERM1, AL645608.7, HES4, ISG15, AL645608.1, AGRN, C1orf159, AL390719.3, LINC01342, AL390719.2, TTLL10-AS1, TTLL10, TNFRSF18, TNFRSF4, SDF4, B3GALT6, C1QTNF12, UBE2J2, LINC01786, SCNN1D, ACAP3, PUSL1, INTS11, AL139287.1, CPTP, DVL1, MXRA8, AURKAIP1, CCNL2, MRPL20-AS1, MRPL20, AL391244.2, ANKRD65, AL391244.1, LINC01770, VWA1, ATAD3C, ATAD3B, ATAD3A, TMEM240, SSU72, AL645728.1, FNDC10, AL691432.4, AL691432.2, MIB2, MMP23B, CDK11B, FO704657.1, SLC35E2B, CDK11A, SLC35E2A, NADK, GNB1, AL109917.1, CALML6, TMEM52, CFAP74, GABRD, AL391845.1, PRKCZ, AL590822.2, PRKCZ-AS1, FAAP20, AL590822.1, SKI, AL590822.3, MORN1, AL589739.1, AL513477.2, RER1, PEX10, PLCH2, AL139246.4, PANK4, HES5, AL139246.5, TNFRSF14-AS1, TNFRSF14, AL139246.3, PRXL2B, MMEL1, TTC34, AC242022.2, ...]
+
+[34546 rows x 0 columns],
+ &#39;var_names&#39;: Index([&#39;AL627309.1&#39;, &#39;AL627309.5&#39;, &#39;AL627309.4&#39;, &#39;AL669831.2&#39;, &#39;LINC01409&#39;,
+       &#39;FAM87B&#39;, &#39;LINC01128&#39;, &#39;LINC00115&#39;, &#39;FAM41C&#39;, &#39;AL645608.6&#39;,
+       ...
+       &#39;AC087190.2&#39;, &#39;AC136428.1&#39;, &#39;AC019183.1&#39;, &#39;AC105094.1&#39;, &#39;AC010485.1&#39;,
+       &#39;VN1R2&#39;, &#39;AL031676.1&#39;, &#39;SMIM34A&#39;, &#39;AL050402.1&#39;, &#39;AL445072.1&#39;],
+      dtype=&#39;object&#39;, length=34546),
+ &#39;varm&#39;: AxisArrays with keys: ,
+ &#39;varp&#39;: PairwiseArrays with keys: }
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_1135/22660072.py:11: DeprecationWarning: Use is_view instead of isview, isview will be removed in the future.
+  if name[0] != &#34;_&#34; and name not in disallowed_names and hasattr(obj, name)
+/tmp/ipykernel_1135/22660072.py:9: DeprecationWarning: Use is_view instead of isview, isview will be removed in the future.
+  name: getattr(obj, name)
+</pre></div></div>
+</div>
+<p>The data appears to contain reads mapped to 34546 RNA molecule-associated features and 6099 cell-associated barcodes.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+<script type="application/vnd.jupyter.widget-state+json">
+{"state": {}, "version_major": 2, "version_minor": 0}
+</script></section>
+</section>
+</section>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+
+          <div class="sidebar-resize-handle"></div>
+
+<h3><a href="index.html">Table of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-anndata-review.html">AnnData review</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Basic single-cell analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Setup">Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Import-libraries">Import libraries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Setup-plotting">Setup plotting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Utility-functions">Utility functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Import-data">Import data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Data-download">Data download</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Data-load">Data load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Data-properties">Data properties</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="03-velocity-review.html">RNA Velocity review</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+<hr class="docutils" />
+<ul>
+  <li class="toctree-l1"><a class="reference internal" href="genindex.html" accesskey="I">General Index</a></li>
+</ul>
+<div id="ethical-ad-placement"></div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+
+    <nav class="relbar">
+      <a class="previous" href="01-anndata-review.html" aria-label="Previous topic" >
+        <div class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"/></svg>
+        </div>
+        <div class="title">
+          <span class="text">
+            <span class="direction">previous</span>
+            AnnData review
+          </span>
+        </div>
+      </a>
+      <a class="next" href="03-velocity-review.html" aria-label="Next topic" >
+        <div class="title">
+          <span class="text">
+            <span class="direction">next</span>
+            RNA Velocity review
+          </span>
+        </div>
+        <div class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6 0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25 .4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24 24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z"/></svg>
+        </div>
+      </a>
+    </nav>
+
+    <footer role="contentinfo">
+      &#169; Copyright 2022, Cameron Smith.
+      Created using <a class="reference external" href="https://www.sphinx-doc.org/">Sphinx</a> 2.4.4.
+      <a class="reference external" href="https://insipid-sphinx-theme.readthedocs.io/">Insipid Theme</a>.
+    </footer>
+  </body>
+</html>
