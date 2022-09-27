@@ -299,25 +299,25 @@ adata.obs
 
 Gene names are saved 
 
-```python
+```python tags=[]
 adata.var
 ```
 
-```python
+```python tags=[]
 adata.obs_names
 ```
 
-```python
+```python tags=[]
 adata.var_names
 ```
 
 There are two layers corresponding to spliced and unspliced transcripts respectively.
 
-```python
+```python tags=[]
 adata.layers['spliced']
 ```
 
-```python
+```python tags=[]
 adata.layers['unspliced']
 ```
 
@@ -341,7 +341,7 @@ print(adata.obsp)
 print(adata.obsp['connectivities'].shape)
 ```
 
-```python
+```python tags=[]
 print(adata.varp)
 ```
 
@@ -604,10 +604,10 @@ scv.pl.scatter(adata, color='velocity_pseudotime', cmap='gnuplot')
 
 ```python
 # PAGA requires to install igraph, if not done yet.
-!pip install python-igraph --upgrade --quiet
+# !pip install python-igraph --upgrade --quiet
 ```
 
-```python hideCode=false hidePrompt=false
+```python hideCode=false hidePrompt=false tags=[]
 # this is needed due to a current bug - bugfix is coming soon.
 adata.uns['neighbors']['distances'] = adata.obsp['distances']
 adata.uns['neighbors']['connectivities'] = adata.obsp['connectivities']
