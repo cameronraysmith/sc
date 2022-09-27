@@ -9,9 +9,9 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.11.2
+      jupytext_version: 1.14.1
   kernelspec:
-    display_name: Python 3
+    display_name: Python 3 (ipykernel)
     language: python
     name: python3
   language_info:
@@ -23,7 +23,7 @@ jupyter:
     name: python
     nbconvert_exporter: python
     pygments_lexer: ipython3
-    version: 3.9.5
+    version: 3.10.7
   rise:
     scroll: true
     theme: black
@@ -40,4 +40,4 @@ jupyter:
 .. bibliography::
 <!-- #endraw -->
 
-See the bib file for details.
+See the [bib](./references.bib) file for details.

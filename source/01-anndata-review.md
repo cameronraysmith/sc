@@ -41,13 +41,9 @@ jupyter:
 # AnnData review
 
 
-This is a modified version of the introductory tutorial distributed with the AnnData package.
+This is a modified version of the introductory tutorial distributed with the [AnnData](http://anndata.readthedocs.io/en/latest/anndata.AnnData.html) package whose original authors are [Adam Gayoso](https://twitter.com/adamgayoso), [Alex Wolf](https://twitter.com/falexwolf) based on blog posts by [Adam in 2021](https://adamgayoso.com/posts/ten_min_to_adata/) and [Alex in 2017](https://falexwolf.me/2017/introducing-anndata/) (see <cite data-cite="Virshup2021-ls">Virshup et al. (2021)</cite>).
 
-**Authors:** [Adam Gayoso](https://twitter.com/adamgayoso), [Alex Wolf](https://twitter.com/falexwolf)
-
-This tutorial is based on blog posts by [Adam in 2021](https://adamgayoso.com/posts/ten_min_to_adata/) and [Alex in 2017](https://falexwolf.me/2017/introducing-anndata/).
-
-This tutorial introduces basic properties of the central object, [AnnData](http://anndata.readthedocs.io/en/latest/anndata.AnnData.html) ("Annotated Data").
+The tutorial introduces basic properties of the central object, [AnnData](http://anndata.readthedocs.io/en/latest/anndata.AnnData.html) ("Annotated Data").
 
 `AnnData` is specifically designed for matrix-like data. By this we mean that we have $n$ observations, each of which can be represented as $d$-dimensional vectors, where each dimension corresponds to a variable or feature. Both the rows and columns of this $n \times d$ matrix are special in the sense that they are indexed.
 

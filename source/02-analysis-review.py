@@ -44,7 +44,9 @@
 # ## Overview
 
 # %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
-# In this notebook, we will illustrate a simple instance of single-nucleus RNA sequencing analysis using data from the following paper
+# This notebook follows the tutorial by [mousepixels/sanbomics](https://github.com/mousepixels/sanbomics/blob/main/single_cell_analysis_complete_class.ipynb), which has an accompanying [screencast](https://youtu.be/uvyG9yLuNSE?t=319).
+#
+# Analysis is illustrated with single-nucleus RNA sequencing data from the following paper <cite data-cite="Melms2021-bj">Melms et al. (2021)</cite>
 #
 # > Melms JC, Biermann J, Huang H, Wang Y, Nair A, Tagore S, et al.
 # A molecular single-cell lung atlas of lethal COVID-19.
@@ -59,6 +61,7 @@
 # 1. expansion of CTHRC1+ pathological fibroblasts
 # 1. protein activity and ligand–receptor interactions suggest putative drug targets
 #
+# This notebook makes extensive use of <cite data-cite="Wolf2018-nu">Wolf et al. (2018)</cite> and <cite data-cite="Lopez2018-em">Lopez et al. (2018)</cite> including updates that have been made to the underlying software packages, [scanpy](https://github.com/scverse/scanpy) and [scvi-tools](https://github.com/scverse/scvi-tools), since their initial publication.
 
 # %% [markdown] {"incorrectly_encoded_metadata": "tags=[] slideshow={\"slide_type\": \"slide\"} jp-MarkdownHeadingCollapsed=true", "slideshow": {"slide_type": "slide"}, "tags": []}
 # ## Setup
@@ -155,7 +158,7 @@ def print_attributes(obj):
 # A skeleton of this script that may work in this case is
 #
 # ```bash
-# #!/usr/bin/env bash
+# !/usr/bin/env bash
 #
 # #-- debugging (comment to reduce stderr output)
 # #-- https://wiki.bash-hackers.org/scripting/debuggingtips
@@ -202,6 +205,51 @@ type(adata.T)
 
 # %% {"tags": [], "slideshow": {"slide_type": "fragment"}}
 print_attributes(adata)
+
+# %% {"tags": []}
+adata.obs
+
+# %% [markdown]
+# Gene names are saved 
+
+# %% {"tags": []}
+adata.var
+
+# %% {"tags": []}
+adata.obs_names
+
+# %% {"tags": []}
+adata.var_names
+
+# %% [markdown]
+# There are two layers corresponding to spliced and unspliced transcripts respectively.
+
+# %% {"tags": []}
+adata.layers['spliced']
+
+# %% {"tags": []}
+adata.layers['unspliced']
+
+# %% [markdown]
+# PCA and UMAP have retained 50 and 2 dimensions respectively.
+
+# %% {"tags": []}
+print(adata.obsm)
+print(adata.obsm['X_pca'].shape)
+print(adata.obsm)
+print(adata.obsm['X_umap'].shape)
+
+# %% {"tags": []}
+print(adata.varm)
+
+# %% {"tags": []}
+print(adata.obsp)
+print(adata.obsp['distances'].shape)
+print(adata.obsp)
+print(adata.obsp['connectivities'].shape)
+
+# %% {"tags": []}
+print(adata.varp)
 
 # %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
 # The data appears to contain reads mapped to 34546 RNA molecule-associated features and 6099 cell-associated barcodes.

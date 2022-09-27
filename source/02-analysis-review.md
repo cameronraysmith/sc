@@ -46,7 +46,9 @@ jupyter:
 <!-- #endregion -->
 
 <!-- #region {"slideshow": {"slide_type": "fragment"}, "tags": []} -->
-In this notebook, we will illustrate a simple instance of single-nucleus RNA sequencing analysis using data from the following paper
+This notebook follows the tutorial by [mousepixels/sanbomics](https://github.com/mousepixels/sanbomics/blob/main/single_cell_analysis_complete_class.ipynb), which has an accompanying [screencast](https://youtu.be/uvyG9yLuNSE?t=319).
+
+Analysis is illustrated with single-nucleus RNA sequencing data from the following paper <cite data-cite="Melms2021-bj">Melms et al. (2021)</cite>
 
 > Melms JC, Biermann J, Huang H, Wang Y, Nair A, Tagore S, et al.
 A molecular single-cell lung atlas of lethal COVID-19.
@@ -61,6 +63,7 @@ This paper examined 116,000 nuclei from the lungs of nineteen patients who under
 1. expansion of CTHRC1+ pathological fibroblasts
 1. protein activity and ligand–receptor interactions suggest putative drug targets
 
+This notebook makes extensive use of <cite data-cite="Wolf2018-nu">Wolf et al. (2018)</cite> and <cite data-cite="Lopez2018-em">Lopez et al. (2018)</cite> including updates that have been made to the underlying software packages, [scanpy](https://github.com/scverse/scanpy) and [scvi-tools](https://github.com/scverse/scvi-tools), since their initial publication.
 <!-- #endregion -->
 
 <!-- #region {"incorrectly_encoded_metadata": "tags=[] slideshow={\"slide_type\": \"slide\"} jp-MarkdownHeadingCollapsed=true", "slideshow": {"slide_type": "slide"}, "tags": []} -->
@@ -169,7 +172,7 @@ Data with GEO accession [GSE171524](https://www.ncbi.nlm.nih.gov/geo/query/acc.c
 A skeleton of this script that may work in this case is
 
 ```bash
-#!/usr/bin/env bash
+!/usr/bin/env bash
 
 #-- debugging (comment to reduce stderr output)
 #-- https://wiki.bash-hackers.org/scripting/debuggingtips
@@ -223,6 +226,58 @@ type(adata.T)
 
 ```python tags=[] slideshow={"slide_type": "fragment"}
 print_attributes(adata)
+```
+
+```python tags=[]
+adata.obs
+```
+
+Gene names are saved 
+
+```python tags=[]
+adata.var
+```
+
+```python tags=[]
+adata.obs_names
+```
+
+```python tags=[]
+adata.var_names
+```
+
+There are two layers corresponding to spliced and unspliced transcripts respectively.
+
+```python tags=[]
+adata.layers['spliced']
+```
+
+```python tags=[]
+adata.layers['unspliced']
+```
+
+PCA and UMAP have retained 50 and 2 dimensions respectively.
+
+```python tags=[]
+print(adata.obsm)
+print(adata.obsm['X_pca'].shape)
+print(adata.obsm)
+print(adata.obsm['X_umap'].shape)
+```
+
+```python tags=[]
+print(adata.varm)
+```
+
+```python tags=[]
+print(adata.obsp)
+print(adata.obsp['distances'].shape)
+print(adata.obsp)
+print(adata.obsp['connectivities'].shape)
+```
+
+```python tags=[]
+print(adata.varp)
 ```
 
 <!-- #region {"slideshow": {"slide_type": "fragment"}, "tags": []} -->
