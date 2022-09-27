@@ -458,11 +458,28 @@ div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
-<div class="section" id="Basic-single-cell-analysis">
+<div class="admonition note">
+  This page was generated from
+  <a class="reference external" href="https://github.com/cameronraysmith/sc/blob/master/source/02-analysis-review.ipynb">source/02-analysis-review.ipynb</a>.
+  <span style="white-space: nowrap;"><a href="https://mybinder.org/v2/gh/cameronraysmith/sc/master?filepath=source/02-analysis-review.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a> or </span>
+  <script>
+    if (document.location.host) {
+      $(document.currentScript).replaceWith(
+        '<a class="reference external" ' +
+        'href="https://nbviewer.jupyter.org/url' +
+        (window.location.protocol == 'https:' ? 's/' : '/') +
+        window.location.host +
+        window.location.pathname.slice(0, -4) +
+        'ipynb"><em>nbviewer</em></a>.'
+      );
+    }
+  </script>
+</div><div class="section" id="Basic-single-cell-analysis">
 <h1>Basic single-cell analysis<a class="headerlink" href="#Basic-single-cell-analysis" title="Permalink to this heading">§</a></h1>
 <div class="section" id="Overview">
 <h2>Overview<a class="headerlink" href="#Overview" title="Permalink to this heading">§</a></h2>
-<p>In this notebook, we will illustrate a simple instance of single-nucleus RNA sequencing analysis using data from the following paper</p>
+<p>This notebook follows the tutorial by <a class="reference external" href="https://github.com/mousepixels/sanbomics/blob/main/single_cell_analysis_complete_class.ipynb">mousepixels/sanbomics</a>, which has an accompanying <a class="reference external" href="https://youtu.be/uvyG9yLuNSE?t=319">screencast</a>.</p>
+<p>Analysis is illustrated with single-nucleus RNA sequencing data from the following paper <span id="id1">[<a class="reference internal" href="references.html#id3" title="Johannes C Melms, Jana Biermann, Huachao Huang, Yiping Wang, Ajay Nair, Somnath Tagore, Igor Katsyv, André F Rendeiro, Amit Dipak Amin, Denis Schapiro, Chris J Frangieh, Adrienne M Luoma, Aveline Filliol, Yinshan Fang, Hiranmayi Ravichandran, Mariano G Clausi, George A Alba, Meri Rogava, Sean W Chen, Patricia Ho, Daniel T Montoro, Adam E Kornberg, Arnold S Han, Mathieu F Bakhoum, Niroshana Anandasabapathy, Mayte Suárez-Fariñas, Samuel F Bakhoum, Yaron Bram, Alain Borczuk, Xinzheng V Guo, Jay H Lefkowitch, Charles Marboe, Stephen M Lagana, Armando Del Portillo, Emily J Tsai, Emmanuel Zorn, Glen S Markowitz, Robert F Schwabe, Robert E Schwartz, Olivier Elemento, Anjali Saqi, Hanina Hibshoosh, Jianwen Que, and Benjamin Izar. A molecular single-cell lung atlas of lethal COVID-19. Nature, 595(7865):114–119, July 2021. doi:10.1038/s41586-021-03569-1.">MBH+21</a>]</span></p>
 <blockquote>
 <div><p>Melms JC, Biermann J, Huang H, Wang Y, Nair A, Tagore S, et al. A molecular single-cell lung atlas of lethal COVID-19. Nature. 2021;595: 114–119. <a class="reference external" href="https://doi.org/10.1038/s41586-021-03569-0">doi:10.1038/s41586-021-03569-0</a></p>
 </div></blockquote>
@@ -475,6 +492,7 @@ div.rendered_html tbody tr:hover {
 <li><p>expansion of CTHRC1+ pathological fibroblasts</p></li>
 <li><p>protein activity and ligand–receptor interactions suggest putative drug targets</p></li>
 </ol>
+<p>This notebook makes extensive use of <span id="id2">[<a class="reference internal" href="references.html#id5" title="F Alexander Wolf, Philipp Angerer, and Fabian J Theis. SCANPY: large-scale single-cell gene expression data analysis. Genome Biol., 19(1):15, December 2018. doi:10.1186/s13059-017-1382-0.">WAT18</a>]</span> and <span id="id3">[<a class="reference internal" href="references.html#id2" title="Romain Lopez, Jeffrey Regier, Michael B Cole, Michael I Jordan, and Nir Yosef. Deep generative modeling for single-cell transcriptomics. Nat. Methods, 15(12):1053–1058, December 2018. doi:10.1038/s41592-018-0229-2.">LRC+18</a>]</span> including updates that have been made to the underlying software packages, <a class="reference external" href="https://github.com/scverse/scanpy">scanpy</a> and <a class="reference external" href="https://github.com/scverse/scvi-tools">scvi-tools</a>, since their initial publication.</p>
 </div>
 <div class="section" id="Setup">
 <h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this heading">§</a></h2>
@@ -590,7 +608,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <p>A skeleton of this script that may work in this case is</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env bash</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>!/usr/bin/env bash
 
 <span class="c1">#-- debugging (comment to reduce stderr output)</span>
 <span class="c1">#-- https://wiki.bash-hackers.org/scripting/debuggingtips</span>
@@ -751,6 +769,384 @@ Index: [AL627309.1, AL627309.5, AL627309.4, AL669831.2, LINC01409, FAM87B, LINC0
   if name[0] != &#34;_&#34; and name not in disallowed_names and hasattr(obj, name)
 /tmp/ipykernel_1135/22660072.py:9: DeprecationWarning: Use is_view instead of isview, isview will be removed in the future.
   name: getattr(obj, name)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>clusters_coarse</th>
+      <th>clusters</th>
+      <th>S_score</th>
+      <th>G2M_score</th>
+    </tr>
+    <tr>
+      <th>index</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>AAACCTGAGAGGGATA</th>
+      <td>Pre-endocrine</td>
+      <td>Pre-endocrine</td>
+      <td>-0.224902</td>
+      <td>-0.252071</td>
+    </tr>
+    <tr>
+      <th>AAACCTGAGCCTTGAT</th>
+      <td>Ductal</td>
+      <td>Ductal</td>
+      <td>-0.014707</td>
+      <td>-0.232610</td>
+    </tr>
+    <tr>
+      <th>AAACCTGAGGCAATTA</th>
+      <td>Endocrine</td>
+      <td>Alpha</td>
+      <td>-0.171255</td>
+      <td>-0.286834</td>
+    </tr>
+    <tr>
+      <th>AAACCTGCATCATCCC</th>
+      <td>Ductal</td>
+      <td>Ductal</td>
+      <td>0.599244</td>
+      <td>0.191243</td>
+    </tr>
+    <tr>
+      <th>AAACCTGGTAAGTGGC</th>
+      <td>Ngn3 high EP</td>
+      <td>Ngn3 high EP</td>
+      <td>-0.179981</td>
+      <td>-0.126030</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>TTTGTCAAGTGACATA</th>
+      <td>Pre-endocrine</td>
+      <td>Pre-endocrine</td>
+      <td>-0.235896</td>
+      <td>-0.266101</td>
+    </tr>
+    <tr>
+      <th>TTTGTCAAGTGTGGCA</th>
+      <td>Ngn3 high EP</td>
+      <td>Ngn3 high EP</td>
+      <td>0.279374</td>
+      <td>-0.204047</td>
+    </tr>
+    <tr>
+      <th>TTTGTCAGTTGTTTGG</th>
+      <td>Ductal</td>
+      <td>Ductal</td>
+      <td>-0.045692</td>
+      <td>-0.208907</td>
+    </tr>
+    <tr>
+      <th>TTTGTCATCGAATGCT</th>
+      <td>Endocrine</td>
+      <td>Alpha</td>
+      <td>-0.240576</td>
+      <td>-0.206865</td>
+    </tr>
+    <tr>
+      <th>TTTGTCATCTGTTTGT</th>
+      <td>Endocrine</td>
+      <td>Epsilon</td>
+      <td>-0.136407</td>
+      <td>-0.184763</td>
+    </tr>
+  </tbody>
+</table>
+<p>3696 rows × 4 columns</p>
+</div></div>
+</div>
+<p>Gene names are saved</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>highly_variable_genes</th>
+    </tr>
+    <tr>
+      <th>index</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Xkr4</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>Gm37381</th>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>Rp1</th>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>Rp1-1</th>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>Sox17</th>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>Gm28672</th>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>Gm28670</th>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>Gm29504</th>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>Gm20837</th>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>Erdr1</th>
+      <td>True</td>
+    </tr>
+  </tbody>
+</table>
+<p>27998 rows × 1 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs_names</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Index([&#39;AAACCTGAGAGGGATA&#39;, &#39;AAACCTGAGCCTTGAT&#39;, &#39;AAACCTGAGGCAATTA&#39;,
+       &#39;AAACCTGCATCATCCC&#39;, &#39;AAACCTGGTAAGTGGC&#39;, &#39;AAACCTGGTATTAGCC&#39;,
+       &#39;AAACCTGTCCCTCTTT&#39;, &#39;AAACCTGTCTTTCCTC&#39;, &#39;AAACGGGAGACAATAC&#39;,
+       &#39;AAACGGGAGATATGGT&#39;,
+       ...
+       &#39;TTTGGTTCACCAGATT&#39;, &#39;TTTGGTTCACGAAGCA&#39;, &#39;TTTGGTTTCACTTACT&#39;,
+       &#39;TTTGGTTTCCTTTCGG&#39;, &#39;TTTGTCAAGAATGTGT&#39;, &#39;TTTGTCAAGTGACATA&#39;,
+       &#39;TTTGTCAAGTGTGGCA&#39;, &#39;TTTGTCAGTTGTTTGG&#39;, &#39;TTTGTCATCGAATGCT&#39;,
+       &#39;TTTGTCATCTGTTTGT&#39;],
+      dtype=&#39;object&#39;, name=&#39;index&#39;, length=3696)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var_names</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Index([&#39;Xkr4&#39;, &#39;Gm37381&#39;, &#39;Rp1&#39;, &#39;Rp1-1&#39;, &#39;Sox17&#39;, &#39;Gm37323&#39;, &#39;Mrpl15&#39;,
+       &#39;Rgs20&#39;, &#39;Npbwr1&#39;, &#39;4732440D04Rik&#39;,
+       ...
+       &#39;Gm28406&#39;, &#39;Gm29436&#39;, &#39;Gm28407&#39;, &#39;Gm29393&#39;, &#39;Gm21294&#39;, &#39;Gm28672&#39;,
+       &#39;Gm28670&#39;, &#39;Gm29504&#39;, &#39;Gm20837&#39;, &#39;Erdr1&#39;],
+      dtype=&#39;object&#39;, name=&#39;index&#39;, length=27998)
+</pre></div></div>
+</div>
+<p>There are two layers corresponding to spliced and unspliced transcripts respectively.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s1">&#39;spliced&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;3696x27998 sparse matrix of type &#39;&lt;class &#39;numpy.float32&#39;&gt;&#39;
+        with 9298890 stored elements in Compressed Sparse Row format&gt;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s1">&#39;unspliced&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;3696x27998 sparse matrix of type &#39;&lt;class &#39;numpy.float32&#39;&gt;&#39;
+        with 3156504 stored elements in Compressed Sparse Row format&gt;
+</pre></div></div>
+</div>
+<p>PCA and UMAP have retained 50 and 2 dimensions respectively.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obsm</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;X_pca&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obsm</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;X_umap&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+AxisArrays with keys: X_pca, X_umap
+(3696, 50)
+AxisArrays with keys: X_pca, X_umap
+(3696, 2)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">varm</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+AxisArrays with keys:
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obsp</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obsp</span><span class="p">[</span><span class="s1">&#39;distances&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obsp</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obsp</span><span class="p">[</span><span class="s1">&#39;connectivities&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+PairwiseArrays with keys: distances, connectivities
+(3696, 3696)
+PairwiseArrays with keys: distances, connectivities
+(3696, 3696)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">varp</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+PairwiseArrays with keys:
 </pre></div></div>
 </div>
 <p>The data appears to contain reads mapped to 34546 RNA molecule-associated features and 6099 cell-associated barcodes.</p>

@@ -458,12 +458,26 @@ div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
-<div class="section" id="AnnData-review">
+<div class="admonition note">
+  This page was generated from
+  <a class="reference external" href="https://github.com/cameronraysmith/sc/blob/master/source/01-anndata-review.ipynb">source/01-anndata-review.ipynb</a>.
+  <span style="white-space: nowrap;"><a href="https://mybinder.org/v2/gh/cameronraysmith/sc/master?filepath=source/01-anndata-review.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a> or </span>
+  <script>
+    if (document.location.host) {
+      $(document.currentScript).replaceWith(
+        '<a class="reference external" ' +
+        'href="https://nbviewer.jupyter.org/url' +
+        (window.location.protocol == 'https:' ? 's/' : '/') +
+        window.location.host +
+        window.location.pathname.slice(0, -4) +
+        'ipynb"><em>nbviewer</em></a>.'
+      );
+    }
+  </script>
+</div><div class="section" id="AnnData-review">
 <h1>AnnData review<a class="headerlink" href="#AnnData-review" title="Permalink to this heading">§</a></h1>
-<p>This is a modified version of the introductory tutorial distributed with the AnnData package.</p>
-<p><strong>Authors:</strong> <a class="reference external" href="https://twitter.com/adamgayoso">Adam Gayoso</a>, <a class="reference external" href="https://twitter.com/falexwolf">Alex Wolf</a></p>
-<p>This tutorial is based on blog posts by <a class="reference external" href="https://adamgayoso.com/posts/ten_min_to_adata/">Adam in 2021</a> and <a class="reference external" href="https://falexwolf.me/2017/introducing-anndata/">Alex in 2017</a>.</p>
-<p>This tutorial introduces basic properties of the central object, <a class="reference external" href="http://anndata.readthedocs.io/en/latest/anndata.AnnData.html">AnnData</a> (“Annotated Data”).</p>
+<p>This is a modified version of the introductory tutorial distributed with the <a class="reference external" href="http://anndata.readthedocs.io/en/latest/anndata.AnnData.html">AnnData</a> package whose original authors are <a class="reference external" href="https://twitter.com/adamgayoso">Adam Gayoso</a>, <a class="reference external" href="https://twitter.com/falexwolf">Alex Wolf</a> based on blog posts by <a class="reference external" href="https://adamgayoso.com/posts/ten_min_to_adata/">Adam in 2021</a> and <a class="reference external" href="https://falexwolf.me/2017/introducing-anndata/">Alex in 2017</a> (see <span id="id1">[<a class="reference internal" href="references.html#id4" title="Isaac Virshup, Sergei Rybakov, Fabian J Theis, Philipp Angerer, and F Alexander Wolf. Anndata: annotated data. bioRxiv, pages 2021.12.16.473007, December 2021. doi:10.1101/2021.12.16.473007.">VRT+21</a>]</span>).</p>
+<p>The tutorial introduces basic properties of the central object, <a class="reference external" href="http://anndata.readthedocs.io/en/latest/anndata.AnnData.html">AnnData</a> (“Annotated Data”).</p>
 <p><code class="docutils literal notranslate"><span class="pre">AnnData</span></code> is specifically designed for matrix-like data. By this we mean that we have <span class="math notranslate nohighlight">\(n\)</span> observations, each of which can be represented as <span class="math notranslate nohighlight">\(d\)</span>-dimensional vectors, where each dimension corresponds to a variable or feature. Both the rows and columns of this <span class="math notranslate nohighlight">\(n \times d\)</span> matrix are special in the sense that they are indexed.</p>
 <p>For instance, in scRNA-seq data, each row corresponds to a cell with a barcode, and each column corresponds to a gene with a gene id. Furthermore, for each cell and each gene we might have additional metadata, like (1) donor information for each cell, or (2) alternative gene symbols for each gene. Finally, we might have other unstructured metadata like color palletes to use for plotting. Without going into every fancy Python-based data structure, we think that still today no other alternative
 really exists that:</p>
