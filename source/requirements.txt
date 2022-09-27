@@ -3,47 +3,46 @@
 # pigar --with-referenced-comments [-P source]
 
 # source/01-anndata-review.py: 65
-anndata == 0.8.0
-
-# source/conf.py: 183
-furo == 2022.9.15
+# anndata == 0.8.0
 
 # source/plotting.ipynb: 6,23
-ipython == 8.5.0
+# ipython == 8.5.0
 
 # source/02-analysis-review.py: 80,81
 # source/03-velocity-review.py: 190,191
 # source/04-network-inference-review.py: 190,191
 # source/05-recent-velocity-and-network-inference-algorithms.py: 190,191
 # source/plotting.ipynb: 1,5
-matplotlib == 3.5.3
+# matplotlib == 3.5.3
 
 # source/01-anndata-review.py: 63
-numpy == 1.23.3
+# numpy == 1.23.3
 
 # source/01-anndata-review.py: 64
-pandas == 1.4.4
+# pandas == 1.4.4
 
 # source/02-analysis-review.py: 74
 # source/03-velocity-review.py: 174
 # source/04-network-inference-review.py: 174
 # source/05-recent-velocity-and-network-inference-algorithms.py: 174
-scanpy == 1.9.1
+# scanpy == 1.9.1
 
 # source/01-anndata-review.py: 66
-scipy == 1.9.1
+# scipy == 1.9.1
 
 # source/03-velocity-review.py: 175
 # source/04-network-inference-review.py: 175
 # source/05-recent-velocity-and-network-inference-algorithms.py: 175
-scvelo == 0.2.4
+# scvelo == 0.2.4
 
 # sphinx
+# source/conf.py: 183
+sphinx >= 5.0.0
+furo
 ipykernel
 jupytext
 insipid-sphinx-theme
 sphinx-book-theme
-sphinx
 nbsphinx 
 sphinxcontrib-bibtex 
 sphinxcontrib-svg2pdfconverter 
