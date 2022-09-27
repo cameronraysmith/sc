@@ -1,131 +1,208 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Basic single-cell analysis" href="02-analysis-review.html" /><link rel="prev" title="Plotting setup" href="plotting.html" />
 
-<!DOCTYPE html>
+    <meta name="generator" content="sphinx-5.2.2, furo 2022.09.15"/>
+        <title>AnnData review - Single cell analysis</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=9ec31e2665bf879c1d47d93a8ec4893870ee1e45" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    
+    
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>AnnData review &#8212; Single cell analysis</title>
-    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
-    <link rel="stylesheet" href="_static/insipid.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
-    <script defer src="_static/insipid.js"></script>
-    <script defer src="_static/insipid-sidebar.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Basic single-cell analysis" href="02-analysis-review.html" />
-    <link rel="prev" title="Plotting setup" href="plotting.html" />
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-  </head><body>
-    <script type="text/javascript">
-        document.body.classList.add('js');
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
     </script>
-    <input type="checkbox" id="sidebar-checkbox" style="display: none;">
-    <label id="overlay" for="sidebar-checkbox"></label>
-    <div class="sidebar-resize-handle"></div>
-    <script type="text/javascript">
-        try {
-            let sidebar = localStorage.getItem('sphinx-sidebar');
-            const sidebar_width = localStorage.getItem('sphinx-sidebar-width');
-            if (sidebar_width) {
-                document.documentElement.style.setProperty('--sidebar-width', sidebar_width);
-            }
-            // show sidebar on wide screen
-            if (!sidebar && window.matchMedia('(min-width: 100rem)').matches) {
-                sidebar = 'visible';
-                // NB: We don't store the value in localStorage!
-            }
-            if (sidebar === 'visible') {
-                document.getElementById('sidebar-checkbox').checked = true;
-            }
-        } catch(e) {
-            console.info(e);
-        }
-    </script>
-    <header id="topbar-placeholder">
-      <div id="topbar">
-        <div id="titlebar">
-          <div class="buttons">
-            <label for="sidebar-checkbox" id="sidebar-button" role="button" tabindex="0" aria-controls="sphinxsidebar" accesskey="M">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"/></svg>
-            </label>
-            <button id="search-button" type="button" title="Search" aria-label="Search" aria-expanded="false" aria-controls="search-form" accesskey="S">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"/></svg>
-            </button>
-          </div>
-          <div class="title">
-            <a class="parent" href="index.html" accesskey="U">Single cell analysis</a>
-            <a class="top" href="#">AnnData review</a>
-          </div>
-          <div class="buttons">
-            <button id="fullscreen-button" type="button" aria-hidden="true">
-              <span class="enable">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M212.686 315.314L120 408l32.922 31.029c15.12 15.12 4.412 40.971-16.97 40.971h-112C10.697 480 0 469.255 0 456V344c0-21.382 25.803-32.09 40.922-16.971L72 360l92.686-92.686c6.248-6.248 16.379-6.248 22.627 0l25.373 25.373c6.249 6.248 6.249 16.378 0 22.627zm22.628-118.628L328 104l-32.922-31.029C279.958 57.851 290.666 32 312.048 32h112C437.303 32 448 42.745 448 56v112c0 21.382-25.803 32.09-40.922 16.971L376 152l-92.686 92.686c-6.248 6.248-16.379 6.248-22.627 0l-25.373-25.373c-6.249-6.248-6.249-16.378 0-22.627z"/></svg>
-              </span>
-              <span class="disable">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M4.686 427.314L104 328l-32.922-31.029C55.958 281.851 66.666 256 88.048 256h112C213.303 256 224 266.745 224 280v112c0 21.382-25.803 32.09-40.922 16.971L152 376l-99.314 99.314c-6.248 6.248-16.379 6.248-22.627 0L4.686 449.941c-6.248-6.248-6.248-16.379 0-22.627zM443.314 84.686L344 184l32.922 31.029c15.12 15.12 4.412 40.971-16.97 40.971h-112C234.697 256 224 245.255 224 232V120c0-21.382 25.803-32.09 40.922-16.971L296 136l99.314-99.314c6.248-6.248 16.379-6.248 22.627 0l25.373 25.373c6.248 6.248 6.248 16.379 0 22.627z"/></svg>
-              </span>
-            </button>
-          </div>
-        </div>
-        <div id="searchbox" role="search">
-          <form id="search-form" class="search" style="display: none" action="search.html" method="get">
-            <input type="search" name="q" placeholder="Search ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
-            <button>Go</button>
-          </form>
-        </div>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">Single cell analysis</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
       </div>
-    </header>
-    <nav>
-      <a href="plotting.html" class="nav-icon previous" title="previous:&#13;Plotting setup" aria-label="Previous topic" accesskey="P" tabindex="-1">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"/></svg>
-      </a>
-      <a href="02-analysis-review.html" class="nav-icon next" title="next:&#13;Basic single-cell analysis" aria-label="Next topic" accesskey="N" tabindex="-1">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"/></svg>
-      </a>
-    </nav>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">Single cell analysis</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting setup</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">AnnData review</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02-analysis-review.html">Basic single-cell analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03-velocity-review.html">RNA Velocity review</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
 
-    <nav class="relbar">
-      <a class="previous" href="plotting.html" aria-label="Previous topic" >
-        <div class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"/></svg>
-        </div>
-        <div class="title">
-          <span class="text">
-            <span class="direction">previous</span>
-            Plotting setup
-          </span>
-        </div>
-      </a>
-      <a class="next" href="02-analysis-review.html" aria-label="Next topic" >
-        <div class="title">
-          <span class="text">
-            <span class="direction">next</span>
-            Basic single-cell analysis
-          </span>
-        </div>
-        <div class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6 0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25 .4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24 24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z"/></svg>
-        </div>
-      </a>
-    </nav>  
+</div>
+</div>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
-
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/cameronraysmith/sc/edit/master/source/01-anndata-review.ipynb" title="Edit this page">
+    <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+    </svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          
 <style>
 /* CSS for nbsphinx extension */
 
@@ -381,24 +458,8 @@ div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
-<div class="admonition note">
-  This page was generated from
-  <a class="reference external" href="https://github.com/cameronraysmith/sc/blob/master/source/01-anndata-review.ipynb">source/01-anndata-review.ipynb</a>.
-  <span style="white-space: nowrap;"><a href="https://mybinder.org/v2/gh/cameronraysmith/sc/master?filepath=source/01-anndata-review.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a> or </span>
-  <script>
-    if (document.location.host) {
-      $(document.currentScript).replaceWith(
-        '<a class="reference external" ' +
-        'href="https://nbviewer.jupyter.org/url' +
-        (window.location.protocol == 'https:' ? 's/' : '/') +
-        window.location.host +
-        window.location.pathname.slice(0, -4) +
-        'ipynb"><em>nbviewer</em></a>.'
-      );
-    }
-  </script>
-</div><section id="AnnData-review">
-<h1>AnnData review<a class="headerlink" href="#AnnData-review" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="AnnData-review">
+<h1>AnnData review<a class="headerlink" href="#AnnData-review" title="Permalink to this heading">§</a></h1>
 <p>This is a modified version of the introductory tutorial distributed with the AnnData package.</p>
 <p><strong>Authors:</strong> <a class="reference external" href="https://twitter.com/adamgayoso">Adam Gayoso</a>, <a class="reference external" href="https://twitter.com/falexwolf">Alex Wolf</a></p>
 <p>This tutorial is based on blog posts by <a class="reference external" href="https://adamgayoso.com/posts/ten_min_to_adata/">Adam in 2021</a> and <a class="reference external" href="https://falexwolf.me/2017/introducing-anndata/">Alex in 2017</a>.</p>
@@ -432,8 +493,8 @@ really exists that:</p>
 0.8.0
 </pre></div></div>
 </div>
-<section id="Utility-functions">
-<h2>Utility functions<a class="headerlink" href="#Utility-functions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Utility-functions">
+<h2>Utility functions<a class="headerlink" href="#Utility-functions" title="Permalink to this heading">§</a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
@@ -464,8 +525,8 @@ really exists that:</p>
 </pre></div>
 </div>
 </div>
-<section id="Initializing-AnnData">
-<h3>Initializing AnnData<a class="headerlink" href="#Initializing-AnnData" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Initializing-AnnData">
+<h3>Initializing AnnData<a class="headerlink" href="#Initializing-AnnData" title="Permalink to this heading">§</a></h3>
 <p>Let’s start by building a basic AnnData object with some sparse count information, perhaps representing gene expression counts.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
@@ -646,7 +707,7 @@ Index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Cell_</span><span class="si">{i:d}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">n_obs</span><span class="p">)]</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Cell_</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">n_obs</span><span class="p">)]</span>
 </pre></div>
 </div>
 </div>
@@ -654,7 +715,7 @@ Index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Gene_</span><span class="si">{i:d}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">n_vars</span><span class="p">)]</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var_names</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Gene_</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">d</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">n_vars</span><span class="p">)]</span>
 </pre></div>
 </div>
 </div>
@@ -775,10 +836,10 @@ Index: [Gene_0, Gene_1, Gene_2, Gene_3, Gene_4, Gene_5, Gene_6, Gene_7, Gene_8, 
   name: getattr(obj, name)
 </pre></div></div>
 </div>
-</section>
-</section>
-<section id="Subsetting-AnnData">
-<h2>Subsetting AnnData<a class="headerlink" href="#Subsetting-AnnData" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+<div class="section" id="Subsetting-AnnData">
+<h2>Subsetting AnnData<a class="headerlink" href="#Subsetting-AnnData" title="Permalink to this heading">§</a></h2>
 <p>These index values can be used to subset the AnnData, which provides a view of the AnnData object. We can imagine this to be useful to subset the AnnData to particular cell types or gene modules of interest. The rules for subsetting AnnData are quite similar to that of a Pandas DataFrame. You can use values in the <code class="docutils literal notranslate"><span class="pre">obs/var_names</span></code>, boolean masks, or cell index integers.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
@@ -797,12 +858,12 @@ Index: [Gene_0, Gene_1, Gene_2, Gene_3, Gene_4, Gene_5, Gene_6, Gene_7, Gene_8, 
 View of AnnData object with n_obs × n_vars = 2 × 2
 </pre></div></div>
 </div>
-<section id="Adding-aligned-metadata">
-<h3>Adding aligned metadata<a class="headerlink" href="#Adding-aligned-metadata" title="Permalink to this headline">¶</a></h3>
-</section>
-</section>
-<section id="Observation/Variable-level">
-<h2>Observation/Variable level<a class="headerlink" href="#Observation/Variable-level" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Adding-aligned-metadata">
+<h3>Adding aligned metadata<a class="headerlink" href="#Adding-aligned-metadata" title="Permalink to this heading">§</a></h3>
+</div>
+</div>
+<div class="section" id="Observation/Variable-level">
+<h2>Observation/Variable level<a class="headerlink" href="#Observation/Variable-level" title="Permalink to this heading">§</a></h2>
 <p>So we have the core of our object and now we’d like to add metadata at both the observation and variable levels. This is pretty simple with AnnData, both <code class="docutils literal notranslate"><span class="pre">adata.obs</span></code> and <code class="docutils literal notranslate"><span class="pre">adata.var</span></code> are Pandas DataFrames.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
@@ -909,9 +970,9 @@ AnnData object with n_obs × n_vars = 100 × 2000
     obs: &#39;cell_type&#39;
 </pre></div></div>
 </div>
-</section>
-<section id="Subsetting-using-metadata">
-<h2>Subsetting using metadata<a class="headerlink" href="#Subsetting-using-metadata" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="Subsetting-using-metadata">
+<h2>Subsetting using metadata<a class="headerlink" href="#Subsetting-using-metadata" title="Permalink to this heading">§</a></h2>
 <p>We can also subset the AnnData using these randomly generated cell types:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
@@ -932,8 +993,8 @@ View of AnnData object with n_obs × n_vars = 26 × 2000
     obs: &#39;cell_type&#39;
 </pre></div></div>
 </div>
-<section id="Observation/variable-level-matrices">
-<h3>Observation/variable-level matrices<a class="headerlink" href="#Observation/variable-level-matrices" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Observation/variable-level-matrices">
+<h3>Observation/variable-level matrices<a class="headerlink" href="#Observation/variable-level-matrices" title="Permalink to this heading">§</a></h3>
 <p>We might also have metadata at either level that has many dimensions to it, such as a UMAP embedding of the data. For this type of metadata, AnnData has the <code class="docutils literal notranslate"><span class="pre">.obsm/.varm</span></code> attributes. We use keys to identify the different matrices we insert. The restriction of <code class="docutils literal notranslate"><span class="pre">.obsm/.varm</span></code> are that <code class="docutils literal notranslate"><span class="pre">.obsm</span></code> matrices must length equal to the number of observations as <code class="docutils literal notranslate"><span class="pre">.n_obs</span></code> and <code class="docutils literal notranslate"><span class="pre">.varm</span></code> matrices must length equal to <code class="docutils literal notranslate"><span class="pre">.n_vars</span></code>. They can each independently have different number of dimensions.</p>
 <p>Let’s start with a randomly generated matrix that we can interpret as a UMAP embedding of the data we’d like to store, as well as some random gene-level metadata:</p>
 <div class="nbinput docutils container">
@@ -981,9 +1042,9 @@ AnnData object with n_obs × n_vars = 100 × 2000
 <li><p>The “array-like” metadata can originate from a Pandas DataFrame, scipy sparse matrix, or numpy dense array.</p></li>
 <li><p>When using scanpy, their values (columns) are not easily plotted, where instead items from <code class="docutils literal notranslate"><span class="pre">.obs</span></code> are easily plotted on, e.g., UMAP plots.</p></li>
 </ol>
-</section>
-<section id="Unstructured-metadata">
-<h3>Unstructured metadata<a class="headerlink" href="#Unstructured-metadata" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="Unstructured-metadata">
+<h3>Unstructured metadata<a class="headerlink" href="#Unstructured-metadata" title="Permalink to this heading">§</a></h3>
 <p>AnnData has <code class="docutils literal notranslate"><span class="pre">.uns</span></code>, which allows for any unstructured metadata. This can be anything, like a list or a dictionary with some general information that was useful in the analysis of our data.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
@@ -1006,9 +1067,9 @@ With overloaded keys:
         [&#39;neighbors&#39;].
 </pre></div></div>
 </div>
-</section>
-<section id="Layers">
-<h3>Layers<a class="headerlink" href="#Layers" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="Layers">
+<h3>Layers<a class="headerlink" href="#Layers" title="Permalink to this heading">§</a></h3>
 <p>Finally, we may have different forms of our original core data, perhaps one that is normalized and one that is not. These can be stored in different layers in AnnData. For example, let’s log transform the original data and store it in a layer:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
@@ -1033,9 +1094,9 @@ AnnData object with n_obs × n_vars = 100 × 2000
     layers: &#39;log_transformed&#39;
 </pre></div></div>
 </div>
-</section>
-<section id="Conversion-to-DataFrames">
-<h3>Conversion to DataFrames<a class="headerlink" href="#Conversion-to-DataFrames" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="Conversion-to-DataFrames">
+<h3>Conversion to DataFrames<a class="headerlink" href="#Conversion-to-DataFrames" title="Permalink to this heading">§</a></h3>
 <p>We can also ask AnnData to return us a DataFrame from one of the layers:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
@@ -1362,9 +1423,9 @@ AnnData object with n_obs × n_vars = 100 × 2000
 </div></div>
 </div>
 <p>We see that the <code class="docutils literal notranslate"><span class="pre">.obs_names/.var_names</span></code> are used in the creation of this Pandas object.</p>
-</section>
-<section id="Writing-the-results-to-disk">
-<h3>Writing the results to disk<a class="headerlink" href="#Writing-the-results-to-disk" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="Writing-the-results-to-disk">
+<h3>Writing the results to disk<a class="headerlink" href="#Writing-the-results-to-disk" title="Permalink to this heading">§</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">AnnData</span></code> comes with its own persistent HDF5-based file format: <code class="docutils literal notranslate"><span class="pre">h5ad</span></code>. If string columns with small number of categories aren’t yet categoricals, <code class="docutils literal notranslate"><span class="pre">AnnData</span></code> will auto-transform to categoricals.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
@@ -1398,14 +1459,14 @@ varm                     Group
 varp                     Group
 </pre></div></div>
 </div>
-</section>
-<section id="Wrapping-up-the-introduction">
-<h3>Wrapping up the introduction<a class="headerlink" href="#Wrapping-up-the-introduction" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="Wrapping-up-the-introduction">
+<h3>Wrapping up the introduction<a class="headerlink" href="#Wrapping-up-the-introduction" title="Permalink to this heading">§</a></h3>
 <p>AnnData has become the standard for single-cell analysis in Python and for good reason – it’s straightforward to use and faciliatates more reproducible analyses with it’s key-based storage. It’s even becoming easier to convert to the popular R-based formats for single-cell analysis.</p>
 <p>Keep reading on to better understand “views”, on-disk backing, and other details.</p>
-</section>
-<section id="Views-and-copies">
-<h3>Views and copies<a class="headerlink" href="#Views-and-copies" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="Views-and-copies">
+<h3>Views and copies<a class="headerlink" href="#Views-and-copies" title="Permalink to this heading">§</a></h3>
 <p>For the fun of it, let’s look at another metadata use case. Imagine that the observations come from instruments characterizing 10 readouts in a multi-year study with samples taken from different subjects at different sites. We’d typically get that information in some format and then store it in a DataFrame:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
@@ -1671,9 +1732,9 @@ AnnData object with n_obs × n_vars = 3 × 2
 </table>
 </div></div>
 </div>
-</section>
-<section id="Partial-reading-of-large-data">
-<h3>Partial reading of large data<a class="headerlink" href="#Partial-reading-of-large-data" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="Partial-reading-of-large-data">
+<h3>Partial reading of large data<a class="headerlink" href="#Partial-reading-of-large-data" title="Permalink to this heading">§</a></h3>
 <p>If a single <code class="docutils literal notranslate"><span class="pre">.h5ad</span></code> is very large, you can partially read it into memory by using backed mode:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
@@ -1731,88 +1792,110 @@ PosixPath(&#39;my_results.h5ad&#39;)
 <p>Manipulating the object on disk is possible, but experimental for sparse data. Hence, we leave it out of this tutorial.</p>
 <script type="application/vnd.jupyter.widget-state+json">
 {"state": {}, "version_major": 2, "version_minor": 0}
-</script></section>
-</section>
-</section>
+</script></div>
+</div>
+</div>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="02-analysis-review.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Basic single-cell analysis</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="plotting.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Plotting setup</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2022, Cameron Smith
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">AnnData review</a><ul>
+<li><a class="reference internal" href="#Utility-functions">Utility functions</a><ul>
+<li><a class="reference internal" href="#Initializing-AnnData">Initializing AnnData</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Subsetting-AnnData">Subsetting AnnData</a><ul>
+<li><a class="reference internal" href="#Adding-aligned-metadata">Adding aligned metadata</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Observation/Variable-level">Observation/Variable level</a></li>
+<li><a class="reference internal" href="#Subsetting-using-metadata">Subsetting using metadata</a><ul>
+<li><a class="reference internal" href="#Observation/variable-level-matrices">Observation/variable-level matrices</a></li>
+<li><a class="reference internal" href="#Unstructured-metadata">Unstructured metadata</a></li>
+<li><a class="reference internal" href="#Layers">Layers</a></li>
+<li><a class="reference internal" href="#Conversion-to-DataFrames">Conversion to DataFrames</a></li>
+<li><a class="reference internal" href="#Writing-the-results-to-disk">Writing the results to disk</a></li>
+<li><a class="reference internal" href="#Wrapping-up-the-introduction">Wrapping up the introduction</a></li>
+<li><a class="reference internal" href="#Views-and-copies">Views and copies</a></li>
+<li><a class="reference internal" href="#Partial-reading-of-large-data">Partial reading of large data</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-
-          <div class="sidebar-resize-handle"></div>
-
-<h3><a href="index.html">Table of Contents</a></h3>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting setup</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">AnnData review</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#Utility-functions">Utility functions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Initializing-AnnData">Initializing AnnData</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#Subsetting-AnnData">Subsetting AnnData</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Adding-aligned-metadata">Adding aligned metadata</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#Observation/Variable-level">Observation/Variable level</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Subsetting-using-metadata">Subsetting using metadata</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Observation/variable-level-matrices">Observation/variable-level matrices</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Unstructured-metadata">Unstructured metadata</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Layers">Layers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Conversion-to-DataFrames">Conversion to DataFrames</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Writing-the-results-to-disk">Writing the results to disk</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Wrapping-up-the-introduction">Wrapping up the introduction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Views-and-copies">Views and copies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Partial-reading-of-large-data">Partial reading of large data</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="02-analysis-review.html">Basic single-cell analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="03-velocity-review.html">RNA Velocity review</a></li>
-<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
-</ul>
-
-<hr class="docutils" />
-<ul>
-  <li class="toctree-l1"><a class="reference internal" href="genindex.html" accesskey="I">General Index</a></li>
-</ul>
-<div id="ethical-ad-placement"></div>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-
-    <nav class="relbar">
-      <a class="previous" href="plotting.html" aria-label="Previous topic" >
-        <div class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"/></svg>
-        </div>
-        <div class="title">
-          <span class="text">
-            <span class="direction">previous</span>
-            Plotting setup
-          </span>
-        </div>
-      </a>
-      <a class="next" href="02-analysis-review.html" aria-label="Next topic" >
-        <div class="title">
-          <span class="text">
-            <span class="direction">next</span>
-            Basic single-cell analysis
-          </span>
-        </div>
-        <div class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6 0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25 .4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24 24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z"/></svg>
-        </div>
-      </a>
-    </nav>
-
-    <footer role="contentinfo">
-      &#169; Copyright 2022, Cameron Smith.
-      Created using <a class="reference external" href="https://www.sphinx-doc.org/">Sphinx</a> 2.4.4.
-      <a class="reference external" href="https://insipid-sphinx-theme.readthedocs.io/">Insipid Theme</a>.
-    </footer>
-  </body>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/scripts/furo.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "tags": "ams", "useLabelIds": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
 </html>
