@@ -31,13 +31,13 @@ author = 'Cameron Smith'
 extensions = [
     'nbsphinx',
     'sphinxcontrib.bibtex',        # for bibliographic references
-#     'sphinx_copybutton',           # for adding “copy to clipboard” buttons to all text/code boxes | commented due to multiple scrollbar issue https://github.com/cameronraysmith/sc/issues/1
+    'sphinx_copybutton',           # for adding “copy to clipboard” buttons to all text/code boxes | commented due to multiple scrollbar issue https://github.com/cameronraysmith/sc/issues/1
     'sphinxcontrib.rsvgconverter', # for SVG->PDF conversion in LaTeX output
     # 'sphinx_last_updated_by_git',  # get "last updated" from Git
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+# templates_path = ['_templates']
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -45,36 +45,45 @@ templates_path = ['_templates']
 exclude_patterns = ['*.py','*.md', '*/*.py','*/*.md']
 
 
+pygments_style = "sphinx"
+pygments_dark_style = "monokai"
+
+html_theme_options = {
+    "source_repository": "https://github.com/cameronraysmith/sc/",
+    "source_branch": "master",
+    "source_directory": "source/",
+}
+
+# .. raw:: html
+
+#     <div class="admonition note">
+#       This page was generated from
+#       <a class="reference external" href="https://github.com/cameronraysmith/sc/blob/master/{{ docname|e }}">{{ docname|e }}</a>.
+#       <span style="white-space: nowrap;"><a href="https://mybinder.org/v2/gh/cameronraysmith/sc/master?filepath={{ docname|e }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a> or </span>
+#       <script>
+#         if (document.location.host) {
+#           $(document.currentScript).replaceWith(
+#             '<a class="reference external" ' +
+#             'href="https://nbviewer.jupyter.org/url' +
+#             (window.location.protocol == 'https:' ? 's/' : '/') +
+#             window.location.host +
+#             window.location.pathname.slice(0, -4) +
+#             'ipynb"><em>nbviewer</em></a>.'
+#           );
+#         }
+#       </script>
+#     </div>
+
 # This is processed by Jinja2 and inserted before each notebook
-nbsphinx_prolog = r"""
-{% set docname = 'source/' + env.doc2path(env.docname, base=None) %}
+# nbsphinx_prolog = r"""
+# {% set docname = 'source/' + env.doc2path(env.docname, base=None) %}
 
-.. raw:: html
+# .. raw:: latex
 
-    <div class="admonition note">
-      This page was generated from
-      <a class="reference external" href="https://github.com/cameronraysmith/sc/blob/master/{{ docname|e }}">{{ docname|e }}</a>.
-      <span style="white-space: nowrap;"><a href="https://mybinder.org/v2/gh/cameronraysmith/sc/master?filepath={{ docname|e }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a> or </span>
-      <script>
-        if (document.location.host) {
-          $(document.currentScript).replaceWith(
-            '<a class="reference external" ' +
-            'href="https://nbviewer.jupyter.org/url' +
-            (window.location.protocol == 'https:' ? 's/' : '/') +
-            window.location.host +
-            window.location.pathname.slice(0, -4) +
-            'ipynb"><em>nbviewer</em></a>.'
-          );
-        }
-      </script>
-    </div>
-
-.. raw:: latex
-
-    \nbsphinxstartnotebook{\scriptsize\noindent\strut
-    \textcolor{gray}{The following section was generated from
-    \sphinxcode{\sphinxupquote{\strut {{ docname | escape_latex }}}} \dotfill}}
-"""
+#     \nbsphinxstartnotebook{\scriptsize\noindent\strut
+#     \textcolor{gray}{The following section was generated from
+#     \sphinxcode{\sphinxupquote{\strut {{ docname | escape_latex }}}} \dotfill}}
+# """
 
 # This is processed by Jinja2 and inserted after each notebook
 nbsphinx_epilog = r"""
@@ -110,7 +119,7 @@ nbsphinx_custom_formats = {
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+# html_static_path = ['_static']
 
 # -- Get version information and date from Git ----------------------------
 
@@ -179,10 +188,12 @@ suppress_warnings = ['epub.unknown_project_files']
 
 if 'html_theme' not in globals():
     try:
-        import insipid_sphinx_theme
+        # import insipid_sphinx_theme
+        import furo
     except ImportError:
         pass
     else:
-        html_theme = 'insipid'
-        html_copy_source = False
+        # html_theme = 'insipid'
+        html_theme = 'furo'
+        # html_copy_source = False
         html_permalinks_icon = '\N{SECTION SIGN}'

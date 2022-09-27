@@ -1,7 +1,6 @@
-Template repository for nbsphinx
+Single cell analysis
 ================================
 
-This repository serves as a template for using nbsphinx_ to compile a collection of jupyter notebooks into html and, via LaTeX_, pdf.
+This repository serves as a review of single cell analysis methods. It borrows heavily from tutorials made available by scverse_.
 
-.. _nbsphinx: https://github.com/spatialaudio/nbsphinx
-.. _LaTeX: https://www.latex-project.org
+.. _scverse: https://scverse.org
