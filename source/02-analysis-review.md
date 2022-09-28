@@ -79,7 +79,9 @@ from inspect import getmembers
 from pprint import pprint
 from types import FunctionType
 
+import pickle
 import scanpy as sc
+import seaborn as sns
 ```
 
 <!-- #region {"incorrectly_encoded_metadata": "tags=[] slideshow={\"slide_type\": \"subslide\"} jp-MarkdownHeadingCollapsed=true", "slideshow": {"slide_type": "subslide"}, "tags": []} -->
@@ -272,7 +274,7 @@ The data appears to contain reads mapped to 6099 cell-associated barcodes and 34
 <!-- #endregion -->
 
 <!-- #region {"slideshow": {"slide_type": "slide"}, "tags": []} -->
-## Preprocessing
+## Doublet removal
 <!-- #endregion -->
 
 ```python slideshow={"slide_type": "fragment"} tags=[]
@@ -296,7 +298,7 @@ See the [documentation for scanpy pre-processing filter-genes](https://scanpy.re
 <!-- #endregion -->
 
 ```python slideshow={"slide_type": "fragment"} tags=[]
-sc.pp.filter_genes(adata, min_cells = 10)
+sc.pp.filter_genes(adata, min_cells=10)
 ```
 
 ```python slideshow={"slide_type": "fragment"} tags=[]
@@ -311,20 +313,28 @@ Following filtration there are 19896 transcript types remaining that are present
 adata.var
 ```
 
+```python
+adata.var.describe()
+```
+
+```python tags=[] slideshow={"slide_type": "subslide"}
+sns.histplot(adata.var['n_cells'])
+```
+
 <!-- #region {"slideshow": {"slide_type": "subslide"}, "tags": []} -->
 ### Select highly variable genes
 <!-- #endregion -->
 
 It is common to select transcript types with high variability among the cell population under the assumption that this will help to focus on features that distinguish the cells. Again there is no perfect threshold. Here we select the 2000 highest variability genes.
 
-```python
+```python tags=[]
 adata
 ```
 
 See the [documentation for scanpy pre-processing highly-variable-genes](https://scanpy.readthedocs.io/en/latest/generated/scanpy.pp.highly_variable_genes.html).
 
 ```python tags=[]
-sc.pp.highly_variable_genes(adata, n_top_genes = 2000, subset = True, flavor = 'seurat_v3')
+sc.pp.highly_variable_genes(adata, n_top_genes=2000, subset=True, flavor="seurat_v3")
 ```
 
 ```python slideshow={"slide_type": "fragment"} tags=[]
@@ -339,7 +349,174 @@ We have filtered down to 2000 transcript types and added 5 annotations to the ge
 adata.var
 ```
 
+<!-- #region {"slideshow": {"slide_type": "subslide"}, "tags": []} -->
 ### Doublet removal
+<!-- #endregion -->
+
+<!-- #region {"slideshow": {"slide_type": "fragment"}, "tags": []} -->
+Here we `scvi-tools` model as [an interface](https://docs.scvi-tools.org/en/stable/api/reference/scvi.external.SOLO.html) to [solo](https://github.com/calico/solo) from <cite data-cite="Bernstein2020-am">Bernstein et al. (2020)</cite>. `scvi` adds some unstructured data to interface with `torch`.
+<!-- #endregion -->
+
+```python slideshow={"slide_type": "fragment"} tags=[]
+adata.uns
+```
+
+```python tags=[] slideshow={"slide_type": "fragment"}
+scvi.model.SCVI.setup_anndata(adata)
+```
+
+```python tags=[] slideshow={"slide_type": "fragment"}
+adata.uns
+```
+
+<!-- #region {"slideshow": {"slide_type": "subslide"}, "tags": []} -->
+Train the `scvi` model.
+<!-- #endregion -->
+
+```python tags=[] slideshow={"slide_type": "fragment"}
+vae = scvi.model.SCVI(adata)
+vae.train()
+```
+
+<!-- #region {"slideshow": {"slide_type": "subslide"}, "tags": []} -->
+After training the model `adata.obs` now contains `_scvi_batch` and `scvi_labels` annotations.
+<!-- #endregion -->
+
+```python tags=[] slideshow={"slide_type": "fragment"}
+adata
+```
+
+```python slideshow={"slide_type": "fragment"} tags=[]
+adata.obs
+```
+
+<!-- #region {"slideshow": {"slide_type": "subslide"}, "tags": []} -->
+Train the `solo` model.
+<!-- #endregion -->
+
+```python slideshow={"slide_type": "fragment"} tags=[]
+solo = scvi.external.SOLO.from_scvi_model(vae)
+solo.train()
+```
+
+```python slideshow={"slide_type": "fragment"} tags=[]
+type(solo)
+```
+
+<!-- #region {"slideshow": {"slide_type": "subslide"}, "tags": []} -->
+We can now use the `solo` model to add a prediction annotation for doublet or singlet to our data.
+<!-- #endregion -->
+
+```python slideshow={"slide_type": "fragment"} tags=[]
+df = solo.predict()
+df["prediction"] = solo.predict(soft=False)
+
+df.index = df.index.map(lambda x: x[:-2])
+
+df
+```
+
+<!-- #region {"slideshow": {"slide_type": "subslide"}, "tags": []} -->
+Counting the predicted doublets and singlets reveals about 20% doublets.
+<!-- #endregion -->
+
+```python slideshow={"slide_type": "fragment"} tags=[]
+df.groupby("prediction").count()
+```
+
+<!-- #region {"slideshow": {"slide_type": "subslide"}, "tags": []} -->
+We can assess the magnitude of the prediction by taking the difference between the doublet and singlet scores.
+<!-- #endregion -->
+
+```python slideshow={"slide_type": "fragment"} tags=[]
+df["dif"] = df.doublet - df.singlet
+df
+```
+
+<!-- #region {"slideshow": {"slide_type": "subslide"}, "tags": []} -->
+Plotting the distribution of doublet-singlet score differences we see there are a large fraction that marginally favor doublet to singlet.
+<!-- #endregion -->
+
+```python tags=[] slideshow={"slide_type": "fragment"}
+sns.histplot(df[df.prediction == "doublet"], x="dif")
+```
+
+Since we would like to avoid unnecessarily discarding barcodes, we will arbitrarily retain those with a score from zero to one (however this is not intended to be principled).
+
+```python
+doublets = df[(df.prediction == 'doublet') & (df.dif > 1)]
+doublets
+```
+
+```python
+sns.histplot(doublets[doublets.prediction == "doublet"], x="dif")
+```
+
+<!-- #region {"slideshow": {"slide_type": "subslide"}, "tags": []} -->
+### Save/load checkpoint 
+<!-- #endregion -->
+
+<!-- #region {"slideshow": {"slide_type": "fragment"}, "tags": []} -->
+Save current variables to file.
+<!-- #endregion -->
+
+```python tags=[] slideshow={"slide_type": "fragment"}
+pickle.dump([adata, df, doublets, solo, vae], open("session_09282022.p", "wb"))
+```
+
+<!-- #region {"slideshow": {"slide_type": "fragment"}, "tags": []} -->
+Variables can be reloaded if necessary.
+<!-- #endregion -->
+
+```python slideshow={"slide_type": "fragment"} tags=[]
+adata, df, doublets, solo, vae = pickle.load(open("session_09282022.p", "rb"))
+```
+
+<!-- #region {"slideshow": {"slide_type": "subslide"}, "tags": []} -->
+### Reload data and filter doublets
+<!-- #endregion -->
+
+```python slideshow={"slide_type": "fragment"} tags=[]
+adata = sc.read_csv(
+    "data/GSE171524/supplementary/GSM5226574_C51ctr_raw_counts.csv.gz"
+).T
+adata
+```
+
+Annotate `adata` with doublet column.
+
+```python slideshow={"slide_type": "fragment"} tags=[]
+adata.obs['doublet'] = adata.obs.index.isin(doublets.index)
+```
+
+```python slideshow={"slide_type": "fragment"} tags=[]
+adata
+```
+
+```python slideshow={"slide_type": "fragment"} tags=[]
+adata.obs
+```
+
+<!-- #region {"slideshow": {"slide_type": "subslide"}, "tags": []} -->
+Use doublet column to filter doublets.
+<!-- #endregion -->
+
+```python slideshow={"slide_type": "fragment"} tags=[]
+adata = adata[~adata.obs.doublet]
+```
+
+```python slideshow={"slide_type": "fragment"} tags=[]
+adata
+```
+
+<!-- #region {"slideshow": {"slide_type": "fragment"}, "tags": []} -->
+We filtered about 7% of the barcodes as putative doublets.
+<!-- #endregion -->
+
+## Preprocessing
+
+
+### Filter mitochondrial transcripts
 
 ```python
 
