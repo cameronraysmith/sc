@@ -54,7 +54,18 @@ html_theme_options = {
     "source_directory": "source/",
 }
 
-
+# <script>
+#         if (document.location.host) {
+#           $(document.currentScript).replaceWith(
+#             '<a class="reference external" ' +
+#             'href="https://nbviewer.jupyter.org/url' +
+#             (window.location.protocol == 'https:' ? 's/' : '/') +
+#             window.location.host +
+#             window.location.pathname.slice(0, -4) +
+#             'ipynb"><em>nbviewer</em></a>.'
+#           );
+#         }
+# </script>
 
 # This is processed by Jinja2 and inserted before each notebook
 nbsphinx_prolog = r"""
@@ -65,19 +76,10 @@ nbsphinx_prolog = r"""
     <div class="admonition note">
       This page was generated from
       <a class="reference external" href="https://github.com/cameronraysmith/sc/blob/master/{{ docname|e }}">{{ docname|e }}</a>.
-      <span style="white-space: nowrap;"><a href="https://mybinder.org/v2/gh/cameronraysmith/sc/master?filepath={{ docname|e }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a> or </span>
-      <script>
-        if (document.location.host) {
-          $(document.currentScript).replaceWith(
-            '<a class="reference external" ' +
-            'href="https://nbviewer.jupyter.org/url' +
-            (window.location.protocol == 'https:' ? 's/' : '/') +
-            window.location.host +
-            window.location.pathname.slice(0, -4) +
-            'ipynb"><em>nbviewer</em></a>.'
-          );
-        }
-      </script>
+      <span style="white-space: nowrap;">
+      <a href="https://mybinder.org/v2/gh/cameronraysmith/sc/master?filepath={{ docname|e }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a> or 
+      <a href="https://colab.research.google.com/github/cameronraysmith/sc/blob/master/{{ docname|e }}"><img alt="Colab badge" src="https://colab.research.google.com/assets/colab-badge.svg" style="vertical-align:text-bottom"></a>
+      </span>
     </div>
 
 .. raw:: latex
