@@ -9,8 +9,8 @@
    :maxdepth: 4
    :glob:
    
-   plotting
    01-anndata-review
    02-analysis-review
    03-velocity-review
+   plotting
    references
