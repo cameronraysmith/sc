@@ -202,9 +202,13 @@ tar -xvf GSE171524_RAW.tar -C GSE171524
 ### Data load
 <!-- #endregion -->
 
+See the [documentation for scanpy read csv](https://scanpy.readthedocs.io/en/latest/generated/scanpy.read_csv.html) which returns an [AnnData object](https://anndata.readthedocs.io/en/stable/generated/anndata.AnnData.html#anndata.AnnData).
+
 ```python slideshow={"slide_type": "fragment"} tags=[]
 adata = None
-adata = sc.read_csv("data/GSE171524/supplementary/GSM5226574_C51ctr_raw_counts.csv.gz").T
+adata = sc.read_csv(
+    "data/GSE171524/supplementary/GSM5226574_C51ctr_raw_counts.csv.gz"
+).T
 adata
 ```
 
@@ -220,69 +224,122 @@ Note the `scanpy.read_csv` function accepts gzipped files.
 type(adata)
 ```
 
-```python tags=[]
-type(adata.T)
+```python slideshow={"slide_type": "fragment"} tags=[]
+adata.X.shape
 ```
 
-```python tags=[] slideshow={"slide_type": "fragment"}
+```python tags=[] slideshow={"slide_type": "subslide"}
 print_attributes(adata)
 ```
 
-```python tags=[]
+```python tags=[] slideshow={"slide_type": "subslide"}
 adata.obs
 ```
 
-Gene names are saved 
+Gene names are saved as `adata.var`.
 
-```python tags=[]
+```python tags=[] slideshow={"slide_type": "fragment"}
 adata.var
 ```
 
-```python tags=[]
+```python tags=[] slideshow={"slide_type": "subslide"}
 adata.obs_names
 ```
 
-```python tags=[]
+```python tags=[] slideshow={"slide_type": "fragment"}
 adata.var_names
 ```
 
-There are two layers corresponding to spliced and unspliced transcripts respectively.
+There are no layers in this data set.
 
-```python tags=[]
-adata.layers['spliced']
+```python tags=[] slideshow={"slide_type": "subslide"}
+adata.layers
 ```
 
-```python tags=[]
-adata.layers['unspliced']
-```
+<!-- #region {"slideshow": {"slide_type": "fragment"}, "tags": []} -->
+There are no multidimensional observations or variables.
+<!-- #endregion -->
 
-PCA and UMAP have retained 50 and 2 dimensions respectively.
-
-```python tags=[]
+```python tags=[] slideshow={"slide_type": "fragment"}
 print(adata.obsm)
-print(adata.obsm['X_pca'].shape)
-print(adata.obsm)
-print(adata.obsm['X_umap'].shape)
-```
-
-```python tags=[]
 print(adata.varm)
-```
-
-```python tags=[]
 print(adata.obsp)
-print(adata.obsp['distances'].shape)
-print(adata.obsp)
-print(adata.obsp['connectivities'].shape)
-```
-
-```python tags=[]
 print(adata.varp)
 ```
 
 <!-- #region {"slideshow": {"slide_type": "fragment"}, "tags": []} -->
-The data appears to contain reads mapped to 34546 RNA molecule-associated features and 6099 cell-associated barcodes.
+The data appears to contain reads mapped to 6099 cell-associated barcodes and 34546 RNA molecule-associated features.
 <!-- #endregion -->
+
+<!-- #region {"slideshow": {"slide_type": "slide"}, "tags": []} -->
+## Preprocessing
+<!-- #endregion -->
+
+```python slideshow={"slide_type": "fragment"} tags=[]
+import scvi
+```
+
+<!-- #region {"slideshow": {"slide_type": "subslide"}, "tags": []} -->
+### Filter transcripts by minimum number of cells with non-zero counts
+<!-- #endregion -->
+
+<!-- #region {"slideshow": {"slide_type": "fragment"}, "tags": []} -->
+We may choose to filter out transcript types that are detected in a relatively small number of cells. The optimum threshold is not known. Here we use 10 as a base case.
+<!-- #endregion -->
+
+```python slideshow={"slide_type": "fragment"} tags=[]
+adata
+```
+
+<!-- #region {"slideshow": {"slide_type": "fragment"}, "tags": []} -->
+See the [documentation for scanpy pre-processing filter-genes](https://scanpy.readthedocs.io/en/latest/generated/scanpy.pp.filter_genes.html).
+<!-- #endregion -->
+
+```python slideshow={"slide_type": "fragment"} tags=[]
+sc.pp.filter_genes(adata, min_cells = 10)
+```
+
+```python slideshow={"slide_type": "fragment"} tags=[]
+adata
+```
+
+<!-- #region {"slideshow": {"slide_type": "subslide"}, "tags": []} -->
+Following filtration there are 19896 transcript types remaining that are present in at least 10 cells. This means 14650 transcript types were removed at the threshold of 10. Notice that an annotation named `n_cells` has been added to the genes to indicate the number of cells with non-zero values for that transcript type.
+<!-- #endregion -->
+
+```python slideshow={"slide_type": "fragment"} tags=[]
+adata.var
+```
+
+<!-- #region {"slideshow": {"slide_type": "subslide"}, "tags": []} -->
+### Select highly variable genes
+<!-- #endregion -->
+
+It is common to select transcript types with high variability among the cell population under the assumption that this will help to focus on features that distinguish the cells. Again there is no perfect threshold. Here we select the 2000 highest variability genes.
+
+```python
+adata
+```
+
+See the [documentation for scanpy pre-processing highly-variable-genes](https://scanpy.readthedocs.io/en/latest/generated/scanpy.pp.highly_variable_genes.html).
+
+```python tags=[]
+sc.pp.highly_variable_genes(adata, n_top_genes = 2000, subset = True, flavor = 'seurat_v3')
+```
+
+```python slideshow={"slide_type": "fragment"} tags=[]
+adata
+```
+
+<!-- #region {"slideshow": {"slide_type": "subslide"}, "tags": []} -->
+We have filtered down to 2000 transcript types and added 5 annotations to the genes including a binary variable indicating membership in the highly-variable class, the ranking among highly variable genes, and the mean, variance, and normalized variance for each gene across cells.
+<!-- #endregion -->
+
+```python slideshow={"slide_type": "fragment"} tags=[]
+adata.var
+```
+
+### Doublet removal
 
 ```python
 
