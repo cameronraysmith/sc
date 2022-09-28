@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Plotting setup" href="plotting.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="AnnData review" href="01-anndata-review.html" />
 
     <meta name="generator" content="sphinx-5.2.2, furo 2022.09.15"/>
         <title>Single cell analysis</title>
@@ -155,10 +155,10 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul>
-<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="01-anndata-review.html">AnnData review</a></li>
 <li class="toctree-l1"><a class="reference internal" href="02-analysis-review.html">Basic single-cell analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="03-velocity-review.html">RNA Velocity review</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
 </ul>
 
@@ -207,14 +207,6 @@
 <p>This repository serves as a review of single cell analysis methods. It borrows heavily from tutorials made available by <a class="reference external" href="https://scverse.org">scverse</a>.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting setup</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="plotting.html#Show-available-fonts">Show available fonts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plotting.html#Add-latin-modern-fonts">Add latin modern fonts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plotting.html#Set-matplotlib-to-use-Latin-Modern-fonts">Set matplotlib to use Latin Modern fonts</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plotting.html#Check-rcParams-after-update-and-list-fonts-available-to-matplotlib">Check rcParams after update and list fonts available to matplotlib</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plotting.html#Create-a-test-plot">Create a test plot</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="01-anndata-review.html">AnnData review</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="01-anndata-review.html#Utility-functions">Utility functions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="01-anndata-review.html#Initializing-AnnData">Initializing AnnData</a></li>
@@ -252,10 +244,16 @@
 <li class="toctree-l3"><a class="reference internal" href="02-analysis-review.html#Data-properties">Data properties</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="02-analysis-review.html#Preprocessing">Preprocessing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="02-analysis-review.html#Doublet-removal">Doublet removal</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="02-analysis-review.html#Filter-transcripts-by-minimum-number-of-cells-with-non-zero-counts">Filter transcripts by minimum number of cells with non-zero counts</a></li>
 <li class="toctree-l3"><a class="reference internal" href="02-analysis-review.html#Select-highly-variable-genes">Select highly variable genes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="02-analysis-review.html#Doublet-removal">Doublet removal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="02-analysis-review.html#id4">Doublet removal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="02-analysis-review.html#Save/load-checkpoint">Save/load checkpoint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="02-analysis-review.html#Reload-data-and-filter-doublets">Reload data and filter doublets</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="02-analysis-review.html#Preprocessing">Preprocessing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="02-analysis-review.html#Filter-mitochondrial-transcripts">Filter mitochondrial transcripts</a></li>
 </ul>
 </li>
 </ul>
@@ -290,6 +288,14 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plotting.html#Show-available-fonts">Show available fonts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plotting.html#Add-latin-modern-fonts">Add latin modern fonts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plotting.html#Set-matplotlib-to-use-Latin-Modern-fonts">Set matplotlib to use Latin Modern fonts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plotting.html#Check-rcParams-after-update-and-list-fonts-available-to-matplotlib">Check rcParams after update and list fonts available to matplotlib</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plotting.html#Create-a-test-plot">Create a test plot</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
 </ul>
 </div>
@@ -300,12 +306,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="plotting.html">
+          <a class="next-page" href="01-anndata-review.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Plotting setup</div>
+                <div class="title">AnnData review</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>

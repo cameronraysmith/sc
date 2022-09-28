@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Basic single-cell analysis" href="02-analysis-review.html" /><link rel="prev" title="Plotting setup" href="plotting.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Basic single-cell analysis" href="02-analysis-review.html" /><link rel="prev" title="Single cell analysis" href="index.html" />
 
     <meta name="generator" content="sphinx-5.2.2, furo 2022.09.15"/>
         <title>AnnData review - Single cell analysis</title>
@@ -155,10 +155,10 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting setup</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">AnnData review</a></li>
 <li class="toctree-l1"><a class="reference internal" href="02-analysis-review.html">Basic single-cell analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="03-velocity-review.html">RNA Velocity review</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
 </ul>
 
@@ -467,7 +467,7 @@ div.rendered_html tbody tr:hover {
   </span>
 </div><div class="section" id="AnnData-review">
 <h1>AnnData review<a class="headerlink" href="#AnnData-review" title="Permalink to this heading">§</a></h1>
-<p>This is a modified version of the introductory tutorial distributed with the <a class="reference external" href="http://anndata.readthedocs.io/en/latest/anndata.AnnData.html">AnnData</a> package whose original authors are <a class="reference external" href="https://twitter.com/adamgayoso">Adam Gayoso</a>, <a class="reference external" href="https://twitter.com/falexwolf">Alex Wolf</a> based on blog posts by <a class="reference external" href="https://adamgayoso.com/posts/ten_min_to_adata/">Adam in 2021</a> and <a class="reference external" href="https://falexwolf.me/2017/introducing-anndata/">Alex in 2017</a> (see <span id="id1">[<a class="reference internal" href="references.html#id4" title="Isaac Virshup, Sergei Rybakov, Fabian J Theis, Philipp Angerer, and F Alexander Wolf. Anndata: annotated data. bioRxiv, pages 2021.12.16.473007, December 2021. doi:10.1101/2021.12.16.473007.">VRT+21</a>]</span>).</p>
+<p>This is a modified version of the introductory tutorial distributed with the <a class="reference external" href="http://anndata.readthedocs.io/en/latest/anndata.AnnData.html">AnnData</a> package whose original authors are <a class="reference external" href="https://twitter.com/adamgayoso">Adam Gayoso</a>, <a class="reference external" href="https://twitter.com/falexwolf">Alex Wolf</a> based on blog posts by <a class="reference external" href="https://adamgayoso.com/posts/ten_min_to_adata/">Adam in 2021</a> and <a class="reference external" href="https://falexwolf.me/2017/introducing-anndata/">Alex in 2017</a> (see <span id="id1">[<a class="reference internal" href="references.html#id5" title="Isaac Virshup, Sergei Rybakov, Fabian J Theis, Philipp Angerer, and F Alexander Wolf. Anndata: annotated data. bioRxiv, pages 2021.12.16.473007, December 2021. doi:10.1101/2021.12.16.473007.">VRT+21</a>]</span>).</p>
 <p>The tutorial introduces basic properties of the central object, <a class="reference external" href="http://anndata.readthedocs.io/en/latest/anndata.AnnData.html">AnnData</a> (“Annotated Data”).</p>
 <p><code class="docutils literal notranslate"><span class="pre">AnnData</span></code> is specifically designed for matrix-like data. By this we mean that we have <span class="math notranslate nohighlight">\(n\)</span> observations, each of which can be represented as <span class="math notranslate nohighlight">\(d\)</span>-dimensional vectors, where each dimension corresponds to a variable or feature. Both the rows and columns of this <span class="math notranslate nohighlight">\(n \times d\)</span> matrix are special in the sense that they are indexed.</p>
 <p>For instance, in scRNA-seq data, each row corresponds to a cell with a barcode, and each column corresponds to a gene with a gene id. Furthermore, for each cell and each gene we might have additional metadata, like (1) donor information for each cell, or (2) alternative gene symbols for each gene. Finally, we might have other unstructured metadata like color palletes to use for plotting. Without going into every fancy Python-based data structure, we think that still today no other alternative
@@ -1815,14 +1815,14 @@ PosixPath(&#39;my_results.h5ad&#39;)
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="plotting.html">
+          <a class="prev-page" href="index.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Plotting setup</div>
+                <div class="title">Home</div>
                 
               </div>
             </a>
