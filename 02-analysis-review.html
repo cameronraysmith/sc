@@ -499,7 +499,9 @@ div.rendered_html tbody tr:hover {
 <span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">FunctionType</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">scanpy</span> <span class="k">as</span> <span class="nn">sc</span>
 <span class="kn">import</span> <span class="nn">scvi</span>
 <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
@@ -2258,7 +2260,7 @@ AnnData object with n_obs × n_vars = 6099 × 34546
 </div>
 <p>Annotate <code class="docutils literal notranslate"><span class="pre">adata</span></code> with doublet column.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;doublet&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">doublets</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
@@ -2266,7 +2268,7 @@ AnnData object with n_obs × n_vars = 6099 × 34546
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span>
@@ -2274,7 +2276,7 @@ AnnData object with n_obs × n_vars = 6099 × 34546
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -2284,7 +2286,7 @@ AnnData object with n_obs × n_vars = 6099 × 34546
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[60]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span>
@@ -2292,7 +2294,7 @@ AnnData object with n_obs × n_vars = 6099 × 34546
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[60]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -2369,7 +2371,7 @@ AnnData object with n_obs × n_vars = 6099 × 34546
 </div>
 <p>Use doublet column to filter doublets.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[61]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[</span><span class="o">~</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">doublet</span><span class="p">]</span>
@@ -2377,7 +2379,7 @@ AnnData object with n_obs × n_vars = 6099 × 34546
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[62]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span>
@@ -2385,7 +2387,7 @@ AnnData object with n_obs × n_vars = 6099 × 34546
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[62]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -2401,18 +2403,1450 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 <h2>Preprocessing<a class="headerlink" href="#Preprocessing" title="Permalink to this heading">§</a></h2>
 <div class="section" id="Filter-mitochondrial-transcripts">
 <h3>Filter mitochondrial transcripts<a class="headerlink" href="#Filter-mitochondrial-transcripts" title="Permalink to this heading">§</a></h3>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<p>We can add a binary annotation to indicate presence of mitochondrial transcripts.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s1">&#39;mt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;MT-&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/tmp/ipykernel_62/310233584.py:1: ImplicitModificationWarning: Trying to modify attribute `.var` of view, initializing view as actual.
+  adata.var[&#39;mt&#39;] = adata.var.index.str.startswith(&#39;MT-&#39;)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>mt</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>AL627309.1</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>AL627309.5</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>AL627309.4</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>AL669831.2</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>LINC01409</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>VN1R2</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>AL031676.1</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>SMIM34A</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>AL050402.1</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>AL445072.1</th>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table>
+<p>34546 rows × 1 columns</p>
+</div></div>
+</div>
+</div>
+<div class="section" id="Filter-ribosomal-transcripts">
+<h3>Filter ribosomal transcripts<a class="headerlink" href="#Filter-ribosomal-transcripts" title="Permalink to this heading">§</a></h3>
+<p>We can download a list of ribosomal genes from msigdb.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ribo_url</span> <span class="o">=</span> <span class="s2">&quot;http://software.broadinstitute.org/gsea/msigdb/download_geneset.jsp?geneSetName=KEGG_RIBOSOME&amp;fileType=txt&quot;</span>
+<span class="n">ribo_genes</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">ribo_url</span><span class="p">,</span> <span class="n">skiprows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">ribo_genes</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>FAU</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>MRPL13</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>RPL10</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>RPL10A</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>RPL10L</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>83</th>
+      <td>RPS9</td>
+    </tr>
+    <tr>
+      <th>84</th>
+      <td>RPSA</td>
+    </tr>
+    <tr>
+      <th>85</th>
+      <td>RSL24D1</td>
+    </tr>
+    <tr>
+      <th>86</th>
+      <td>RSL24D1P11</td>
+    </tr>
+    <tr>
+      <th>87</th>
+      <td>UBA52</td>
+    </tr>
+  </tbody>
+</table>
+<p>88 rows × 1 columns</p>
+</div></div>
+</div>
+<p>We add a binary annotation to indicate presence in the list of ribosomal genes.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s1">&#39;ribo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">var_names</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">ribo_genes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>mt</th>
+      <th>ribo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>AL627309.1</th>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>AL627309.5</th>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>AL627309.4</th>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>AL669831.2</th>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>LINC01409</th>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>VN1R2</th>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>AL031676.1</th>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>SMIM34A</th>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>AL050402.1</th>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>AL445072.1</th>
+      <td>False</td>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table>
+<p>34546 rows × 2 columns</p>
+</div></div>
+</div>
+</div>
+<div class="section" id="Calculate-QC-metrics">
+<h3>Calculate QC metrics<a class="headerlink" href="#Calculate-QC-metrics" title="Permalink to this heading">§</a></h3>
+<p>Recall the observation/barcode annotation currently just indicates doublets based on our solo model.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>doublet</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>TAACTTCCAACCACGC-1_1</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>TTACCGCCACTCAGAT-1_1</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>TTGGTTTTCCTAGCTC-1_1</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>TCTATCACAAGGCTTT-1_1</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>ATCCACCAGAGGTATT-1_1</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>CGCCATTGTTTGCCGG-1_1</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>CACTGGGGTCTACGTA-1_1</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>CATACTTGTAGAGGAA-1_1</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>TTTGGTTTCCACGGAC-1_1</th>
+      <td>False</td>
+    </tr>
+    <tr>
+      <th>ATGCATGAGTCATGAA-1_1</th>
+      <td>False</td>
+    </tr>
+  </tbody>
+</table>
+<p>5648 rows × 1 columns</p>
+</div></div>
+</div>
+<p>We can calculate standard quality control metrics with <code class="docutils literal notranslate"><span class="pre">scanpy</span></code>. See the <a class="reference external" href="https://scanpy.readthedocs.io/en/latest/generated/scanpy.pp.calculate_qc_metrics.html">documentation for scanpy calculate_qc_metrics</a>. These include the number of</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">calculate_qc_metrics</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">qc_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;mt&#39;</span><span class="p">,</span> <span class="s1">&#39;ribo&#39;</span><span class="p">],</span> <span class="n">percent_top</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log1p</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Sorting genes by the number of cells with non-zero counts, we see a number of genes that were not found in association with any barcode.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;n_cells_by_counts&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>mt</th>
+      <th>ribo</th>
+      <th>n_cells_by_counts</th>
+      <th>mean_counts</th>
+      <th>pct_dropout_by_counts</th>
+      <th>total_counts</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>AL445072.1</th>
+      <td>False</td>
+      <td>False</td>
+      <td>0</td>
+      <td>0.000000</td>
+      <td>100.000000</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>UGT1A5</th>
+      <td>False</td>
+      <td>False</td>
+      <td>0</td>
+      <td>0.000000</td>
+      <td>100.000000</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>AGXT</th>
+      <td>False</td>
+      <td>False</td>
+      <td>0</td>
+      <td>0.000000</td>
+      <td>100.000000</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>TEX44</th>
+      <td>False</td>
+      <td>False</td>
+      <td>0</td>
+      <td>0.000000</td>
+      <td>100.000000</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>AC093585.1</th>
+      <td>False</td>
+      <td>False</td>
+      <td>0</td>
+      <td>0.000000</td>
+      <td>100.000000</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>AKAP13</th>
+      <td>False</td>
+      <td>False</td>
+      <td>4059</td>
+      <td>2.881374</td>
+      <td>28.133853</td>
+      <td>16274.0</td>
+    </tr>
+    <tr>
+      <th>NEAT1</th>
+      <td>False</td>
+      <td>False</td>
+      <td>4148</td>
+      <td>5.001062</td>
+      <td>26.558074</td>
+      <td>28246.0</td>
+    </tr>
+    <tr>
+      <th>MBNL1</th>
+      <td>False</td>
+      <td>False</td>
+      <td>4150</td>
+      <td>2.695822</td>
+      <td>26.522663</td>
+      <td>15226.0</td>
+    </tr>
+    <tr>
+      <th>ZBTB20</th>
+      <td>False</td>
+      <td>False</td>
+      <td>4281</td>
+      <td>2.425992</td>
+      <td>24.203258</td>
+      <td>13702.0</td>
+    </tr>
+    <tr>
+      <th>MALAT1</th>
+      <td>False</td>
+      <td>False</td>
+      <td>5639</td>
+      <td>64.417313</td>
+      <td>0.159348</td>
+      <td>363829.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>34546 rows × 6 columns</p>
+</div></div>
+</div>
+<p>Sorting barcodes by total counts we see a minimum around 400 suggesting a previously applied filter upstream of this pre-processing.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;total_counts&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>doublet</th>
+      <th>n_genes_by_counts</th>
+      <th>total_counts</th>
+      <th>total_counts_mt</th>
+      <th>pct_counts_mt</th>
+      <th>total_counts_ribo</th>
+      <th>pct_counts_ribo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>AGGCATTCATCCGTTC-1_1</th>
+      <td>False</td>
+      <td>290</td>
+      <td>401.0</td>
+      <td>1.0</td>
+      <td>0.249377</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>TGGTACAGTTGGTGTT-1_1</th>
+      <td>False</td>
+      <td>323</td>
+      <td>401.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>CAGGGCTTCATGCGGC-1_1</th>
+      <td>False</td>
+      <td>330</td>
+      <td>401.0</td>
+      <td>7.0</td>
+      <td>1.745636</td>
+      <td>1.0</td>
+      <td>0.249377</td>
+    </tr>
+    <tr>
+      <th>GTCGTTCTCCAAGGGA-1_1</th>
+      <td>False</td>
+      <td>300</td>
+      <td>401.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>CGAGAAGGTGAACTAA-1_1</th>
+      <td>False</td>
+      <td>308</td>
+      <td>401.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>TCTATCACAAGGCTTT-1_1</th>
+      <td>False</td>
+      <td>3582</td>
+      <td>8276.0</td>
+      <td>183.0</td>
+      <td>2.211213</td>
+      <td>5.0</td>
+      <td>0.060416</td>
+    </tr>
+    <tr>
+      <th>ATCCACCAGAGGTATT-1_1</th>
+      <td>False</td>
+      <td>3913</td>
+      <td>8286.0</td>
+      <td>191.0</td>
+      <td>2.305093</td>
+      <td>34.0</td>
+      <td>0.410331</td>
+    </tr>
+    <tr>
+      <th>TTACCGCCACTCAGAT-1_1</th>
+      <td>False</td>
+      <td>4144</td>
+      <td>11369.0</td>
+      <td>39.0</td>
+      <td>0.343038</td>
+      <td>5.0</td>
+      <td>0.043979</td>
+    </tr>
+    <tr>
+      <th>TTGGTTTTCCTAGCTC-1_1</th>
+      <td>False</td>
+      <td>3902</td>
+      <td>11472.0</td>
+      <td>463.0</td>
+      <td>4.035913</td>
+      <td>13.0</td>
+      <td>0.113319</td>
+    </tr>
+    <tr>
+      <th>TAACTTCCAACCACGC-1_1</th>
+      <td>False</td>
+      <td>5158</td>
+      <td>15645.0</td>
+      <td>221.0</td>
+      <td>1.412592</td>
+      <td>211.0</td>
+      <td>1.348674</td>
+    </tr>
+  </tbody>
+</table>
+<p>5648 rows × 7 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">jointplot</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">,</span>
+    <span class="n">x</span><span class="o">=</span><span class="s2">&quot;total_counts&quot;</span><span class="p">,</span>
+    <span class="n">y</span><span class="o">=</span><span class="s2">&quot;n_genes_by_counts&quot;</span><span class="p">,</span>
+    <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hex&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;seaborn.axisgrid.JointGrid at 0x7fcd93da0fd0&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/02-analysis-review_113_1.svg" src="_images/02-analysis-review_113_1.svg" /></div>
+</div>
+</div>
+<div class="section" id="Filter-genes-by-counts">
+<h3>Filter genes by counts<a class="headerlink" href="#Filter-genes-by-counts" title="Permalink to this heading">§</a></h3>
+<p>We can filter genes found in some minimum number of cells, in this case we arbitrarily choose three.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">filter_genes</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">min_cells</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;n_cells_by_counts&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>mt</th>
+      <th>ribo</th>
+      <th>n_cells_by_counts</th>
+      <th>mean_counts</th>
+      <th>pct_dropout_by_counts</th>
+      <th>total_counts</th>
+      <th>n_cells</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>GSG1</th>
+      <td>False</td>
+      <td>False</td>
+      <td>3</td>
+      <td>0.000531</td>
+      <td>99.946884</td>
+      <td>3.0</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>TRAJ47</th>
+      <td>False</td>
+      <td>False</td>
+      <td>3</td>
+      <td>0.000531</td>
+      <td>99.946884</td>
+      <td>3.0</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>AC002465.2</th>
+      <td>False</td>
+      <td>False</td>
+      <td>3</td>
+      <td>0.000531</td>
+      <td>99.946884</td>
+      <td>3.0</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>LINC02709</th>
+      <td>False</td>
+      <td>False</td>
+      <td>3</td>
+      <td>0.000531</td>
+      <td>99.946884</td>
+      <td>3.0</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>AC096536.1</th>
+      <td>False</td>
+      <td>False</td>
+      <td>3</td>
+      <td>0.000531</td>
+      <td>99.946884</td>
+      <td>3.0</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>AKAP13</th>
+      <td>False</td>
+      <td>False</td>
+      <td>4059</td>
+      <td>2.881374</td>
+      <td>28.133853</td>
+      <td>16274.0</td>
+      <td>4059</td>
+    </tr>
+    <tr>
+      <th>NEAT1</th>
+      <td>False</td>
+      <td>False</td>
+      <td>4148</td>
+      <td>5.001062</td>
+      <td>26.558074</td>
+      <td>28246.0</td>
+      <td>4148</td>
+    </tr>
+    <tr>
+      <th>MBNL1</th>
+      <td>False</td>
+      <td>False</td>
+      <td>4150</td>
+      <td>2.695822</td>
+      <td>26.522663</td>
+      <td>15226.0</td>
+      <td>4150</td>
+    </tr>
+    <tr>
+      <th>ZBTB20</th>
+      <td>False</td>
+      <td>False</td>
+      <td>4281</td>
+      <td>2.425992</td>
+      <td>24.203258</td>
+      <td>13702.0</td>
+      <td>4281</td>
+    </tr>
+    <tr>
+      <th>MALAT1</th>
+      <td>False</td>
+      <td>False</td>
+      <td>5639</td>
+      <td>64.417313</td>
+      <td>0.159348</td>
+      <td>363829.0</td>
+      <td>5639</td>
+    </tr>
+  </tbody>
+</table>
+<p>24136 rows × 7 columns</p>
+</div></div>
+</div>
+</div>
+<div class="section" id="Filter-cells-by-number-of-genes">
+<h3>Filter cells by number of genes<a class="headerlink" href="#Filter-cells-by-number-of-genes" title="Permalink to this heading">§</a></h3>
+<p>As a matter of completeness we filter cells with fewer than 200 genes; however, we see the minimum number of genes in a cell is already greater than 200.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;n_genes_by_counts&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>doublet</th>
+      <th>n_genes_by_counts</th>
+      <th>total_counts</th>
+      <th>total_counts_mt</th>
+      <th>pct_counts_mt</th>
+      <th>total_counts_ribo</th>
+      <th>pct_counts_ribo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>TAGGGTTTCTGGCTGG-1_1</th>
+      <td>False</td>
+      <td>276</td>
+      <td>419.0</td>
+      <td>1.0</td>
+      <td>0.238663</td>
+      <td>1.0</td>
+      <td>0.238663</td>
+    </tr>
+    <tr>
+      <th>CGTGCTTCAAAGGGCT-1_1</th>
+      <td>False</td>
+      <td>277</td>
+      <td>432.0</td>
+      <td>41.0</td>
+      <td>9.490741</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>TGACAGTTCTAAACGC-1_1</th>
+      <td>False</td>
+      <td>278</td>
+      <td>414.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>CTCTGGTCACGACGAA-1_1</th>
+      <td>False</td>
+      <td>285</td>
+      <td>407.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>GTAAGTCGTATCGCGC-1_1</th>
+      <td>False</td>
+      <td>289</td>
+      <td>430.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>TAACGACAGATGACCG-1_1</th>
+      <td>False</td>
+      <td>3791</td>
+      <td>8187.0</td>
+      <td>94.0</td>
+      <td>1.148162</td>
+      <td>4.0</td>
+      <td>0.048858</td>
+    </tr>
+    <tr>
+      <th>TTGGTTTTCCTAGCTC-1_1</th>
+      <td>False</td>
+      <td>3902</td>
+      <td>11472.0</td>
+      <td>463.0</td>
+      <td>4.035913</td>
+      <td>13.0</td>
+      <td>0.113319</td>
+    </tr>
+    <tr>
+      <th>ATCCACCAGAGGTATT-1_1</th>
+      <td>False</td>
+      <td>3913</td>
+      <td>8286.0</td>
+      <td>191.0</td>
+      <td>2.305093</td>
+      <td>34.0</td>
+      <td>0.410331</td>
+    </tr>
+    <tr>
+      <th>TTACCGCCACTCAGAT-1_1</th>
+      <td>False</td>
+      <td>4144</td>
+      <td>11369.0</td>
+      <td>39.0</td>
+      <td>0.343038</td>
+      <td>5.0</td>
+      <td>0.043979</td>
+    </tr>
+    <tr>
+      <th>TAACTTCCAACCACGC-1_1</th>
+      <td>False</td>
+      <td>5158</td>
+      <td>15645.0</td>
+      <td>221.0</td>
+      <td>1.412592</td>
+      <td>211.0</td>
+      <td>1.348674</td>
+    </tr>
+  </tbody>
+</table>
+<p>5648 rows × 7 columns</p>
+</div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">filter_cells</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">min_genes</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+AnnData object with n_obs × n_vars = 5648 × 24136
+    obs: &#39;doublet&#39;, &#39;n_genes_by_counts&#39;, &#39;total_counts&#39;, &#39;total_counts_mt&#39;, &#39;pct_counts_mt&#39;, &#39;total_counts_ribo&#39;, &#39;pct_counts_ribo&#39;, &#39;n_genes&#39;
+    var: &#39;mt&#39;, &#39;ribo&#39;, &#39;n_cells_by_counts&#39;, &#39;mean_counts&#39;, &#39;pct_dropout_by_counts&#39;, &#39;total_counts&#39;, &#39;n_cells&#39;
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Review-and-filter-QC-outliers">
+<h3>Review and filter QC outliers<a class="headerlink" href="#Review-and-filter-QC-outliers" title="Permalink to this heading">§</a></h3>
+<p>We can plot distributions of the number of genes by counts and total counts as well as the percentage of mitochondrial and ribosomal genes.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;n_genes_by_counts&#39;</span><span class="p">,</span> <span class="s1">&#39;total_counts&#39;</span><span class="p">,</span> <span class="s1">&#39;pct_counts_mt&#39;</span><span class="p">,</span> <span class="s1">&#39;pct_counts_ribo&#39;</span><span class="p">],</span>
+             <span class="n">jitter</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">multi_panel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/02-analysis-review_125_0.svg" src="_images/02-analysis-review_125_0.svg" /></div>
+</div>
+<p>If we choose to filter cells beyond the 98th percentile, we can compute the bound via the numpy quantile function.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">upper_lim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">n_genes_by_counts</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="mf">.98</span><span class="p">)</span>
+<span class="n">upper_lim</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+2310.0599999999995
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">n_genes_by_counts</span> <span class="o">&lt;</span> <span class="n">upper_lim</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<p>This filters a few more than 100 additional cells.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>doublet</th>
+      <th>n_genes_by_counts</th>
+      <th>total_counts</th>
+      <th>total_counts_mt</th>
+      <th>pct_counts_mt</th>
+      <th>total_counts_ribo</th>
+      <th>pct_counts_ribo</th>
+      <th>n_genes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>CCTCAACCATACAGGG-1_1</th>
+      <td>False</td>
+      <td>2276</td>
+      <td>5434.0</td>
+      <td>38.0</td>
+      <td>0.699301</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>2275</td>
+    </tr>
+    <tr>
+      <th>ACAAAGATCCACAGGC-1_1</th>
+      <td>False</td>
+      <td>2310</td>
+      <td>5504.0</td>
+      <td>1.0</td>
+      <td>0.018169</td>
+      <td>1.0</td>
+      <td>0.018169</td>
+      <td>2308</td>
+    </tr>
+    <tr>
+      <th>ATACTTCCAAGGTCTT-1_1</th>
+      <td>False</td>
+      <td>2122</td>
+      <td>5252.0</td>
+      <td>1.0</td>
+      <td>0.019040</td>
+      <td>4.0</td>
+      <td>0.076161</td>
+      <td>2120</td>
+    </tr>
+    <tr>
+      <th>GGGTCACTCTATTCGT-1_1</th>
+      <td>False</td>
+      <td>2286</td>
+      <td>5056.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>1.0</td>
+      <td>0.019778</td>
+      <td>2280</td>
+    </tr>
+    <tr>
+      <th>GATGATCCACAACCGC-1_1</th>
+      <td>False</td>
+      <td>2263</td>
+      <td>4938.0</td>
+      <td>2.0</td>
+      <td>0.040502</td>
+      <td>2.0</td>
+      <td>0.040502</td>
+      <td>2262</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>CGCCATTGTTTGCCGG-1_1</th>
+      <td>False</td>
+      <td>355</td>
+      <td>410.0</td>
+      <td>3.0</td>
+      <td>0.731707</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>355</td>
+    </tr>
+    <tr>
+      <th>CACTGGGGTCTACGTA-1_1</th>
+      <td>False</td>
+      <td>346</td>
+      <td>403.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>346</td>
+    </tr>
+    <tr>
+      <th>CATACTTGTAGAGGAA-1_1</th>
+      <td>False</td>
+      <td>360</td>
+      <td>410.0</td>
+      <td>2.0</td>
+      <td>0.487805</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>360</td>
+    </tr>
+    <tr>
+      <th>TTTGGTTTCCACGGAC-1_1</th>
+      <td>False</td>
+      <td>299</td>
+      <td>405.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>2.0</td>
+      <td>0.493827</td>
+      <td>299</td>
+    </tr>
+    <tr>
+      <th>ATGCATGAGTCATGAA-1_1</th>
+      <td>False</td>
+      <td>351</td>
+      <td>411.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>350</td>
+    </tr>
+  </tbody>
+</table>
+<p>5535 rows × 8 columns</p>
+</div></div>
+</div>
+<p>Finally, we filter mitochondrial (at 20%) and ribosomal (at 2%) outliers.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">pct_counts_mt</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">pct_counts_ribo</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+View of AnnData object with n_obs × n_vars = 5518 × 24136
+    obs: &#39;doublet&#39;, &#39;n_genes_by_counts&#39;, &#39;total_counts&#39;, &#39;total_counts_mt&#39;, &#39;pct_counts_mt&#39;, &#39;total_counts_ribo&#39;, &#39;pct_counts_ribo&#39;, &#39;n_genes&#39;
+    var: &#39;mt&#39;, &#39;ribo&#39;, &#39;n_cells_by_counts&#39;, &#39;mean_counts&#39;, &#39;pct_dropout_by_counts&#39;, &#39;total_counts&#39;, &#39;n_cells&#39;
+</pre></div></div>
+</div>
+<p>We end our preprocessing with 5518 cells and 24136 genes.</p>
+</div>
+<div class="section" id="id6">
+<h3>Save/load checkpoint<a class="headerlink" href="#id6" title="Permalink to this heading">§</a></h3>
+<p>Save current variables to file.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">([</span><span class="n">adata</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">doublets</span><span class="p">,</span> <span class="n">solo</span><span class="p">,</span> <span class="n">vae</span><span class="p">],</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;adata_post_processed.p&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<p>Variables can be reloaded if necessary.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">doublets</span><span class="p">,</span> <span class="n">solo</span><span class="p">,</span> <span class="n">vae</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;adata_post_processed.p&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Normalization">
+<h2>Normalization<a class="headerlink" href="#Normalization" title="Permalink to this heading">§</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ArrayView([5433., 5502., 5250., ...,  410.,  405.,  410.], dtype=float32)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">normalize_total</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">target_sum</span><span class="o">=</span><span class="mf">1e4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/usr/lib/python3.10/site-packages/scanpy/preprocessing/_normalization.py:170: UserWarning: Received a view of an AnnData. Making a copy.
+  view_to_actual(adata)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([10000., 10000., 10000., ..., 10000., 10000., 10000.], dtype=float32)
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">adata</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([3285.3794, 3163.8867, 2858.1602, ..., 1191.2706, 1022.7512,
+       1162.8784], dtype=float32)
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="n">adata</span>
 </pre></div>
 </div>
 </div>
 <script type="application/vnd.jupyter.widget-state+json">
 {"state": {}, "version_major": 2, "version_minor": 0}
 </script></div>
-</div>
 </div>
 
         </article>
@@ -2501,8 +3935,15 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 </li>
 <li><a class="reference internal" href="#Preprocessing">Preprocessing</a><ul>
 <li><a class="reference internal" href="#Filter-mitochondrial-transcripts">Filter mitochondrial transcripts</a></li>
+<li><a class="reference internal" href="#Filter-ribosomal-transcripts">Filter ribosomal transcripts</a></li>
+<li><a class="reference internal" href="#Calculate-QC-metrics">Calculate QC metrics</a></li>
+<li><a class="reference internal" href="#Filter-genes-by-counts">Filter genes by counts</a></li>
+<li><a class="reference internal" href="#Filter-cells-by-number-of-genes">Filter cells by number of genes</a></li>
+<li><a class="reference internal" href="#Review-and-filter-QC-outliers">Review and filter QC outliers</a></li>
+<li><a class="reference internal" href="#id6">Save/load checkpoint</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#Normalization">Normalization</a></li>
 </ul>
 </li>
 </ul>
