@@ -498,6 +498,8 @@ div.rendered_html tbody tr:hover {
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">getmembers</span>
 <span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">FunctionType</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
@@ -604,6 +606,60 @@ Global seed set to 0
 </div>
 </div>
 </div>
+<div class="section" id="Set-output-folder-for-session">
+<h3>Set output folder for session<a class="headerlink" href="#Set-output-folder-for-session" title="Permalink to this heading">§</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+<span class="n">timestamp</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">_%H%M%S&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">output_directory</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;output/</span><span class="si">{</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_directory</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_directory</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;created </span><span class="si">{</span><span class="n">output_directory</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+created output/20220929_205816
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;created </span><span class="si">{</span><span class="n">output_directory</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+created output/20220929_205816
+</pre></div></div>
+</div>
+</div>
 </div>
 <div class="section" id="Import-data">
 <h2>Import data<a class="headerlink" href="#Import-data" title="Permalink to this heading">§</a></h2>
@@ -648,7 +704,7 @@ tar -xvf GSE171524_RAW.tar -C GSE171524
 <h3>Data load<a class="headerlink" href="#Data-load" title="Permalink to this heading">§</a></h3>
 <p>See the <a class="reference external" href="https://scanpy.readthedocs.io/en/latest/generated/scanpy.read_csv.html">documentation for scanpy read csv</a> which returns an <a class="reference external" href="https://anndata.readthedocs.io/en/stable/generated/anndata.AnnData.html#anndata.AnnData">AnnData object</a>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="kc">None</span>
@@ -660,7 +716,7 @@ tar -xvf GSE171524_RAW.tar -C GSE171524
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -673,7 +729,7 @@ AnnData object with n_obs × n_vars = 6099 × 34546
 <div class="section" id="Data-properties">
 <h3>Data properties<a class="headerlink" href="#Data-properties" title="Permalink to this heading">§</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">adata</span><span class="p">)</span>
@@ -681,7 +737,7 @@ AnnData object with n_obs × n_vars = 6099 × 34546
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -690,7 +746,7 @@ anndata._core.anndata.AnnData
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span>
@@ -698,7 +754,7 @@ anndata._core.anndata.AnnData
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -707,7 +763,7 @@ anndata._core.anndata.AnnData
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">print_attributes</span><span class="p">(</span><span class="n">adata</span><span class="p">)</span>
@@ -778,14 +834,14 @@ Index: [AL627309.1, AL627309.5, AL627309.4, AL669831.2, LINC01409, FAM87B, LINC0
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/tmp/ipykernel_223/22660072.py:11: DeprecationWarning: Use is_view instead of isview, isview will be removed in the future.
+/tmp/ipykernel_16232/22660072.py:11: DeprecationWarning: Use is_view instead of isview, isview will be removed in the future.
   if name[0] != &#34;_&#34; and name not in disallowed_names and hasattr(obj, name)
-/tmp/ipykernel_223/22660072.py:9: DeprecationWarning: Use is_view instead of isview, isview will be removed in the future.
+/tmp/ipykernel_16232/22660072.py:9: DeprecationWarning: Use is_view instead of isview, isview will be removed in the future.
   name: getattr(obj, name)
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span>
@@ -793,7 +849,7 @@ Index: [AL627309.1, AL627309.5, AL627309.4, AL669831.2, LINC01409, FAM87B, LINC0
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -858,7 +914,7 @@ Index: [AL627309.1, AL627309.5, AL627309.4, AL669831.2, LINC01409, FAM87B, LINC0
 </div>
 <p>Gene names are saved as <code class="docutils literal notranslate"><span class="pre">adata.var</span></code>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var</span>
@@ -866,7 +922,7 @@ Index: [AL627309.1, AL627309.5, AL627309.4, AL669831.2, LINC01409, FAM87B, LINC0
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -930,7 +986,7 @@ Index: [AL627309.1, AL627309.5, AL627309.4, AL669831.2, LINC01409, FAM87B, LINC0
 </div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs_names</span>
@@ -938,7 +994,7 @@ Index: [AL627309.1, AL627309.5, AL627309.4, AL669831.2, LINC01409, FAM87B, LINC0
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -956,7 +1012,7 @@ Index([&#39;TAGGTACCATGGCCAC-1_1&#39;, &#39;ATTCACTGTAACAGGC-1_1&#39;, &#39;TAAC
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var_names</span>
@@ -964,7 +1020,7 @@ Index([&#39;TAGGTACCATGGCCAC-1_1&#39;, &#39;ATTCACTGTAACAGGC-1_1&#39;, &#39;TAAC
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -979,7 +1035,7 @@ Index([&#39;AL627309.1&#39;, &#39;AL627309.5&#39;, &#39;AL627309.4&#39;, &#39;AL
 </div>
 <p>There are no layers in this data set.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">layers</span>
@@ -987,7 +1043,7 @@ Index([&#39;AL627309.1&#39;, &#39;AL627309.5&#39;, &#39;AL627309.4&#39;, &#39;AL
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -997,7 +1053,7 @@ Layers with keys:
 </div>
 <p>There are no multidimensional observations or variables.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obsm</span><span class="p">)</span>
@@ -1027,7 +1083,7 @@ PairwiseArrays with keys:
 <h3>Filter transcripts by minimum number of cells with non-zero counts<a class="headerlink" href="#Filter-transcripts-by-minimum-number-of-cells-with-non-zero-counts" title="Permalink to this heading">§</a></h3>
 <p>We may choose to filter out transcript types that are detected in a relatively small number of cells. The optimum threshold is not known. Here we use 10 as a base case.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span>
@@ -1035,7 +1091,7 @@ PairwiseArrays with keys:
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -1045,7 +1101,7 @@ AnnData object with n_obs × n_vars = 6099 × 34546
 </div>
 <p>See the <a class="reference external" href="https://scanpy.readthedocs.io/en/latest/generated/scanpy.pp.filter_genes.html">documentation for scanpy pre-processing filter-genes</a>.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">filter_genes</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">min_cells</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
@@ -1053,7 +1109,7 @@ AnnData object with n_obs × n_vars = 6099 × 34546
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span>
@@ -1061,7 +1117,7 @@ AnnData object with n_obs × n_vars = 6099 × 34546
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -1072,7 +1128,7 @@ AnnData object with n_obs × n_vars = 6099 × 19896
 </div>
 <p>Following filtration there are 19896 transcript types remaining that are present in at least 10 cells. This means 14650 transcript types were removed at the threshold of 10. Notice that an annotation named <code class="docutils literal notranslate"><span class="pre">n_cells</span></code> has been added to the genes to indicate the number of cells with non-zero values for that transcript type.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var</span>
@@ -1080,7 +1136,7 @@ AnnData object with n_obs × n_vars = 6099 × 19896
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1156,7 +1212,7 @@ AnnData object with n_obs × n_vars = 6099 × 19896
 </div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
@@ -1164,7 +1220,7 @@ AnnData object with n_obs × n_vars = 6099 × 19896
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1187,83 +1243,47 @@ AnnData object with n_obs × n_vars = 6099 × 19896
     <tr style="text-align: right;">
       <th></th>
       <th>n_cells</th>
-      <th>highly_variable_rank</th>
-      <th>means</th>
-      <th>variances</th>
-      <th>variances_norm</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>count</th>
-      <td>2000.000000</td>
-      <td>2000.000000</td>
-      <td>2000.000000</td>
-      <td>2000.000000</td>
-      <td>2000.000000</td>
+      <td>19896.000000</td>
     </tr>
     <tr>
       <th>mean</th>
-      <td>319.636000</td>
-      <td>999.500000</td>
-      <td>0.140495</td>
-      <td>1.135413</td>
-      <td>2.203288</td>
+      <td>293.307600</td>
     </tr>
     <tr>
       <th>std</th>
-      <td>377.720811</td>
-      <td>577.494568</td>
-      <td>0.282680</td>
-      <td>5.619025</td>
-      <td>1.171426</td>
+      <td>451.440237</td>
     </tr>
     <tr>
       <th>min</th>
       <td>10.000000</td>
-      <td>0.000000</td>
-      <td>0.001968</td>
-      <td>0.002948</td>
-      <td>1.399341</td>
     </tr>
     <tr>
       <th>25%</th>
-      <td>65.000000</td>
-      <td>499.750000</td>
-      <td>0.017216</td>
-      <td>0.040875</td>
-      <td>1.550249</td>
+      <td>34.000000</td>
     </tr>
     <tr>
       <th>50%</th>
-      <td>184.500000</td>
-      <td>999.500000</td>
-      <td>0.053123</td>
-      <td>0.148688</td>
-      <td>1.828523</td>
+      <td>111.000000</td>
     </tr>
     <tr>
       <th>75%</th>
-      <td>414.000000</td>
-      <td>1499.250000</td>
-      <td>0.148426</td>
-      <td>0.545860</td>
-      <td>2.346181</td>
+      <td>345.000000</td>
     </tr>
     <tr>
       <th>max</th>
-      <td>4546.000000</td>
-      <td>1999.000000</td>
-      <td>5.314150</td>
-      <td>135.394535</td>
-      <td>17.115198</td>
+      <td>6090.000000</td>
     </tr>
   </tbody>
 </table>
 </div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s1">&#39;n_cells&#39;</span><span class="p">])</span>
@@ -1271,7 +1291,16 @@ AnnData object with n_obs × n_vars = 6099 × 19896
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/usr/lib/python3.10/site-packages/matplotlib_inline/config.py:59: DeprecationWarning: InlineBackend._figure_formats_changed is deprecated in traitlets 4.1: use @observe and @unobserve instead.
+  def _figure_formats_changed(self, name, old, new):
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -1283,14 +1312,14 @@ AnnData object with n_obs × n_vars = 6099 × 19896
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/02-analysis-review_45_1.svg" src="_images/02-analysis-review_45_1.svg" /></div>
+<img alt="_images/02-analysis-review_50_2.svg" src="_images/02-analysis-review_50_2.svg" /></div>
 </div>
 </div>
 <div class="section" id="Select-highly-variable-genes">
 <h3>Select highly variable genes<a class="headerlink" href="#Select-highly-variable-genes" title="Permalink to this heading">§</a></h3>
 <p>It is common to select transcript types with high variability among the cell population under the assumption that this will help to focus on features that distinguish the cells. Again there is no perfect threshold. Here we select the 2000 highest variability genes.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span>
@@ -1298,7 +1327,7 @@ AnnData object with n_obs × n_vars = 6099 × 19896
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -1309,7 +1338,7 @@ AnnData object with n_obs × n_vars = 6099 × 19896
 </div>
 <p>See the <a class="reference external" href="https://scanpy.readthedocs.io/en/latest/generated/scanpy.pp.highly_variable_genes.html">documentation for scanpy pre-processing highly-variable-genes</a>.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">highly_variable_genes</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">n_top_genes</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">subset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">flavor</span><span class="o">=</span><span class="s2">&quot;seurat_v3&quot;</span><span class="p">)</span>
@@ -1317,7 +1346,7 @@ AnnData object with n_obs × n_vars = 6099 × 19896
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span>
@@ -1325,7 +1354,7 @@ AnnData object with n_obs × n_vars = 6099 × 19896
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -1337,7 +1366,7 @@ AnnData object with n_obs × n_vars = 6099 × 2000
 </div>
 <p>We have filtered down to 2000 transcript types and added 5 annotations to the genes including a binary variable indicating membership in the highly-variable class, the ranking among highly variable genes, and the mean, variance, and normalized variance for each gene across cells.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var</span>
@@ -1345,7 +1374,7 @@ AnnData object with n_obs × n_vars = 6099 × 2000
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1485,7 +1514,7 @@ AnnData object with n_obs × n_vars = 6099 × 2000
 <h3>Doublet removal<a class="headerlink" href="#id4" title="Permalink to this heading">§</a></h3>
 <p>Here we <code class="docutils literal notranslate"><span class="pre">scvi-tools</span></code> model as <a class="reference external" href="https://docs.scvi-tools.org/en/stable/api/reference/scvi.external.SOLO.html">an interface</a> to <a class="reference external" href="https://github.com/calico/solo">solo</a> from <span id="id5">[<a class="reference internal" href="references.html#id2" title="Nicholas J Bernstein, Nicole L Fong, Irene Lam, Margaret A Roy, David G Hendrickson, and David R Kelley. Solo: doublet identification in Single-Cell RNA-Seq via Semi-Supervised deep learning. Cell Syst, 11(1):95–101.e5, July 2020. doi:10.1016/j.cels.2020.05.010.">BFL+20</a>]</span>. <code class="docutils literal notranslate"><span class="pre">scvi</span></code> adds some unstructured data to interface with <code class="docutils literal notranslate"><span class="pre">torch</span></code>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">uns</span>
@@ -1493,7 +1522,7 @@ AnnData object with n_obs × n_vars = 6099 × 2000
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -1505,7 +1534,7 @@ With overloaded keys:
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scvi</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">SCVI</span><span class="o">.</span><span class="n">setup_anndata</span><span class="p">(</span><span class="n">adata</span><span class="p">)</span>
@@ -1513,7 +1542,7 @@ With overloaded keys:
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">uns</span>
@@ -1521,20 +1550,20 @@ With overloaded keys:
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 OverloadedDict, wrapping:
-        OrderedDict([(&#39;hvg&#39;, {&#39;flavor&#39;: &#39;seurat_v3&#39;}), (&#39;_scvi_uuid&#39;, &#39;290021be-0332-459c-9577-d34349c03ff4&#39;), (&#39;_scvi_manager_uuid&#39;, &#39;49d2f232-173d-4da9-bff8-dd83ec7e62ad&#39;)])
+        OrderedDict([(&#39;hvg&#39;, {&#39;flavor&#39;: &#39;seurat_v3&#39;}), (&#39;_scvi_uuid&#39;, &#39;efb3a791-15ff-4864-b57c-7536e8ea9df6&#39;), (&#39;_scvi_manager_uuid&#39;, &#39;ccc84e47-0ab2-4ab3-852b-55f888509f9e&#39;)])
 With overloaded keys:
         [&#39;neighbors&#39;].
 </pre></div></div>
 </div>
 <p>Train the <code class="docutils literal notranslate"><span class="pre">scvi</span></code> model.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">vae</span> <span class="o">=</span> <span class="n">scvi</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">SCVI</span><span class="p">(</span><span class="n">adata</span><span class="p">)</span>
@@ -1559,7 +1588,7 @@ LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch 400/400: 100% 400/400 [03:27&lt;00:00,  2.12it/s, loss=323, v_num=1]
+Epoch 400/400: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████| 400/400 [03:36&lt;00:00,  1.98it/s, loss=323, v_num=1]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -1575,12 +1604,12 @@ Epoch 400/400: 100% 400/400 [03:27&lt;00:00,  2.12it/s, loss=323, v_num=1]
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch 400/400: 100% 400/400 [03:27&lt;00:00,  1.92it/s, loss=323, v_num=1]
+Epoch 400/400: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████| 400/400 [03:36&lt;00:00,  1.85it/s, loss=323, v_num=1]
 </pre></div></div>
 </div>
 <p>After training the model <code class="docutils literal notranslate"><span class="pre">adata.obs</span></code> now contains <code class="docutils literal notranslate"><span class="pre">_scvi_batch</span></code> and <code class="docutils literal notranslate"><span class="pre">scvi_labels</span></code> annotations.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span>
@@ -1588,7 +1617,7 @@ Epoch 400/400: 100% 400/400 [03:27&lt;00:00,  1.92it/s, loss=323, v_num=1]
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -1600,7 +1629,7 @@ AnnData object with n_obs × n_vars = 6099 × 2000
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span>
@@ -1608,7 +1637,7 @@ AnnData object with n_obs × n_vars = 6099 × 2000
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1697,7 +1726,7 @@ AnnData object with n_obs × n_vars = 6099 × 2000
 </div>
 <p>Train the <code class="docutils literal notranslate"><span class="pre">solo</span></code> model.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">solo</span> <span class="o">=</span> <span class="n">scvi</span><span class="o">.</span><span class="n">external</span><span class="o">.</span><span class="n">SOLO</span><span class="o">.</span><span class="n">from_scvi_model</span><span class="p">(</span><span class="n">vae</span><span class="p">)</span>
@@ -1732,12 +1761,12 @@ LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Epoch 207/400:  52% 207/400 [01:43&lt;01:36,  2.01it/s, loss=0.299, v_num=1]
+Epoch 207/400:  52%|██████████████████████████████████████████████████▏                                              | 207/400 [01:51&lt;01:44,  1.85it/s, loss=0.299, v_num=1]
 Monitored metric validation_loss did not improve in the last 30 records. Best score: 0.295. Signaling Trainer to stop.
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="n">solo</span><span class="p">)</span>
@@ -1745,7 +1774,7 @@ Monitored metric validation_loss did not improve in the last 30 records. Best sc
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -1755,7 +1784,7 @@ scvi.external.solo._model.SOLO
 </div>
 <p>We can now use the <code class="docutils literal notranslate"><span class="pre">solo</span></code> model to add a prediction annotation for doublet or singlet to our data.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">solo</span><span class="o">.</span><span class="n">predict</span><span class="p">()</span>
@@ -1768,7 +1797,7 @@ scvi.external.solo._model.SOLO
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1869,7 +1898,7 @@ scvi.external.solo._model.SOLO
 </div>
 <p>Counting the predicted doublets and singlets reveals about 20% doublets.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;prediction&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
@@ -1877,7 +1906,7 @@ scvi.external.solo._model.SOLO
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1925,7 +1954,7 @@ scvi.external.solo._model.SOLO
 </div>
 <p>We can assess the magnitude of the prediction by taking the difference between the doublet and singlet scores.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;dif&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">doublet</span> <span class="o">-</span> <span class="n">df</span><span class="o">.</span><span class="n">singlet</span>
@@ -1934,7 +1963,7 @@ scvi.external.solo._model.SOLO
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -2047,7 +2076,7 @@ scvi.external.solo._model.SOLO
 </div>
 <p>Plotting the distribution of doublet-singlet score differences we see there are a large fraction that marginally favor doublet to singlet.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">prediction</span> <span class="o">==</span> <span class="s2">&quot;doublet&quot;</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;dif&quot;</span><span class="p">)</span>
@@ -2055,7 +2084,7 @@ scvi.external.solo._model.SOLO
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -2067,11 +2096,11 @@ scvi.external.solo._model.SOLO
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/02-analysis-review_74_1.svg" src="_images/02-analysis-review_74_1.svg" /></div>
+<img alt="_images/02-analysis-review_79_1.svg" src="_images/02-analysis-review_79_1.svg" /></div>
 </div>
 <p>Since we would like to avoid unnecessarily discarding barcodes, we will arbitrarily retain those with a score from zero to one (however this is not intended to be principled).</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">doublets</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">prediction</span> <span class="o">==</span> <span class="s1">&#39;doublet&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">dif</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)]</span>
@@ -2080,7 +2109,7 @@ scvi.external.solo._model.SOLO
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -2192,7 +2221,7 @@ scvi.external.solo._model.SOLO
 </div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">doublets</span><span class="p">[</span><span class="n">doublets</span><span class="o">.</span><span class="n">prediction</span> <span class="o">==</span> <span class="s2">&quot;doublet&quot;</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;dif&quot;</span><span class="p">)</span>
@@ -2200,7 +2229,7 @@ scvi.external.solo._model.SOLO
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -2212,34 +2241,64 @@ scvi.external.solo._model.SOLO
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/02-analysis-review_77_1.svg" src="_images/02-analysis-review_77_1.svg" /></div>
+<img alt="_images/02-analysis-review_82_1.svg" src="_images/02-analysis-review_82_1.svg" /></div>
 </div>
 </div>
 <div class="section" id="Save/load-checkpoint">
 <h3>Save/load checkpoint<a class="headerlink" href="#Save/load-checkpoint" title="Permalink to this heading">§</a></h3>
 <p>Save current variables to file.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">([</span><span class="n">adata</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">doublets</span><span class="p">,</span> <span class="n">solo</span><span class="p">,</span> <span class="n">vae</span><span class="p">],</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;session_09282022.p&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">))</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">([</span><span class="n">df</span><span class="p">,</span> <span class="n">doublets</span><span class="p">,</span> <span class="n">solo</span><span class="p">,</span> <span class="n">vae</span><span class="p">],</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_directory</span><span class="si">}</span><span class="s2">/auxiliary.p&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <p>Variables can be reloaded if necessary.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">doublets</span><span class="p">,</span> <span class="n">solo</span><span class="p">,</span> <span class="n">vae</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;session_09282022.p&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">,</span> <span class="n">doublets</span><span class="p">,</span> <span class="n">solo</span><span class="p">,</span> <span class="n">vae</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_directory</span><span class="si">}</span><span class="s2">/auxiliary.p&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_directory</span><span class="si">}</span><span class="s2">/adata_doublets.h5ad&quot;</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bdata_doublets</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">bdata_doublets</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_directory</span><span class="si">}</span><span class="s2">/adata_doublets.h5ad&quot;</span><span class="p">)</span>
+<span class="n">bdata_doublets</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+AnnData object with n_obs × n_vars = 6099 × 2000
+    obs: &#39;_scvi_batch&#39;, &#39;_scvi_labels&#39;
+    var: &#39;n_cells&#39;, &#39;highly_variable&#39;, &#39;highly_variable_rank&#39;, &#39;means&#39;, &#39;variances&#39;, &#39;variances_norm&#39;
+    uns: &#39;_scvi_manager_uuid&#39;, &#39;_scvi_uuid&#39;, &#39;hvg&#39;
+</pre></div></div>
 </div>
 </div>
 <div class="section" id="Reload-data-and-filter-doublets">
 <h3>Reload data and filter doublets<a class="headerlink" href="#Reload-data-and-filter-doublets" title="Permalink to this heading">§</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
@@ -2250,7 +2309,7 @@ scvi.external.solo._model.SOLO
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -2260,7 +2319,7 @@ AnnData object with n_obs × n_vars = 6099 × 34546
 </div>
 <p>Annotate <code class="docutils literal notranslate"><span class="pre">adata</span></code> with doublet column.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;doublet&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">doublets</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
@@ -2268,7 +2327,7 @@ AnnData object with n_obs × n_vars = 6099 × 34546
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span>
@@ -2276,7 +2335,7 @@ AnnData object with n_obs × n_vars = 6099 × 34546
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -2286,7 +2345,7 @@ AnnData object with n_obs × n_vars = 6099 × 34546
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span>
@@ -2294,7 +2353,7 @@ AnnData object with n_obs × n_vars = 6099 × 34546
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -2371,7 +2430,7 @@ AnnData object with n_obs × n_vars = 6099 × 34546
 </div>
 <p>Use doublet column to filter doublets.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[</span><span class="o">~</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">doublet</span><span class="p">]</span>
@@ -2379,7 +2438,7 @@ AnnData object with n_obs × n_vars = 6099 × 34546
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[54]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span>
@@ -2387,7 +2446,7 @@ AnnData object with n_obs × n_vars = 6099 × 34546
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[54]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -2405,7 +2464,7 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 <h3>Filter mitochondrial transcripts<a class="headerlink" href="#Filter-mitochondrial-transcripts" title="Permalink to this heading">§</a></h3>
 <p>We can add a binary annotation to indicate presence of mitochondrial transcripts.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[55]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s1">&#39;mt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;MT-&#39;</span><span class="p">)</span>
@@ -2417,12 +2476,12 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/tmp/ipykernel_62/310233584.py:1: ImplicitModificationWarning: Trying to modify attribute `.var` of view, initializing view as actual.
+/tmp/ipykernel_16232/310233584.py:1: ImplicitModificationWarning: Trying to modify attribute `.var` of view, initializing view as actual.
   adata.var[&#39;mt&#39;] = adata.var.index.str.startswith(&#39;MT-&#39;)
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[56]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var</span>
@@ -2430,7 +2489,7 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[56]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -2510,7 +2569,7 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 <h3>Filter ribosomal transcripts<a class="headerlink" href="#Filter-ribosomal-transcripts" title="Permalink to this heading">§</a></h3>
 <p>We can download a list of ribosomal genes from msigdb.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[57]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ribo_url</span> <span class="o">=</span> <span class="s2">&quot;http://software.broadinstitute.org/gsea/msigdb/download_geneset.jsp?geneSetName=KEGG_RIBOSOME&amp;fileType=txt&quot;</span>
@@ -2520,7 +2579,7 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[57]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -2597,7 +2656,7 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 </div>
 <p>We add a binary annotation to indicate presence in the list of ribosomal genes.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s1">&#39;ribo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">var_names</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">ribo_genes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
@@ -2605,7 +2664,7 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var</span>
@@ -2613,7 +2672,7 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[59]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -2705,7 +2764,7 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 <h3>Calculate QC metrics<a class="headerlink" href="#Calculate-QC-metrics" title="Permalink to this heading">§</a></h3>
 <p>Recall the observation/barcode annotation currently just indicates doublets based on our solo model.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[60]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span>
@@ -2713,7 +2772,7 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[60]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -2790,7 +2849,7 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 </div>
 <p>We can calculate standard quality control metrics with <code class="docutils literal notranslate"><span class="pre">scanpy</span></code>. See the <a class="reference external" href="https://scanpy.readthedocs.io/en/latest/generated/scanpy.pp.calculate_qc_metrics.html">documentation for scanpy calculate_qc_metrics</a>. These include the number of</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[61]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">calculate_qc_metrics</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">qc_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;mt&#39;</span><span class="p">,</span> <span class="s1">&#39;ribo&#39;</span><span class="p">],</span> <span class="n">percent_top</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log1p</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -2799,7 +2858,7 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 </div>
 <p>Sorting genes by the number of cells with non-zero counts, we see a number of genes that were not found in association with any barcode.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[62]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;n_cells_by_counts&quot;</span><span class="p">)</span>
@@ -2807,7 +2866,7 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[62]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -2944,7 +3003,7 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 </div>
 <p>Sorting barcodes by total counts we see a minimum around 400 suggesting a previously applied filter upstream of this pre-processing.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[63]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;total_counts&quot;</span><span class="p">)</span>
@@ -2952,7 +3011,7 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[63]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -3100,7 +3159,7 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 </div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[64]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">jointplot</span><span class="p">(</span>
@@ -3113,26 +3172,26 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[64]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;seaborn.axisgrid.JointGrid at 0x7fcd93da0fd0&gt;
+&lt;seaborn.axisgrid.JointGrid at 0x7fedd44cbbb0&gt;
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/02-analysis-review_113_1.svg" src="_images/02-analysis-review_113_1.svg" /></div>
+<img alt="_images/02-analysis-review_120_1.svg" src="_images/02-analysis-review_120_1.svg" /></div>
 </div>
 </div>
 <div class="section" id="Filter-genes-by-counts">
 <h3>Filter genes by counts<a class="headerlink" href="#Filter-genes-by-counts" title="Permalink to this heading">§</a></h3>
 <p>We can filter genes found in some minimum number of cells, in this case we arbitrarily choose three.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[65]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">filter_genes</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">min_cells</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
@@ -3140,7 +3199,7 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[66]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;n_cells_by_counts&quot;</span><span class="p">)</span>
@@ -3148,7 +3207,7 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[66]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -3300,7 +3359,7 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 <h3>Filter cells by number of genes<a class="headerlink" href="#Filter-cells-by-number-of-genes" title="Permalink to this heading">§</a></h3>
 <p>As a matter of completeness we filter cells with fewer than 200 genes; however, we see the minimum number of genes in a cell is already greater than 200.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[67]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;n_genes_by_counts&#39;</span><span class="p">)</span>
@@ -3308,7 +3367,7 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[67]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -3456,7 +3515,7 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 </div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[68]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">filter_cells</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">min_genes</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
@@ -3464,7 +3523,7 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[69]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span>
@@ -3472,7 +3531,7 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[69]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -3487,7 +3546,7 @@ AnnData object with n_obs × n_vars = 5648 × 24136
 <h3>Review and filter QC outliers<a class="headerlink" href="#Review-and-filter-QC-outliers" title="Permalink to this heading">§</a></h3>
 <p>We can plot distributions of the number of genes by counts and total counts as well as the percentage of mitochondrial and ribosomal genes.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[70]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">violin</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;n_genes_by_counts&#39;</span><span class="p">,</span> <span class="s1">&#39;total_counts&#39;</span><span class="p">,</span> <span class="s1">&#39;pct_counts_mt&#39;</span><span class="p">,</span> <span class="s1">&#39;pct_counts_ribo&#39;</span><span class="p">],</span>
@@ -3499,11 +3558,11 @@ AnnData object with n_obs × n_vars = 5648 × 24136
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/02-analysis-review_125_0.svg" src="_images/02-analysis-review_125_0.svg" /></div>
+<img alt="_images/02-analysis-review_132_0.svg" src="_images/02-analysis-review_132_0.svg" /></div>
 </div>
 <p>If we choose to filter cells beyond the 98th percentile, we can compute the bound via the numpy quantile function.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[71]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">upper_lim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">n_genes_by_counts</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="mf">.98</span><span class="p">)</span>
@@ -3512,7 +3571,7 @@ AnnData object with n_obs × n_vars = 5648 × 24136
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[71]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -3521,7 +3580,7 @@ AnnData object with n_obs × n_vars = 5648 × 24136
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[72]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">n_genes_by_counts</span> <span class="o">&lt;</span> <span class="n">upper_lim</span><span class="p">]</span>
@@ -3530,7 +3589,7 @@ AnnData object with n_obs × n_vars = 5648 × 24136
 </div>
 <p>This filters a few more than 100 additional cells.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[73]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span>
@@ -3538,7 +3597,7 @@ AnnData object with n_obs × n_vars = 5648 × 24136
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[73]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -3699,7 +3758,7 @@ AnnData object with n_obs × n_vars = 5648 × 24136
 </div>
 <p>Finally, we filter mitochondrial (at 20%) and ribosomal (at 2%) outliers.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[74]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">pct_counts_mt</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="p">]</span>
@@ -3707,7 +3766,7 @@ AnnData object with n_obs × n_vars = 5648 × 24136
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[75]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[</span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">pct_counts_ribo</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">]</span>
@@ -3715,7 +3774,7 @@ AnnData object with n_obs × n_vars = 5648 × 24136
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[76]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span>
@@ -3723,7 +3782,7 @@ AnnData object with n_obs × n_vars = 5648 × 24136
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[76]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -3737,30 +3796,51 @@ View of AnnData object with n_obs × n_vars = 5518 × 24136
 </div>
 <div class="section" id="id6">
 <h3>Save/load checkpoint<a class="headerlink" href="#id6" title="Permalink to this heading">§</a></h3>
-<p>Save current variables to file.</p>
+<p>Save current version of post processed data to file.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[77]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">([</span><span class="n">adata</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">doublets</span><span class="p">,</span> <span class="n">solo</span><span class="p">,</span> <span class="n">vae</span><span class="p">],</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;adata_post_processed.p&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">))</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_directory</span><span class="si">}</span><span class="s2">/adata_post_processed.h5ad&quot;</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <p>Variables can be reloaded if necessary.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[78]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">doublets</span><span class="p">,</span> <span class="n">solo</span><span class="p">,</span> <span class="n">vae</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;adata_post_processed.p&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">,</span> <span class="n">doublets</span><span class="p">,</span> <span class="n">solo</span><span class="p">,</span> <span class="n">vae</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_directory</span><span class="si">}</span><span class="s2">/auxiliary.p&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[79]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bdata_post_processed</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">bdata_post_processed</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_directory</span><span class="si">}</span><span class="s2">/adata_post_processed.h5ad&quot;</span><span class="p">)</span>
+<span class="n">bdata_post_processed</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[79]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+AnnData object with n_obs × n_vars = 5518 × 24136
+    obs: &#39;doublet&#39;, &#39;n_genes_by_counts&#39;, &#39;total_counts&#39;, &#39;total_counts_mt&#39;, &#39;pct_counts_mt&#39;, &#39;total_counts_ribo&#39;, &#39;pct_counts_ribo&#39;, &#39;n_genes&#39;
+    var: &#39;mt&#39;, &#39;ribo&#39;, &#39;n_cells_by_counts&#39;, &#39;mean_counts&#39;, &#39;pct_dropout_by_counts&#39;, &#39;total_counts&#39;, &#39;n_cells&#39;
+</pre></div></div>
 </div>
 </div>
 </div>
 <div class="section" id="Normalization">
 <h2>Normalization<a class="headerlink" href="#Normalization" title="Permalink to this heading">§</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[80]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -3768,7 +3848,7 @@ View of AnnData object with n_obs × n_vars = 5518 × 24136
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[80]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -3777,7 +3857,7 @@ ArrayView([5433., 5502., 5250., ...,  410.,  405.,  410.], dtype=float32)
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[81]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">normalize_total</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">target_sum</span><span class="o">=</span><span class="mf">1e4</span><span class="p">)</span>
@@ -3794,7 +3874,7 @@ ArrayView([5433., 5502., 5250., ...,  410.,  405.,  410.], dtype=float32)
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[82]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -3802,7 +3882,7 @@ ArrayView([5433., 5502., 5250., ...,  410.,  405.,  410.], dtype=float32)
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[82]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -3811,7 +3891,7 @@ array([10000., 10000., 10000., ..., 10000., 10000., 10000.], dtype=float32)
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[83]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">adata</span><span class="p">)</span>
@@ -3819,7 +3899,7 @@ array([10000., 10000., 10000., ..., 10000., 10000., 10000.], dtype=float32)
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[84]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -3827,7 +3907,7 @@ array([10000., 10000., 10000., ..., 10000., 10000., 10000.], dtype=float32)
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[84]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -3837,16 +3917,848 @@ array([3285.3794, 3163.8867, 2858.1602, ..., 1191.2706, 1022.7512,
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[85]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="n">adata</span>
 </pre></div>
 </div>
 </div>
+</div>
+<div class="section" id="Clustering">
+<h2>Clustering<a class="headerlink" href="#Clustering" title="Permalink to this heading">§</a></h2>
+<div class="section" id="Estimate-expression-variability">
+<h3>Estimate expression variability<a class="headerlink" href="#Estimate-expression-variability" title="Permalink to this heading">§</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[86]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[86]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>mt</th>
+      <th>ribo</th>
+      <th>n_cells_by_counts</th>
+      <th>mean_counts</th>
+      <th>pct_dropout_by_counts</th>
+      <th>total_counts</th>
+      <th>n_cells</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>AL627309.1</th>
+      <td>False</td>
+      <td>False</td>
+      <td>4</td>
+      <td>0.000708</td>
+      <td>99.929178</td>
+      <td>4.0</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>AL627309.5</th>
+      <td>False</td>
+      <td>False</td>
+      <td>26</td>
+      <td>0.004603</td>
+      <td>99.539660</td>
+      <td>26.0</td>
+      <td>26</td>
+    </tr>
+    <tr>
+      <th>AL627309.4</th>
+      <td>False</td>
+      <td>False</td>
+      <td>4</td>
+      <td>0.000708</td>
+      <td>99.929178</td>
+      <td>4.0</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>LINC01409</th>
+      <td>False</td>
+      <td>False</td>
+      <td>233</td>
+      <td>0.044972</td>
+      <td>95.874646</td>
+      <td>254.0</td>
+      <td>233</td>
+    </tr>
+    <tr>
+      <th>FAM87B</th>
+      <td>False</td>
+      <td>False</td>
+      <td>6</td>
+      <td>0.001062</td>
+      <td>99.893768</td>
+      <td>6.0</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>AL354822.1</th>
+      <td>False</td>
+      <td>False</td>
+      <td>121</td>
+      <td>0.022132</td>
+      <td>97.857649</td>
+      <td>125.0</td>
+      <td>121</td>
+    </tr>
+    <tr>
+      <th>AL592183.1</th>
+      <td>False</td>
+      <td>False</td>
+      <td>871</td>
+      <td>0.182188</td>
+      <td>84.578612</td>
+      <td>1029.0</td>
+      <td>871</td>
+    </tr>
+    <tr>
+      <th>AC240274.1</th>
+      <td>False</td>
+      <td>False</td>
+      <td>142</td>
+      <td>0.026027</td>
+      <td>97.485836</td>
+      <td>147.0</td>
+      <td>142</td>
+    </tr>
+    <tr>
+      <th>AC007325.4</th>
+      <td>False</td>
+      <td>False</td>
+      <td>4</td>
+      <td>0.000708</td>
+      <td>99.929178</td>
+      <td>4.0</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>AC007325.2</th>
+      <td>False</td>
+      <td>False</td>
+      <td>6</td>
+      <td>0.001062</td>
+      <td>99.893768</td>
+      <td>6.0</td>
+      <td>6</td>
+    </tr>
+  </tbody>
+</table>
+<p>24136 rows × 7 columns</p>
+</div></div>
+</div>
+<p>Here we use the <code class="docutils literal notranslate"><span class="pre">scanpy</span></code> pre-processing <a class="reference external" href="https://scanpy.readthedocs.io/en/latest/generated/scanpy.pp.highly_variable_genes.html">function for highly-variable genes</a> to annotate genes by their expression variability across cells.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[87]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">highly_variable_genes</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">n_top_genes</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[88]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">var</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[88]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>mt</th>
+      <th>ribo</th>
+      <th>n_cells_by_counts</th>
+      <th>mean_counts</th>
+      <th>pct_dropout_by_counts</th>
+      <th>total_counts</th>
+      <th>n_cells</th>
+      <th>highly_variable</th>
+      <th>means</th>
+      <th>dispersions</th>
+      <th>dispersions_norm</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>AL627309.1</th>
+      <td>False</td>
+      <td>False</td>
+      <td>4</td>
+      <td>0.000708</td>
+      <td>99.929178</td>
+      <td>4.0</td>
+      <td>4</td>
+      <td>True</td>
+      <td>0.009588</td>
+      <td>2.873559</td>
+      <td>1.581447</td>
+    </tr>
+    <tr>
+      <th>AL627309.5</th>
+      <td>False</td>
+      <td>False</td>
+      <td>26</td>
+      <td>0.004603</td>
+      <td>99.539660</td>
+      <td>26.0</td>
+      <td>26</td>
+      <td>False</td>
+      <td>0.029244</td>
+      <td>2.300264</td>
+      <td>-0.151067</td>
+    </tr>
+    <tr>
+      <th>AL627309.4</th>
+      <td>False</td>
+      <td>False</td>
+      <td>4</td>
+      <td>0.000708</td>
+      <td>99.929178</td>
+      <td>4.0</td>
+      <td>4</td>
+      <td>False</td>
+      <td>0.002517</td>
+      <td>1.702826</td>
+      <td>-1.956543</td>
+    </tr>
+    <tr>
+      <th>LINC01409</th>
+      <td>False</td>
+      <td>False</td>
+      <td>233</td>
+      <td>0.044972</td>
+      <td>95.874646</td>
+      <td>254.0</td>
+      <td>233</td>
+      <td>False</td>
+      <td>0.265776</td>
+      <td>2.334326</td>
+      <td>-0.048131</td>
+    </tr>
+    <tr>
+      <th>FAM87B</th>
+      <td>False</td>
+      <td>False</td>
+      <td>6</td>
+      <td>0.001062</td>
+      <td>99.893768</td>
+      <td>6.0</td>
+      <td>6</td>
+      <td>False</td>
+      <td>0.007217</td>
+      <td>1.947624</td>
+      <td>-1.216757</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>AL354822.1</th>
+      <td>False</td>
+      <td>False</td>
+      <td>121</td>
+      <td>0.022132</td>
+      <td>97.857649</td>
+      <td>125.0</td>
+      <td>121</td>
+      <td>False</td>
+      <td>0.158275</td>
+      <td>2.407786</td>
+      <td>0.173866</td>
+    </tr>
+    <tr>
+      <th>AL592183.1</th>
+      <td>False</td>
+      <td>False</td>
+      <td>871</td>
+      <td>0.182188</td>
+      <td>84.578612</td>
+      <td>1029.0</td>
+      <td>871</td>
+      <td>False</td>
+      <td>0.868576</td>
+      <td>2.511827</td>
+      <td>-0.388573</td>
+    </tr>
+    <tr>
+      <th>AC240274.1</th>
+      <td>False</td>
+      <td>False</td>
+      <td>142</td>
+      <td>0.026027</td>
+      <td>97.485836</td>
+      <td>147.0</td>
+      <td>142</td>
+      <td>False</td>
+      <td>0.153063</td>
+      <td>2.300034</td>
+      <td>-0.151763</td>
+    </tr>
+    <tr>
+      <th>AC007325.4</th>
+      <td>False</td>
+      <td>False</td>
+      <td>4</td>
+      <td>0.000708</td>
+      <td>99.929178</td>
+      <td>4.0</td>
+      <td>4</td>
+      <td>False</td>
+      <td>0.003025</td>
+      <td>1.579867</td>
+      <td>-2.328129</td>
+    </tr>
+    <tr>
+      <th>AC007325.2</th>
+      <td>False</td>
+      <td>False</td>
+      <td>6</td>
+      <td>0.001062</td>
+      <td>99.893768</td>
+      <td>6.0</td>
+      <td>6</td>
+      <td>False</td>
+      <td>0.006377</td>
+      <td>1.995220</td>
+      <td>-1.072921</td>
+    </tr>
+  </tbody>
+</table>
+<p>24136 rows × 11 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[89]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">highly_variable_genes</span><span class="p">(</span><span class="n">adata</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/02-analysis-review_162_0.svg" src="_images/02-analysis-review_162_0.svg" /></div>
+</div>
+</div>
+<div class="section" id="Filter-highly-variable-genes">
+<h3>Filter highly variable genes<a class="headerlink" href="#Filter-highly-variable-genes" title="Permalink to this heading">§</a></h3>
+<p>We finally filter for the highly variable genes noting the change in <code class="docutils literal notranslate"><span class="pre">n_vars</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[90]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[90]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+AnnData object with n_obs × n_vars = 5518 × 24136
+    obs: &#39;doublet&#39;, &#39;n_genes_by_counts&#39;, &#39;total_counts&#39;, &#39;total_counts_mt&#39;, &#39;pct_counts_mt&#39;, &#39;total_counts_ribo&#39;, &#39;pct_counts_ribo&#39;, &#39;n_genes&#39;
+    var: &#39;mt&#39;, &#39;ribo&#39;, &#39;n_cells_by_counts&#39;, &#39;mean_counts&#39;, &#39;pct_dropout_by_counts&#39;, &#39;total_counts&#39;, &#39;n_cells&#39;, &#39;highly_variable&#39;, &#39;means&#39;, &#39;dispersions&#39;, &#39;dispersions_norm&#39;
+    uns: &#39;log1p&#39;, &#39;hvg&#39;
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[91]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[:,</span> <span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">highly_variable</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[92]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[92]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+View of AnnData object with n_obs × n_vars = 5518 × 2000
+    obs: &#39;doublet&#39;, &#39;n_genes_by_counts&#39;, &#39;total_counts&#39;, &#39;total_counts_mt&#39;, &#39;pct_counts_mt&#39;, &#39;total_counts_ribo&#39;, &#39;pct_counts_ribo&#39;, &#39;n_genes&#39;
+    var: &#39;mt&#39;, &#39;ribo&#39;, &#39;n_cells_by_counts&#39;, &#39;mean_counts&#39;, &#39;pct_dropout_by_counts&#39;, &#39;total_counts&#39;, &#39;n_cells&#39;, &#39;highly_variable&#39;, &#39;means&#39;, &#39;dispersions&#39;, &#39;dispersions_norm&#39;
+    uns: &#39;log1p&#39;, &#39;hvg&#39;
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Principle-components-analysis">
+<h3>Principle components analysis<a class="headerlink" href="#Principle-components-analysis" title="Permalink to this heading">§</a></h3>
+<div class="section" id="Regression-and-rescaling">
+<h4>Regression and rescaling<a class="headerlink" href="#Regression-and-rescaling" title="Permalink to this heading">§</a></h4>
+<p>We would like to avoid interpreting differences that derive from differences in total counts, percentage of mitochondrial counts, and percentage of ribosomal counts. We can reduce the impact of these differences using the <code class="docutils literal notranslate"><span class="pre">`scanpy</span></code> regress out function &lt;<a class="reference external" href="https://scanpy.readthedocs.io/en/latest/generated/scanpy.pp.regress_out.html">https://scanpy.readthedocs.io/en/latest/generated/scanpy.pp.regress_out.html</a>&gt;`__.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[93]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">regress_out</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;total_counts&#39;</span><span class="p">,</span> <span class="s1">&#39;pct_counts_mt&#39;</span><span class="p">,</span> <span class="s1">&#39;pct_counts_ribo&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<p>We also want to normalize the data <a class="reference external" href="https://scanpy.readthedocs.io/en/latest/generated/scanpy.pp.scale.html">scaling</a> it to zero mean and unit variance while clipping any remaining outliers above 10.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[94]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Perform-PCA">
+<h4>Perform PCA<a class="headerlink" href="#Perform-PCA" title="Permalink to this heading">§</a></h4>
+<p>PCA can be performed with the <code class="docutils literal notranslate"><span class="pre">`scanpy</span></code> PCA tool &lt;<a class="reference external" href="https://scanpy.readthedocs.io/en/latest/generated/scanpy.tl.pca.html">https://scanpy.readthedocs.io/en/latest/generated/scanpy.tl.pca.html</a>&gt;`__.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[95]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">pca</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">svd_solver</span><span class="o">=</span><span class="s1">&#39;arpack&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[96]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">pca_variance_ratio</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_pcs</span> <span class="o">=</span> <span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/02-analysis-review_177_0.svg" src="_images/02-analysis-review_177_0.svg" /></div>
+</div>
+</div>
+</div>
+<div class="section" id="id7">
+<h3>Clustering<a class="headerlink" href="#id7" title="Permalink to this heading">§</a></h3>
+<p>The UMAP algorithm contains a method for estimating distances between cells to which an interface is provided by <a class="reference external" href="https://scanpy.readthedocs.io/en/latest/generated/scanpy.pp.neighbors.html#scanpy.pp.neighbors">scanpy neighbors</a>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[97]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">n_pcs</span> <span class="o">=</span> <span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>This function adds <code class="docutils literal notranslate"><span class="pre">distances</span></code> and <code class="docutils literal notranslate"><span class="pre">connectivities</span></code> as pairwise relationships among the cells in <code class="docutils literal notranslate"><span class="pre">adata.obsp</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[98]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[98]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+AnnData object with n_obs × n_vars = 5518 × 2000
+    obs: &#39;doublet&#39;, &#39;n_genes_by_counts&#39;, &#39;total_counts&#39;, &#39;total_counts_mt&#39;, &#39;pct_counts_mt&#39;, &#39;total_counts_ribo&#39;, &#39;pct_counts_ribo&#39;, &#39;n_genes&#39;
+    var: &#39;mt&#39;, &#39;ribo&#39;, &#39;n_cells_by_counts&#39;, &#39;mean_counts&#39;, &#39;pct_dropout_by_counts&#39;, &#39;total_counts&#39;, &#39;n_cells&#39;, &#39;highly_variable&#39;, &#39;means&#39;, &#39;dispersions&#39;, &#39;dispersions_norm&#39;, &#39;mean&#39;, &#39;std&#39;
+    uns: &#39;log1p&#39;, &#39;hvg&#39;, &#39;pca&#39;, &#39;neighbors&#39;
+    obsm: &#39;X_pca&#39;
+    varm: &#39;PCs&#39;
+    obsp: &#39;distances&#39;, &#39;connectivities&#39;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[99]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obsp</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[99]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+PairwiseArrays with keys: distances, connectivities
+</pre></div></div>
+</div>
+<p>We can now plot the UMAP embedding, but note there are no defined clusters of cells even though they may be hypothesized visually.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[100]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[101]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/02-analysis-review_186_0.svg" src="_images/02-analysis-review_186_0.svg" /></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">`scanpy</span></code> interface to the Leiden algorithm &lt;<a class="reference external" href="https://scanpy.readthedocs.io/en/latest/generated/scanpy.tl.leiden.html">https://scanpy.readthedocs.io/en/latest/generated/scanpy.tl.leiden.html</a>&gt;`__ can be used to cluster cells into subgroups.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[102]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">leiden</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">resolution</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[103]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[103]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>doublet</th>
+      <th>n_genes_by_counts</th>
+      <th>total_counts</th>
+      <th>total_counts_mt</th>
+      <th>pct_counts_mt</th>
+      <th>total_counts_ribo</th>
+      <th>pct_counts_ribo</th>
+      <th>n_genes</th>
+      <th>leiden</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>CCTCAACCATACAGGG-1_1</th>
+      <td>False</td>
+      <td>2276</td>
+      <td>5434.0</td>
+      <td>38.0</td>
+      <td>0.699301</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>2275</td>
+      <td>11</td>
+    </tr>
+    <tr>
+      <th>ACAAAGATCCACAGGC-1_1</th>
+      <td>False</td>
+      <td>2310</td>
+      <td>5504.0</td>
+      <td>1.0</td>
+      <td>0.018169</td>
+      <td>1.0</td>
+      <td>0.018169</td>
+      <td>2308</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>ATACTTCCAAGGTCTT-1_1</th>
+      <td>False</td>
+      <td>2122</td>
+      <td>5252.0</td>
+      <td>1.0</td>
+      <td>0.019040</td>
+      <td>4.0</td>
+      <td>0.076161</td>
+      <td>2120</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>GGGTCACTCTATTCGT-1_1</th>
+      <td>False</td>
+      <td>2286</td>
+      <td>5056.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>1.0</td>
+      <td>0.019778</td>
+      <td>2280</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>GATGATCCACAACCGC-1_1</th>
+      <td>False</td>
+      <td>2263</td>
+      <td>4938.0</td>
+      <td>2.0</td>
+      <td>0.040502</td>
+      <td>2.0</td>
+      <td>0.040502</td>
+      <td>2262</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>CGCCATTGTTTGCCGG-1_1</th>
+      <td>False</td>
+      <td>355</td>
+      <td>410.0</td>
+      <td>3.0</td>
+      <td>0.731707</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>355</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>CACTGGGGTCTACGTA-1_1</th>
+      <td>False</td>
+      <td>346</td>
+      <td>403.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>346</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>CATACTTGTAGAGGAA-1_1</th>
+      <td>False</td>
+      <td>360</td>
+      <td>410.0</td>
+      <td>2.0</td>
+      <td>0.487805</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>360</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>TTTGGTTTCCACGGAC-1_1</th>
+      <td>False</td>
+      <td>299</td>
+      <td>405.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>2.0</td>
+      <td>0.493827</td>
+      <td>299</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>ATGCATGAGTCATGAA-1_1</th>
+      <td>False</td>
+      <td>351</td>
+      <td>411.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+      <td>350</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+<p>5518 rows × 9 columns</p>
+</div></div>
+</div>
+<p>We can now color the UMAP embedding by the Louvain clusters.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[104]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;leiden&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/02-analysis-review_191_0.svg" src="_images/02-analysis-review_191_0.svg" /></div>
+</div>
+</div>
+<div class="section" id="id8">
+<h3>Save/load checkpoint<a class="headerlink" href="#id8" title="Permalink to this heading">§</a></h3>
+<p>Save current data with cluster information to file.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[105]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_directory</span><span class="si">}</span><span class="s2">/adata_clustered.h5ad&quot;</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[106]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[106]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+AnnData object with n_obs × n_vars = 5518 × 2000
+    obs: &#39;doublet&#39;, &#39;n_genes_by_counts&#39;, &#39;total_counts&#39;, &#39;total_counts_mt&#39;, &#39;pct_counts_mt&#39;, &#39;total_counts_ribo&#39;, &#39;pct_counts_ribo&#39;, &#39;n_genes&#39;, &#39;leiden&#39;
+    var: &#39;mt&#39;, &#39;ribo&#39;, &#39;n_cells_by_counts&#39;, &#39;mean_counts&#39;, &#39;pct_dropout_by_counts&#39;, &#39;total_counts&#39;, &#39;n_cells&#39;, &#39;highly_variable&#39;, &#39;means&#39;, &#39;dispersions&#39;, &#39;dispersions_norm&#39;, &#39;mean&#39;, &#39;std&#39;
+    uns: &#39;log1p&#39;, &#39;hvg&#39;, &#39;pca&#39;, &#39;neighbors&#39;, &#39;umap&#39;, &#39;leiden&#39;, &#39;leiden_colors&#39;
+    obsm: &#39;X_pca&#39;, &#39;X_umap&#39;
+    varm: &#39;PCs&#39;
+    obsp: &#39;distances&#39;, &#39;connectivities&#39;
+</pre></div></div>
+</div>
+<p>Variables can be reloaded if necessary.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[107]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">bdata_clustered</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">bdata_clustered</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_directory</span><span class="si">}</span><span class="s2">/adata_clustered.h5ad&quot;</span><span class="p">)</span>
+<span class="n">bdata_clustered</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[107]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+AnnData object with n_obs × n_vars = 5518 × 2000
+    obs: &#39;doublet&#39;, &#39;n_genes_by_counts&#39;, &#39;total_counts&#39;, &#39;total_counts_mt&#39;, &#39;pct_counts_mt&#39;, &#39;total_counts_ribo&#39;, &#39;pct_counts_ribo&#39;, &#39;n_genes&#39;, &#39;leiden&#39;
+    var: &#39;mt&#39;, &#39;ribo&#39;, &#39;n_cells_by_counts&#39;, &#39;mean_counts&#39;, &#39;pct_dropout_by_counts&#39;, &#39;total_counts&#39;, &#39;n_cells&#39;, &#39;highly_variable&#39;, &#39;means&#39;, &#39;dispersions&#39;, &#39;dispersions_norm&#39;, &#39;mean&#39;, &#39;std&#39;
+    uns: &#39;hvg&#39;, &#39;leiden&#39;, &#39;leiden_colors&#39;, &#39;log1p&#39;, &#39;neighbors&#39;, &#39;pca&#39;, &#39;umap&#39;
+    obsm: &#39;X_pca&#39;, &#39;X_umap&#39;
+    varm: &#39;PCs&#39;
+    obsp: &#39;connectivities&#39;, &#39;distances&#39;
+</pre></div></div>
+</div>
 <script type="application/vnd.jupyter.widget-state+json">
 {"state": {}, "version_major": 2, "version_minor": 0}
 </script></div>
+</div>
 </div>
 
         </article>
@@ -3917,6 +4829,7 @@ array([3285.3794, 3163.8867, 2858.1602, ..., 1191.2706, 1022.7512,
 <li><a class="reference internal" href="#Import-libraries">Import libraries</a></li>
 <li><a class="reference internal" href="#Setup-plotting">Setup plotting</a></li>
 <li><a class="reference internal" href="#Utility-functions">Utility functions</a></li>
+<li><a class="reference internal" href="#Set-output-folder-for-session">Set output folder for session</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#Import-data">Import data</a><ul>
@@ -3944,6 +4857,18 @@ array([3285.3794, 3163.8867, 2858.1602, ..., 1191.2706, 1022.7512,
 </ul>
 </li>
 <li><a class="reference internal" href="#Normalization">Normalization</a></li>
+<li><a class="reference internal" href="#Clustering">Clustering</a><ul>
+<li><a class="reference internal" href="#Estimate-expression-variability">Estimate expression variability</a></li>
+<li><a class="reference internal" href="#Filter-highly-variable-genes">Filter highly variable genes</a></li>
+<li><a class="reference internal" href="#Principle-components-analysis">Principle components analysis</a><ul>
+<li><a class="reference internal" href="#Regression-and-rescaling">Regression and rescaling</a></li>
+<li><a class="reference internal" href="#Perform-PCA">Perform PCA</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id7">Clustering</a></li>
+<li><a class="reference internal" href="#id8">Save/load checkpoint</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
