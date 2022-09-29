@@ -74,7 +74,9 @@ from inspect import getmembers
 from pprint import pprint
 from types import FunctionType
 
+import numpy as np
 import pickle
+import pandas as pd
 import scanpy as sc
 import scvi
 import seaborn as sns
@@ -433,10 +435,176 @@ adata
 # %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
 # We filtered about 7% of the barcodes as putative doublets.
 
-# %% [markdown]
+# %% [markdown] {"slideshow": {"slide_type": "slide"}, "tags": []}
 # ## Preprocessing
 
-# %% [markdown]
+# %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
 # ### Filter mitochondrial transcripts
 
+# %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
+# We can add a binary annotation to indicate presence of mitochondrial transcripts.
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+adata.var['mt'] = adata.var.index.str.startswith('MT-')
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+adata.var
+
+# %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
+# ### Filter ribosomal transcripts
+
+# %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
+# We can download a list of ribosomal genes from msigdb.
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+ribo_url = "http://software.broadinstitute.org/gsea/msigdb/download_geneset.jsp?geneSetName=KEGG_RIBOSOME&fileType=txt"
+ribo_genes = pd.read_table(ribo_url, skiprows=2, header = None)
+ribo_genes
+
+# %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
+# We add a binary annotation to indicate presence in the list of ribosomal genes.
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+adata.var['ribo'] = adata.var_names.isin(ribo_genes[0].values)
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+adata.var
+
+# %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
+# ### Calculate QC metrics
+
+# %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
+# Recall the observation/barcode annotation currently just indicates doublets based on our solo model.
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+adata.obs
+
+# %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
+# We can calculate standard quality control metrics with `scanpy`. See the [documentation for scanpy calculate_qc_metrics](https://scanpy.readthedocs.io/en/latest/generated/scanpy.pp.calculate_qc_metrics.html). These include the number of 
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+sc.pp.calculate_qc_metrics(adata, qc_vars=['mt', 'ribo'], percent_top=None, log1p=False, inplace=True)
+
+# %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
+# Sorting genes by the number of cells with non-zero counts, we see a number of genes that were not found in association with any barcode.
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+adata.var.sort_values("n_cells_by_counts")
+
+# %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
+# Sorting barcodes by total counts we see a minimum around 400 suggesting a previously applied filter upstream of this pre-processing.
+
+# %% {"tags": [], "slideshow": {"slide_type": "fragment"}}
+adata.obs.sort_values("total_counts")
+
+# %% {"slideshow": {"slide_type": "subslide"}, "tags": []}
+sns.jointplot(
+    data=adata.obs,
+    x="total_counts",
+    y="n_genes_by_counts",
+    kind="hex",
+)
+
+# %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
+# ### Filter genes by counts
+
+# %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
+# We can filter genes found in some minimum number of cells, in this case we arbitrarily choose three.
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+sc.pp.filter_genes(adata, min_cells=3)
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+adata.var.sort_values("n_cells_by_counts")
+
+# %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
+# ### Filter cells by number of genes
+
+# %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
+# As a matter of completeness we filter cells with fewer than 200 genes; however, we see the minimum number of genes in a cell is already greater than 200.
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+adata.obs.sort_values('n_genes_by_counts')
+
+# %% {"slideshow": {"slide_type": "subslide"}, "tags": []}
+sc.pp.filter_cells(adata, min_genes=200)
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+adata
+
+# %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
+# ### Review and filter QC outliers
+
+# %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
+# We can plot distributions of the number of genes by counts and total counts as well as the percentage of mitochondrial and ribosomal genes.
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+sc.pl.violin(adata, ['n_genes_by_counts', 'total_counts', 'pct_counts_mt', 'pct_counts_ribo'], 
+             jitter=0.4, multi_panel=True)
+
+# %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
+# If we choose to filter cells beyond the 98th percentile, we can compute the bound via the numpy quantile function.
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+upper_lim = np.quantile(adata.obs.n_genes_by_counts.values, .98)
+upper_lim
+
+# %% {"tags": [], "slideshow": {"slide_type": "fragment"}}
+adata = adata[adata.obs.n_genes_by_counts < upper_lim]
+
+# %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
+# This filters a few more than 100 additional cells.
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+adata.obs
+
+# %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
+# Finally, we filter mitochondrial (at 20%) and ribosomal (at 2%) outliers.
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+adata = adata[adata.obs.pct_counts_mt < 20]
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+adata = adata[adata.obs.pct_counts_ribo < 2]
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+adata
+
+# %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
+# We end our preprocessing with 5518 cells and 24136 genes.
+
+# %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
+# ### Save/load checkpoint 
+
+# %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
+# Save current variables to file.
+
+# %% {"tags": [], "slideshow": {"slide_type": "fragment"}}
+pickle.dump([adata, df, doublets, solo, vae], open("adata_post_processed.p", "wb"))
+
+# %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
+# Variables can be reloaded if necessary.
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+adata, df, doublets, solo, vae = pickle.load(open("adata_post_processed.p", "rb"))
+
+# %% [markdown]
+# ## Normalization
+
 # %%
+adata.X.sum(axis=1)
+
+# %%
+sc.pp.normalize_total(adata, target_sum=1e4) 
+
+# %%
+adata.X.sum(axis=1)
+
+# %%
+sc.pp.log1p(adata)
+
+# %%
+adata.X.sum(axis=1)
+
+# %% {"tags": []}
+adata.raw = adata
