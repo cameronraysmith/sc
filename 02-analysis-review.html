@@ -2,13 +2,15 @@
 <html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="RNA Velocity review" href="03-velocity-review.html" /><link rel="prev" title="AnnData review" href="01-anndata-review.html" />
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Velocity review" href="03-velocity-review.html" /><link rel="prev" title="Single cell analysis" href="index.html" />
 
     <meta name="generator" content="sphinx-5.2.2, furo 2022.09.15"/>
-        <title>Basic single-cell analysis - Single cell analysis</title>
+        <title>Analysis review - Single cell analysis</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=9ec31e2665bf879c1d47d93a8ec4893870ee1e45" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     
     
@@ -155,9 +157,8 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="01-anndata-review.html">AnnData review</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Basic single-cell analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="03-velocity-review.html">RNA Velocity review</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Analysis review</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03-velocity-review.html">Velocity review</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
 </ul>
@@ -465,8 +466,8 @@ div.rendered_html tbody tr:hover {
   <a href="https://mybinder.org/v2/gh/cameronraysmith/sc/master?filepath=source/02-analysis-review.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a> or
   <a href="https://colab.research.google.com/github/cameronraysmith/sc/blob/master/source/02-analysis-review.ipynb"><img alt="Colab badge" src="https://colab.research.google.com/assets/colab-badge.svg" style="vertical-align:text-bottom"></a>
   </span>
-</div><div class="section" id="Basic-single-cell-analysis">
-<h1>Basic single-cell analysis<a class="headerlink" href="#Basic-single-cell-analysis" title="Permalink to this heading">§</a></h1>
+</div><div class="section" id="Analysis-review">
+<h1>Analysis review<a class="headerlink" href="#Analysis-review" title="Permalink to this heading">§</a></h1>
 <div class="section" id="Overview">
 <h2>Overview<a class="headerlink" href="#Overview" title="Permalink to this heading">§</a></h2>
 <p>This notebook follows the tutorial by <a class="reference external" href="https://github.com/mousepixels/sanbomics/blob/main/single_cell_analysis_complete_class.ipynb">mousepixels/sanbomics</a>, which has an accompanying <a class="reference external" href="https://youtu.be/uvyG9yLuNSE?t=319">screencast</a>.</p>
@@ -489,7 +490,7 @@ div.rendered_html tbody tr:hover {
 <h2>Setup<a class="headerlink" href="#Setup" title="Permalink to this heading">§</a></h2>
 <div class="section" id="Import-libraries">
 <h3>Import libraries<a class="headerlink" href="#Import-libraries" title="Permalink to this heading">§</a></h3>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
@@ -499,9 +500,22 @@ div.rendered_html tbody tr:hover {
 
 <span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">scanpy</span> <span class="k">as</span> <span class="nn">sc</span>
+<span class="kn">import</span> <span class="nn">scvi</span>
 <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Global seed set to 0
+/usr/lib/python3.10/site-packages/pytorch_lightning/utilities/warnings.py:53: LightningDeprecationWarning: pytorch_lightning.utilities.warnings.rank_zero_deprecation has been deprecated in v1.6 and will be removed in v1.8. Use the equivalent function from the pytorch_lightning.utilities.rank_zero module instead.
+  new_rank_zero_deprecation(
+/usr/lib/python3.10/site-packages/pytorch_lightning/utilities/warnings.py:58: LightningDeprecationWarning: The `pytorch_lightning.loggers.base.rank_zero_experiment` is deprecated in v1.7 and will be removed in v1.9. Please use `pytorch_lightning.loggers.logger.rank_zero_experiment` instead.
+  return new_rank_zero_deprecation(*args, **kwargs)
+</pre></div></div>
 </div>
 </div>
 <div class="section" id="Setup-plotting">
@@ -1006,26 +1020,6 @@ PairwiseArrays with keys:
 </div>
 <div class="section" id="Doublet-removal">
 <h2>Doublet removal<a class="headerlink" href="#Doublet-removal" title="Permalink to this heading">§</a></h2>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scvi</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-Global seed set to 0
-/usr/lib/python3.10/site-packages/pytorch_lightning/utilities/warnings.py:53: LightningDeprecationWarning: pytorch_lightning.utilities.warnings.rank_zero_deprecation has been deprecated in v1.6 and will be removed in v1.8. Use the equivalent function from the pytorch_lightning.utilities.rank_zero module instead.
-  new_rank_zero_deprecation(
-/usr/lib/python3.10/site-packages/pytorch_lightning/utilities/warnings.py:58: LightningDeprecationWarning: The `pytorch_lightning.loggers.base.rank_zero_experiment` is deprecated in v1.7 and will be removed in v1.9. Please use `pytorch_lightning.loggers.logger.rank_zero_experiment` instead.
-  return new_rank_zero_deprecation(*args, **kwargs)
-</pre></div></div>
-</div>
 <div class="section" id="Filter-transcripts-by-minimum-number-of-cells-with-non-zero-counts">
 <h3>Filter transcripts by minimum number of cells with non-zero counts<a class="headerlink" href="#Filter-transcripts-by-minimum-number-of-cells-with-non-zero-counts" title="Permalink to this heading">§</a></h3>
 <p>We may choose to filter out transcript types that are detected in a relatively small number of cells. The optimum threshold is not known. Here we use 10 as a base case.</p>
@@ -1286,7 +1280,7 @@ AnnData object with n_obs × n_vars = 6099 × 19896
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/02-analysis-review_46_1.svg" src="_images/02-analysis-review_46_1.svg" /></div>
+<img alt="_images/02-analysis-review_45_1.svg" src="_images/02-analysis-review_45_1.svg" /></div>
 </div>
 </div>
 <div class="section" id="Select-highly-variable-genes">
@@ -2050,7 +2044,7 @@ scvi.external.solo._model.SOLO
 </div>
 <p>Plotting the distribution of doublet-singlet score differences we see there are a large fraction that marginally favor doublet to singlet.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">prediction</span> <span class="o">==</span> <span class="s2">&quot;doublet&quot;</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;dif&quot;</span><span class="p">)</span>
@@ -2058,7 +2052,7 @@ scvi.external.solo._model.SOLO
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -2070,7 +2064,7 @@ scvi.external.solo._model.SOLO
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/02-analysis-review_75_1.svg" src="_images/02-analysis-review_75_1.svg" /></div>
+<img alt="_images/02-analysis-review_74_1.svg" src="_images/02-analysis-review_74_1.svg" /></div>
 </div>
 <p>Since we would like to avoid unnecessarily discarding barcodes, we will arbitrarily retain those with a score from zero to one (however this is not intended to be principled).</p>
 <div class="nbinput docutils container">
@@ -2195,7 +2189,7 @@ scvi.external.solo._model.SOLO
 </div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">doublets</span><span class="p">[</span><span class="n">doublets</span><span class="o">.</span><span class="n">prediction</span> <span class="o">==</span> <span class="s2">&quot;doublet&quot;</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;dif&quot;</span><span class="p">)</span>
@@ -2203,7 +2197,7 @@ scvi.external.solo._model.SOLO
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -2215,7 +2209,7 @@ scvi.external.solo._model.SOLO
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/02-analysis-review_78_1.svg" src="_images/02-analysis-review_78_1.svg" /></div>
+<img alt="_images/02-analysis-review_77_1.svg" src="_images/02-analysis-review_77_1.svg" /></div>
 </div>
 </div>
 <div class="section" id="Save/load-checkpoint">
@@ -2231,7 +2225,7 @@ scvi.external.solo._model.SOLO
 </div>
 <p>Variables can be reloaded if necessary.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="n">doublets</span><span class="p">,</span> <span class="n">solo</span><span class="p">,</span> <span class="n">vae</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;session_09282022.p&quot;</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">))</span>
@@ -2242,7 +2236,7 @@ scvi.external.solo._model.SOLO
 <div class="section" id="Reload-data-and-filter-doublets">
 <h3>Reload data and filter doublets<a class="headerlink" href="#Reload-data-and-filter-doublets" title="Permalink to this heading">§</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[57]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>
@@ -2253,7 +2247,7 @@ scvi.external.solo._model.SOLO
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[57]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -2430,18 +2424,18 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">RNA Velocity review</div>
+                <div class="title">Velocity review</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="01-anndata-review.html">
+          <a class="prev-page" href="index.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">AnnData review</div>
+                <div class="title">Home</div>
                 
               </div>
             </a>
@@ -2458,6 +2452,11 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
           </div>
           <div class="right-details">
             <div class="icons">
+              <a class="muted-link " href="https://github.com/cameronraysmith/sc" aria-label="GitHub">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            </a>
               
             </div>
           </div>
@@ -2477,7 +2476,7 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Basic single-cell analysis</a><ul>
+<li><a class="reference internal" href="#">Analysis review</a><ul>
 <li><a class="reference internal" href="#Overview">Overview</a></li>
 <li><a class="reference internal" href="#Setup">Setup</a><ul>
 <li><a class="reference internal" href="#Import-libraries">Import libraries</a></li>
@@ -2523,6 +2522,8 @@ View of AnnData object with n_obs × n_vars = 5648 × 34546
     <script src="_static/scripts/furo.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
+    <script src="_static/tabs.js"></script>
+    <script src="_static/design-tabs.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "tags": "ams", "useLabelIds": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
