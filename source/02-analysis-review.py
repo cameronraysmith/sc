@@ -69,10 +69,12 @@
 # %% [markdown] {"incorrectly_encoded_metadata": "tags=[] slideshow={\"slide_type\": \"subslide\"} jp-MarkdownHeadingCollapsed=true", "slideshow": {"slide_type": "subslide"}, "tags": []}
 # ### Import libraries
 
-# %% {"tags": [], "slideshow": {"slide_type": "fragment"}, "jupyter": {"outputs_hidden": true}}
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
 from inspect import getmembers
 from pprint import pprint
 from types import FunctionType
+from datetime import datetime
+import os
 
 import numpy as np
 import pickle
@@ -119,7 +121,7 @@ plt.rcParams.update(
 # %% [markdown] {"incorrectly_encoded_metadata": "tags=[] slideshow={\"slide_type\": \"subslide\"} jp-MarkdownHeadingCollapsed=true", "slideshow": {"slide_type": "subslide"}, "tags": []}
 # ### Utility functions
 
-# %% {"tags": [], "slideshow": {"slide_type": "fragment"}}
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
 def attributes(obj):
     """
     get object attributes
@@ -140,6 +142,24 @@ def print_attributes(obj):
     """
     pprint(attributes(obj))
 
+
+# %% [markdown]
+# ### Set output folder for session
+
+# %% {"tags": []}
+now = datetime.now()
+timestamp = now.strftime("%Y%m%d_%H%M%S")
+
+# %% {"tags": []}
+output_directory = f"output/{timestamp}"
+
+# %%
+if not os.path.exists(output_directory):
+    os.makedirs(output_directory)
+    print(f"created {output_directory}")
+
+# %% {"tags": []}
+print(f"created {output_directory}")
 
 # %% [markdown] {"slideshow": {"slide_type": "slide"}, "tags": []}
 # ## Import data
@@ -213,34 +233,34 @@ type(adata)
 # %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
 adata.X.shape
 
-# %% {"tags": [], "slideshow": {"slide_type": "subslide"}}
+# %% {"slideshow": {"slide_type": "subslide"}, "tags": []}
 print_attributes(adata)
 
-# %% {"tags": [], "slideshow": {"slide_type": "subslide"}}
+# %% {"slideshow": {"slide_type": "subslide"}, "tags": []}
 adata.obs
 
 # %% [markdown]
 # Gene names are saved as `adata.var`.
 
-# %% {"tags": [], "slideshow": {"slide_type": "fragment"}}
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
 adata.var
 
-# %% {"tags": [], "slideshow": {"slide_type": "subslide"}}
+# %% {"slideshow": {"slide_type": "subslide"}, "tags": []}
 adata.obs_names
 
-# %% {"tags": [], "slideshow": {"slide_type": "fragment"}}
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
 adata.var_names
 
 # %% [markdown]
 # There are no layers in this data set.
 
-# %% {"tags": [], "slideshow": {"slide_type": "subslide"}}
+# %% {"slideshow": {"slide_type": "subslide"}, "tags": []}
 adata.layers
 
 # %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
 # There are no multidimensional observations or variables.
 
-# %% {"tags": [], "slideshow": {"slide_type": "fragment"}}
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
 print(adata.obsm)
 print(adata.varm)
 print(adata.obsp)
@@ -279,7 +299,7 @@ adata.var
 # %%
 adata.var.describe()
 
-# %% {"tags": [], "slideshow": {"slide_type": "subslide"}}
+# %% {"slideshow": {"slide_type": "subslide"}, "tags": []}
 sns.histplot(adata.var['n_cells'])
 
 # %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
@@ -315,23 +335,23 @@ adata.var
 # %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
 adata.uns
 
-# %% {"tags": [], "slideshow": {"slide_type": "fragment"}}
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
 scvi.model.SCVI.setup_anndata(adata)
 
-# %% {"tags": [], "slideshow": {"slide_type": "fragment"}}
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
 adata.uns
 
 # %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
 # Train the `scvi` model.
 
-# %% {"tags": [], "slideshow": {"slide_type": "fragment"}}
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
 vae = scvi.model.SCVI(adata)
 vae.train()
 
 # %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
 # After training the model `adata.obs` now contains `_scvi_batch` and `scvi_labels` annotations.
 
-# %% {"tags": [], "slideshow": {"slide_type": "fragment"}}
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
 adata
 
 # %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
@@ -374,7 +394,7 @@ df
 # %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
 # Plotting the distribution of doublet-singlet score differences we see there are a large fraction that marginally favor doublet to singlet.
 
-# %% {"tags": [], "slideshow": {"slide_type": "fragment"}}
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
 sns.histplot(df[df.prediction == "doublet"], x="dif")
 
 # %% [markdown]
@@ -393,14 +413,22 @@ sns.histplot(doublets[doublets.prediction == "doublet"], x="dif")
 # %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
 # Save current variables to file.
 
-# %% {"tags": [], "slideshow": {"slide_type": "fragment"}}
-pickle.dump([adata, df, doublets, solo, vae], open("session_09282022.p", "wb"))
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+pickle.dump([df, doublets, solo, vae], open(f"{output_directory}/auxiliary.p", "wb"))
 
 # %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
 # Variables can be reloaded if necessary.
 
 # %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
-adata, df, doublets, solo, vae = pickle.load(open("session_09282022.p", "rb"))
+df, doublets, solo, vae = pickle.load(open(f"{output_directory}/auxiliary.p", "rb"))
+
+# %% {"tags": []}
+adata.write(f"{output_directory}/adata_doublets.h5ad", compression="gzip")
+
+# %% {"tags": []}
+bdata_doublets = None
+bdata_doublets = sc.read_h5ad(f"{output_directory}/adata_doublets.h5ad")
+bdata_doublets
 
 # %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
 # ### Reload data and filter doublets
@@ -494,7 +522,7 @@ adata.var.sort_values("n_cells_by_counts")
 # %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
 # Sorting barcodes by total counts we see a minimum around 400 suggesting a previously applied filter upstream of this pre-processing.
 
-# %% {"tags": [], "slideshow": {"slide_type": "fragment"}}
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
 adata.obs.sort_values("total_counts")
 
 # %% {"slideshow": {"slide_type": "subslide"}, "tags": []}
@@ -549,7 +577,7 @@ sc.pl.violin(adata, ['n_genes_by_counts', 'total_counts', 'pct_counts_mt', 'pct_
 upper_lim = np.quantile(adata.obs.n_genes_by_counts.values, .98)
 upper_lim
 
-# %% {"tags": [], "slideshow": {"slide_type": "fragment"}}
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
 adata = adata[adata.obs.n_genes_by_counts < upper_lim]
 
 # %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
@@ -577,34 +605,168 @@ adata
 # ### Save/load checkpoint 
 
 # %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
-# Save current variables to file.
+# Save current version of post processed data to file.
 
-# %% {"tags": [], "slideshow": {"slide_type": "fragment"}}
-pickle.dump([adata, df, doublets, solo, vae], open("adata_post_processed.p", "wb"))
+# %% {"tags": []}
+adata.write(f"{output_directory}/adata_post_processed.h5ad", compression="gzip")
 
 # %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
 # Variables can be reloaded if necessary.
 
 # %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
-adata, df, doublets, solo, vae = pickle.load(open("adata_post_processed.p", "rb"))
+df, doublets, solo, vae = pickle.load(open(f"{output_directory}/auxiliary.p", "rb"))
 
-# %% [markdown]
+# %%
+bdata_post_processed = None
+bdata_post_processed = sc.read_h5ad(f"{output_directory}/adata_post_processed.h5ad")
+bdata_post_processed
+
+# %% [markdown] {"slideshow": {"slide_type": "slide"}, "tags": []}
 # ## Normalization
 
-# %%
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
 adata.X.sum(axis=1)
 
-# %%
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
 sc.pp.normalize_total(adata, target_sum=1e4) 
 
-# %%
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
 adata.X.sum(axis=1)
 
-# %%
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
 sc.pp.log1p(adata)
 
-# %%
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
 adata.X.sum(axis=1)
 
-# %% {"tags": []}
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
 adata.raw = adata
+
+# %% [markdown] {"slideshow": {"slide_type": "slide"}, "tags": []}
+# ## Clustering
+
+# %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
+# ### Estimate expression variability
+
+# %% {"slideshow": {"slide_type": "skip"}, "tags": []}
+adata.var
+
+# %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
+# Here we use the `scanpy` pre-processing [function for highly-variable genes](https://scanpy.readthedocs.io/en/latest/generated/scanpy.pp.highly_variable_genes.html) to annotate genes by their expression variability across cells.
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+sc.pp.highly_variable_genes(adata, n_top_genes = 2000)
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+adata.var
+
+# %% {"slideshow": {"slide_type": "subslide"}, "tags": []}
+sc.pl.highly_variable_genes(adata)
+
+# %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
+# ### Filter highly variable genes
+
+# %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
+# We finally filter for the highly variable genes noting the change in `n_vars`.
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+adata
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+adata = adata[:, adata.var.highly_variable]
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+adata
+
+# %% [markdown] {"slideshow": {"slide_type": "slide"}, "tags": []}
+# ### Principle components analysis
+
+# %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
+# #### Regression and rescaling
+
+# %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
+# We would like to avoid interpreting differences that derive from differences in total counts, percentage of mitochondrial counts, and percentage of ribosomal counts. We can reduce the impact of these differences using the [`scanpy` regress out function](https://scanpy.readthedocs.io/en/latest/generated/scanpy.pp.regress_out.html).
+#
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+sc.pp.regress_out(adata, ['total_counts', 'pct_counts_mt', 'pct_counts_ribo'])
+
+# %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
+# We also want to normalize the data [scaling](https://scanpy.readthedocs.io/en/latest/generated/scanpy.pp.scale.html) it to zero mean and unit variance while clipping any remaining outliers above 10.
+
+# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
+sc.pp.scale(adata, max_value=10)
+
+# %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
+# #### Perform PCA
+
+# %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
+# PCA can be performed with the [`scanpy` PCA tool](https://scanpy.readthedocs.io/en/latest/generated/scanpy.tl.pca.html).
+
+# %%
+sc.tl.pca(adata, svd_solver='arpack')
+
+# %%
+sc.pl.pca_variance_ratio(adata, log=True, n_pcs = 50)
+
+# %% [markdown]
+# ### Clustering
+
+# %% [markdown]
+# The UMAP algorithm contains a method for estimating distances between cells to which an interface is provided by [scanpy neighbors](https://scanpy.readthedocs.io/en/latest/generated/scanpy.pp.neighbors.html#scanpy.pp.neighbors).
+
+# %%
+sc.pp.neighbors(adata, n_pcs = 30)
+
+# %% [markdown]
+# This function adds `distances` and `connectivities` as pairwise relationships among the cells in `adata.obsp`.
+
+# %%
+adata
+
+# %%
+adata.obsp
+
+# %% [markdown]
+# We can now plot the UMAP embedding, but note there are no defined clusters of cells even though they may be hypothesized visually.
+
+# %%
+sc.tl.umap(adata)
+
+# %%
+sc.pl.umap(adata)
+
+# %% [markdown]
+# The [`scanpy` interface to the Leiden algorithm](https://scanpy.readthedocs.io/en/latest/generated/scanpy.tl.leiden.html) can be used to cluster cells into subgroups.
+
+# %%
+sc.tl.leiden(adata, resolution = 0.5)
+
+# %%
+adata.obs
+
+# %% [markdown]
+# We can now color the UMAP embedding by the Louvain clusters.
+
+# %%
+sc.pl.umap(adata, color=['leiden'])
+
+# %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
+# ### Save/load checkpoint 
+
+# %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
+# Save current data with cluster information to file.
+
+# %% {"tags": []}
+adata.write(f"{output_directory}/adata_clustered.h5ad", compression="gzip")
+
+# %%
+adata
+
+# %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
+# Variables can be reloaded if necessary.
+
+# %%
+bdata_clustered = None
+bdata_clustered = sc.read_h5ad(f"{output_directory}/adata_clustered.h5ad")
+bdata_clustered
