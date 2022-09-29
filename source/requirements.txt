@@ -46,5 +46,6 @@ sphinx-book-theme
 nbsphinx 
 sphinxcontrib-bibtex 
 sphinxcontrib-svg2pdfconverter 
-sphinx-last-updated-by-git 
+sphinx-design
+sphinx-inline-tabs
 sphinx-copybutton
