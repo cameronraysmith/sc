@@ -38,7 +38,7 @@ jupyter:
 ---
 
 <!-- #region {"slideshow": {"slide_type": "slide"}, "tags": []} -->
-# Basic single-cell analysis
+# Analysis review
 <!-- #endregion -->
 
 <!-- #region {"slideshow": {"slide_type": "subslide"}, "tags": []} -->
@@ -74,13 +74,14 @@ This notebook makes extensive use of <cite data-cite="Wolf2018-nu">Wolf et al. (
 ### Import libraries
 <!-- #endregion -->
 
-```python tags=[] slideshow={"slide_type": "fragment"}
+```python tags=[] slideshow={"slide_type": "fragment"} jupyter={"outputs_hidden": true}
 from inspect import getmembers
 from pprint import pprint
 from types import FunctionType
 
 import pickle
 import scanpy as sc
+import scvi
 import seaborn as sns
 ```
 
@@ -277,10 +278,6 @@ The data appears to contain reads mapped to 6099 cell-associated barcodes and 34
 ## Doublet removal
 <!-- #endregion -->
 
-```python slideshow={"slide_type": "fragment"} tags=[]
-import scvi
-```
-
 <!-- #region {"slideshow": {"slide_type": "subslide"}, "tags": []} -->
 ### Filter transcripts by minimum number of cells with non-zero counts
 <!-- #endregion -->
@@ -448,7 +445,7 @@ doublets = df[(df.prediction == 'doublet') & (df.dif > 1)]
 doublets
 ```
 
-```python
+```python tags=[]
 sns.histplot(doublets[doublets.prediction == "doublet"], x="dif")
 ```
 

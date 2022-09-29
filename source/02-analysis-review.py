@@ -38,7 +38,7 @@
 # ---
 
 # %% [markdown] {"slideshow": {"slide_type": "slide"}, "tags": []}
-# # Basic single-cell analysis
+# # Analysis review
 
 # %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
 # ## Overview
@@ -69,13 +69,14 @@
 # %% [markdown] {"incorrectly_encoded_metadata": "tags=[] slideshow={\"slide_type\": \"subslide\"} jp-MarkdownHeadingCollapsed=true", "slideshow": {"slide_type": "subslide"}, "tags": []}
 # ### Import libraries
 
-# %% {"tags": [], "slideshow": {"slide_type": "fragment"}}
+# %% {"tags": [], "slideshow": {"slide_type": "fragment"}, "jupyter": {"outputs_hidden": true}}
 from inspect import getmembers
 from pprint import pprint
 from types import FunctionType
 
 import pickle
 import scanpy as sc
+import scvi
 import seaborn as sns
 
 # %% [markdown] {"incorrectly_encoded_metadata": "tags=[] slideshow={\"slide_type\": \"subslide\"} jp-MarkdownHeadingCollapsed=true", "slideshow": {"slide_type": "subslide"}, "tags": []}
@@ -249,9 +250,6 @@ print(adata.varp)
 # %% [markdown] {"slideshow": {"slide_type": "slide"}, "tags": []}
 # ## Doublet removal
 
-# %% {"slideshow": {"slide_type": "fragment"}, "tags": []}
-import scvi
-
 # %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}
 # ### Filter transcripts by minimum number of cells with non-zero counts
 
@@ -384,7 +382,7 @@ sns.histplot(df[df.prediction == "doublet"], x="dif")
 doublets = df[(df.prediction == 'doublet') & (df.dif > 1)]
 doublets
 
-# %%
+# %% {"tags": []}
 sns.histplot(doublets[doublets.prediction == "doublet"], x="dif")
 
 # %% [markdown] {"slideshow": {"slide_type": "subslide"}, "tags": []}

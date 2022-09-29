@@ -144,7 +144,7 @@
 # ---
 
 # %% [markdown] {"hideCode": false, "hidePrompt": false, "slideshow": {"slide_type": "slide"}, "tags": []}
-# # RNA Velocity review
+# # Velocity review
 
 # %% [markdown] {"slideshow": {"slide_type": "fragment"}, "tags": []}
 # Here we review basic RNA velocity analysis.

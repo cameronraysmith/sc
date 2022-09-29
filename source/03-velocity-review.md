@@ -144,7 +144,7 @@ jupyter:
 ---
 
 <!-- #region {"hideCode": false, "hidePrompt": false, "slideshow": {"slide_type": "slide"}, "tags": []} -->
-# RNA Velocity review
+# Velocity review
 <!-- #endregion -->
 
 <!-- #region {"slideshow": {"slide_type": "fragment"}, "tags": []} -->
