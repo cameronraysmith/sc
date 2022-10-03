@@ -108,6 +108,7 @@ def cli(input_directory="data/GSE171524/supplementary/"):
     """
     now = datetime.now()
     timestamp = now.strftime("%Y%m%d_%H%M%S")
+    # timestamp = "20220930_215746"
 
     output_directory = f"output/{timestamp}"
 
@@ -123,24 +124,35 @@ def cli(input_directory="data/GSE171524/supplementary/"):
     ribo_genes = pd.read_table(ribo_url, skiprows=2, header = None)
     ribo_genes
 
-    # run in serial
-    out = []
     # filenames = os.listdir(input_directory)
     filenames = [os.path.basename(x) for x in glob.glob(input_directory+"*.csv*")]
+
     print(filenames)
-    for file in filenames:
-        print(f"processing {file}")
-        out.append(pp(input_directory + file, ribo_genes, output_directory))
     
-    # run in parallel with ray
+    out = []
+    
+    # run in serial
+    for file in filenames:
+        sample_id = file.split("_")[1]
+        outfile = f"{output_directory}/adata_{sample_id}.h5ad"
+        if os.path.exists(outfile):
+            print(f"{outfile} already exists")
+            out.append(sc.read_h5ad(outfile))
+        else:
+            print(f"processing {file}")
+            out.append(pp(input_directory + file, ribo_genes, output_directory))
+    
+    # # run in parallel with ray
     # def parmap(f, list):
-    #     return [f.remote(input_directory + x, ribo_genes, output_directory) for x in list]
-    #
-    # result_ids = parmap(pp, os.listdir(input_directory))
+    #    return [f.remote(input_directory + x, ribo_genes, output_directory) for x in list]
+    
+    # result_ids = parmap(pp, filenames)
     # out = ray.get(result_ids)
     
+    print("combining AnnData objects")
     adata = sc.concat(out)
-
+    
+    print("writing combined AnnData h5ad")
     adata.write(f"{output_directory}/adata_combined.h5ad", compression="gzip")
     print(f"wrote combined data to {output_directory}/adata_combined.h5ad")
 
