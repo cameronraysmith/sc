@@ -80,6 +80,7 @@ import numpy as np
 import pickle
 import pandas as pd
 import scanpy as sc
+from scipy.sparse import csr_matrix
 import scvi
 import seaborn as sns
 
@@ -149,17 +150,18 @@ def print_attributes(obj):
 # %% {"tags": []}
 now = datetime.now()
 timestamp = now.strftime("%Y%m%d_%H%M%S")
+timestamp = "20220930_215746"
 
 # %% {"tags": []}
 output_directory = f"output/{timestamp}"
 
-# %%
+# %% {"tags": []}
 if not os.path.exists(output_directory):
     os.makedirs(output_directory)
     print(f"created {output_directory}")
 
 # %% {"tags": []}
-print(f"created {output_directory}")
+print(f"using {output_directory}")
 
 # %% [markdown] {"slideshow": {"slide_type": "slide"}, "tags": []}
 # ## Import data
@@ -770,3 +772,174 @@ adata
 bdata_clustered = None
 bdata_clustered = sc.read_h5ad(f"{output_directory}/adata_clustered.h5ad")
 bdata_clustered
+
+# %% [markdown]
+# ## Sample integration
+
+# %% [markdown]
+# ### Batch processing
+
+# %% [markdown]
+# See the command line program [scpreprocess](./sc/scpreprocess.py). It can be installed with
+#
+# ```sh
+# $ pip install -e .
+# ```
+#
+# and run, for example
+#
+# ```sh
+# $ scpreprocess  --input-directory="data/GSE171524/supplementary/"
+# ```
+#
+# Where the contents of input-directory was, in this case, created by running [download_geo_data.sh](./data/download_geo_data.sh) on `GSE171524`. In this case, `scpreprocess` requires about 30GB of RAM and about 30 - 60 minutes to complete with 1 NVIDIA Tesla T4 GPU.
+
+# %% [markdown]
+# ### Filter genes
+
+# %% {"tags": []}
+adata = None
+adata = sc.read_h5ad(f"{output_directory}/adata_combined.h5ad")
+adata
+
+# %% {"tags": []}
+sc.pp.filter_genes(adata, min_cells = 10)
+
+# %%
+adata.X = csr_matrix(adata.X)
+
+# %%
+adata.write(f"{output_directory}/adata_combined_filtered.h5ad", compression="gzip")
+
+# %%
+adata = None
+adata = sc.read_h5ad(f"{output_directory}/adata_combined_filtered.h5ad")
+adata
+
+# %%
+adata.obs.groupby('Sample').count()
+
+# %%
+sc.pp.filter_genes(adata, min_cells = 100)
+
+# %%
+adata
+
+# %%
+adata.layers['counts'] = adata.X.copy()
+
+# %%
+adata
+
+# %% [markdown]
+# ### Normalize
+
+# %%
+sc.pp.normalize_total(adata, target_sum = 1e4)
+sc.pp.log1p(adata)
+adata.raw = adata
+
+# %%
+adata.obs.head()
+
+# %%
+scvi.model.SCVI.setup_anndata(adata, layer = "counts",
+                             categorical_covariate_keys=["Sample"], # batch, technology
+                             continuous_covariate_keys=['pct_counts_mt', 'total_counts', 'pct_counts_ribo'])
+
+# %%
+model = scvi.model.SCVI(adata)
+
+# %%
+model.train()
+
+# %% {"tags": []}
+# pickle.dump([model], open(f"{output_directory}/model_combined.p", "wb"))
+model.save(f"{output_directory}/model_combined/")
+# model = scvi.model.SCVI.load(f"{output_directory}/model_combined/")
+
+# %%
+adata.obsm['X_scVI'] = model.get_latent_representation()
+
+# %%
+adata.layers['scvi_normalized'] = model.get_normalized_expression(library_size = 1e4)
+
+# %% [markdown]
+# ### Cluster
+
+# %%
+sc.pp.neighbors(adata, use_rep = 'X_scVI')
+
+# %% {"tags": []}
+sc.tl.umap(adata)
+sc.tl.leiden(adata, resolution = 0.5)
+
+# %% {"tags": []}
+sc.pl.umap(adata, color = ['leiden'], frameon = True)
+
+# %%
+sc.pl.umap(adata, color = ['Sample'], frameon = True)
+
+# %% [markdown]
+# ### Save/load checkpoint
+
+# %% {"tags": []}
+adata.write(f"{output_directory}/adata_integrated.h5ad", compression="gzip")
+
+# %%
+adata = None
+adata = sc.read_h5ad(f"{output_directory}/adata_integrated.h5ad")
+adata
+
+# %% [markdown]
+# ## Marker identification
+
+# %% [markdown]
+# Increase cluster resolution from 0.5 to [default value of 1](https://scanpy.readthedocs.io/en/latest/generated/scanpy.tl.leiden.html#scanpy.tl.leiden).
+
+# %%
+sc.tl.leiden(adata, resolution = 1)
+
+# %% {"jupyter": {"outputs_hidden": true}, "tags": []}
+sc.tl.rank_genes_groups(adata, 'leiden')
+
+# %% [markdown]
+# Plot genes that distinguish each cluster.
+
+# %%
+sc.pl.rank_genes_groups(adata, n_genes=20, sharey=False)
+
+# %% [markdown]
+# Filter markers by adjusted p-value and log fold change.
+
+# %%
+markers = sc.get.rank_genes_groups_df(adata, None)
+markers = markers[(markers.pvals_adj < 0.05) & (markers.logfoldchanges > .5)]
+markers
+# %% [markdown]
+#
+#
+
+# %% [markdown]
+# Estimate differential expression for leiden clusters.
+
+# %%
+markers_scvi = model.differential_expression(groupby = 'leiden')
+markers_scvi
+
+# %% [markdown]
+# Filter differentially expressed genes by FDR and log fold change.
+
+# %%
+markers_scvi = markers_scvi[(markers_scvi['is_de_fdr_0.05']) & (markers_scvi.lfc_mean > .5)]
+markers_scvi
+
+# %% {"tags": []}
+sc.pl.umap(adata, color = ['leiden'], frameon = False, legend_loc = "on data")
+
+# %%
+sc.pl.umap(adata, color = ['PTPRC', 'CD3E', 'CD4'], frameon = False, layer = 'scvi_normalized', vmax = 5)
+sc.pl.umap(adata, color = ['PTPRC', 'CD3E', 'CD8A'], frameon = False, layer = 'scvi_normalized', vmax = 5)
+
+sc.pl.umap(adata, color = ['EPCAM', 'MUC1'], frameon = False, layer = 'scvi_normalized', vmax = 5)
+sc.pl.umap(adata, color = ['EPCAM', 'MUC1'], frameon = False, layer = 'scvi_normalized', vmax = 5)
