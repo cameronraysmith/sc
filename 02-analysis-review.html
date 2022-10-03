@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Velocity review" href="03-velocity-review.html" /><link rel="prev" title="Data structures review" href="01-data-structures-review.html" />
 
-    <meta name="generator" content="sphinx-5.2.2, furo 2022.09.29"/>
+    <meta name="generator" content="sphinx-5.2.3, furo 2022.09.29"/>
         <title>Analysis review - Single cell analysis</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=d81277517bee4d6b0349d71bb2661d4890b5617c" />
@@ -505,6 +505,7 @@ div.rendered_html tbody tr:hover {
 <span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">scanpy</span> <span class="k">as</span> <span class="nn">sc</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_matrix</span>
 <span class="kn">import</span> <span class="nn">scvi</span>
 <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
 </pre></div>
@@ -614,6 +615,7 @@ Global seed set to 0
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
 <span class="n">timestamp</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">_%H%M%S&quot;</span><span class="p">)</span>
+<span class="n">timestamp</span> <span class="o">=</span> <span class="s2">&quot;20220930_215746&quot;</span>
 </pre></div>
 </div>
 </div>
@@ -625,7 +627,7 @@ Global seed set to 0
 </pre></div>
 </div>
 </div>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
@@ -635,19 +637,11 @@ Global seed set to 0
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-created output/20220929_205816
-</pre></div></div>
-</div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;created </span><span class="si">{</span><span class="n">output_directory</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;using </span><span class="si">{</span><span class="n">output_directory</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -656,7 +650,7 @@ created output/20220929_205816
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-created output/20220929_205816
+using output/20220930_215746
 </pre></div></div>
 </div>
 </div>
@@ -4755,10 +4749,1765 @@ AnnData object with n_obs × n_vars = 5518 × 2000
     obsp: &#39;connectivities&#39;, &#39;distances&#39;
 </pre></div></div>
 </div>
+</div>
+</div>
+<div class="section" id="Sample-integration">
+<h2>Sample integration<a class="headerlink" href="#Sample-integration" title="Permalink to this heading">§</a></h2>
+<div class="section" id="Batch-processing">
+<h3>Batch processing<a class="headerlink" href="#Batch-processing" title="Permalink to this heading">§</a></h3>
+<p>See the command line program <a class="reference external" href="./sc/scpreprocess.py">scpreprocess</a>. It can be installed with</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$ pip install -e .
+</pre></div>
+</div>
+<p>and run, for example</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$ scpreprocess  --input-directory<span class="o">=</span><span class="s2">&quot;data/GSE171524/supplementary/&quot;</span>
+</pre></div>
+</div>
+<p>Where the contents of input-directory was, in this case, created by running <a class="reference external" href="./data/download_geo_data.sh">download_geo_data.sh</a> on <code class="docutils literal notranslate"><span class="pre">GSE171524</span></code>. In this case, <code class="docutils literal notranslate"><span class="pre">scpreprocess</span></code> requires about 30GB of RAM and about 30 - 60 minutes to complete with 1 NVIDIA Tesla T4 GPU.</p>
+</div>
+<div class="section" id="Filter-genes">
+<h3>Filter genes<a class="headerlink" href="#Filter-genes" title="Permalink to this heading">§</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">adata</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_directory</span><span class="si">}</span><span class="s2">/adata_combined.h5ad&quot;</span><span class="p">)</span>
+<span class="n">adata</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+AnnData object with n_obs × n_vars = 98878 × 34546
+    obs: &#39;Sample&#39;, &#39;doublet&#39;, &#39;n_genes&#39;, &#39;n_genes_by_counts&#39;, &#39;total_counts&#39;, &#39;total_counts_mt&#39;, &#39;pct_counts_mt&#39;, &#39;total_counts_ribo&#39;, &#39;pct_counts_ribo&#39;
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">filter_genes</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">min_cells</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_directory</span><span class="si">}</span><span class="s2">/adata_combined_filtered.h5ad&quot;</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">adata</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_directory</span><span class="si">}</span><span class="s2">/adata_combined_filtered.h5ad&quot;</span><span class="p">)</span>
+<span class="n">adata</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+AnnData object with n_obs × n_vars = 98878 × 29029
+    obs: &#39;Sample&#39;, &#39;doublet&#39;, &#39;n_genes&#39;, &#39;n_genes_by_counts&#39;, &#39;total_counts&#39;, &#39;total_counts_mt&#39;, &#39;pct_counts_mt&#39;, &#39;total_counts_ribo&#39;, &#39;pct_counts_ribo&#39;
+    var: &#39;n_cells&#39;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Sample&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>doublet</th>
+      <th>n_genes</th>
+      <th>n_genes_by_counts</th>
+      <th>total_counts</th>
+      <th>total_counts_mt</th>
+      <th>pct_counts_mt</th>
+      <th>total_counts_ribo</th>
+      <th>pct_counts_ribo</th>
+    </tr>
+    <tr>
+      <th>Sample</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>C51ctr</th>
+      <td>5501</td>
+      <td>5501</td>
+      <td>5501</td>
+      <td>5501</td>
+      <td>5501</td>
+      <td>5501</td>
+      <td>5501</td>
+      <td>5501</td>
+    </tr>
+    <tr>
+      <th>C52ctr</th>
+      <td>4055</td>
+      <td>4055</td>
+      <td>4055</td>
+      <td>4055</td>
+      <td>4055</td>
+      <td>4055</td>
+      <td>4055</td>
+      <td>4055</td>
+    </tr>
+    <tr>
+      <th>C53ctr</th>
+      <td>6241</td>
+      <td>6241</td>
+      <td>6241</td>
+      <td>6241</td>
+      <td>6241</td>
+      <td>6241</td>
+      <td>6241</td>
+      <td>6241</td>
+    </tr>
+    <tr>
+      <th>C54ctr</th>
+      <td>3961</td>
+      <td>3961</td>
+      <td>3961</td>
+      <td>3961</td>
+      <td>3961</td>
+      <td>3961</td>
+      <td>3961</td>
+      <td>3961</td>
+    </tr>
+    <tr>
+      <th>C55ctr</th>
+      <td>5088</td>
+      <td>5088</td>
+      <td>5088</td>
+      <td>5088</td>
+      <td>5088</td>
+      <td>5088</td>
+      <td>5088</td>
+      <td>5088</td>
+    </tr>
+    <tr>
+      <th>C56ctr</th>
+      <td>3613</td>
+      <td>3613</td>
+      <td>3613</td>
+      <td>3613</td>
+      <td>3613</td>
+      <td>3613</td>
+      <td>3613</td>
+      <td>3613</td>
+    </tr>
+    <tr>
+      <th>C57ctr</th>
+      <td>4242</td>
+      <td>4242</td>
+      <td>4242</td>
+      <td>4242</td>
+      <td>4242</td>
+      <td>4242</td>
+      <td>4242</td>
+      <td>4242</td>
+    </tr>
+    <tr>
+      <th>L01cov</th>
+      <td>2645</td>
+      <td>2645</td>
+      <td>2645</td>
+      <td>2645</td>
+      <td>2645</td>
+      <td>2645</td>
+      <td>2645</td>
+      <td>2645</td>
+    </tr>
+    <tr>
+      <th>L03cov</th>
+      <td>3583</td>
+      <td>3583</td>
+      <td>3583</td>
+      <td>3583</td>
+      <td>3583</td>
+      <td>3583</td>
+      <td>3583</td>
+      <td>3583</td>
+    </tr>
+    <tr>
+      <th>L04cov</th>
+      <td>3062</td>
+      <td>3062</td>
+      <td>3062</td>
+      <td>3062</td>
+      <td>3062</td>
+      <td>3062</td>
+      <td>3062</td>
+      <td>3062</td>
+    </tr>
+    <tr>
+      <th>L04covaddon</th>
+      <td>3933</td>
+      <td>3933</td>
+      <td>3933</td>
+      <td>3933</td>
+      <td>3933</td>
+      <td>3933</td>
+      <td>3933</td>
+      <td>3933</td>
+    </tr>
+    <tr>
+      <th>L05cov</th>
+      <td>2382</td>
+      <td>2382</td>
+      <td>2382</td>
+      <td>2382</td>
+      <td>2382</td>
+      <td>2382</td>
+      <td>2382</td>
+      <td>2382</td>
+    </tr>
+    <tr>
+      <th>L06cov</th>
+      <td>5737</td>
+      <td>5737</td>
+      <td>5737</td>
+      <td>5737</td>
+      <td>5737</td>
+      <td>5737</td>
+      <td>5737</td>
+      <td>5737</td>
+    </tr>
+    <tr>
+      <th>L07cov</th>
+      <td>4289</td>
+      <td>4289</td>
+      <td>4289</td>
+      <td>4289</td>
+      <td>4289</td>
+      <td>4289</td>
+      <td>4289</td>
+      <td>4289</td>
+    </tr>
+    <tr>
+      <th>L08cov</th>
+      <td>3474</td>
+      <td>3474</td>
+      <td>3474</td>
+      <td>3474</td>
+      <td>3474</td>
+      <td>3474</td>
+      <td>3474</td>
+      <td>3474</td>
+    </tr>
+    <tr>
+      <th>L09cov</th>
+      <td>3117</td>
+      <td>3117</td>
+      <td>3117</td>
+      <td>3117</td>
+      <td>3117</td>
+      <td>3117</td>
+      <td>3117</td>
+      <td>3117</td>
+    </tr>
+    <tr>
+      <th>L10cov</th>
+      <td>1357</td>
+      <td>1357</td>
+      <td>1357</td>
+      <td>1357</td>
+      <td>1357</td>
+      <td>1357</td>
+      <td>1357</td>
+      <td>1357</td>
+    </tr>
+    <tr>
+      <th>L11cov</th>
+      <td>2682</td>
+      <td>2682</td>
+      <td>2682</td>
+      <td>2682</td>
+      <td>2682</td>
+      <td>2682</td>
+      <td>2682</td>
+      <td>2682</td>
+    </tr>
+    <tr>
+      <th>L12cov</th>
+      <td>3298</td>
+      <td>3298</td>
+      <td>3298</td>
+      <td>3298</td>
+      <td>3298</td>
+      <td>3298</td>
+      <td>3298</td>
+      <td>3298</td>
+    </tr>
+    <tr>
+      <th>L13cov</th>
+      <td>4293</td>
+      <td>4293</td>
+      <td>4293</td>
+      <td>4293</td>
+      <td>4293</td>
+      <td>4293</td>
+      <td>4293</td>
+      <td>4293</td>
+    </tr>
+    <tr>
+      <th>L15cov</th>
+      <td>3635</td>
+      <td>3635</td>
+      <td>3635</td>
+      <td>3635</td>
+      <td>3635</td>
+      <td>3635</td>
+      <td>3635</td>
+      <td>3635</td>
+    </tr>
+    <tr>
+      <th>L16cov</th>
+      <td>1593</td>
+      <td>1593</td>
+      <td>1593</td>
+      <td>1593</td>
+      <td>1593</td>
+      <td>1593</td>
+      <td>1593</td>
+      <td>1593</td>
+    </tr>
+    <tr>
+      <th>L17cov</th>
+      <td>3952</td>
+      <td>3952</td>
+      <td>3952</td>
+      <td>3952</td>
+      <td>3952</td>
+      <td>3952</td>
+      <td>3952</td>
+      <td>3952</td>
+    </tr>
+    <tr>
+      <th>L18cov</th>
+      <td>2440</td>
+      <td>2440</td>
+      <td>2440</td>
+      <td>2440</td>
+      <td>2440</td>
+      <td>2440</td>
+      <td>2440</td>
+      <td>2440</td>
+    </tr>
+    <tr>
+      <th>L19cov</th>
+      <td>2162</td>
+      <td>2162</td>
+      <td>2162</td>
+      <td>2162</td>
+      <td>2162</td>
+      <td>2162</td>
+      <td>2162</td>
+      <td>2162</td>
+    </tr>
+    <tr>
+      <th>L21cov</th>
+      <td>2917</td>
+      <td>2917</td>
+      <td>2917</td>
+      <td>2917</td>
+      <td>2917</td>
+      <td>2917</td>
+      <td>2917</td>
+      <td>2917</td>
+    </tr>
+    <tr>
+      <th>L22cov</th>
+      <td>5626</td>
+      <td>5626</td>
+      <td>5626</td>
+      <td>5626</td>
+      <td>5626</td>
+      <td>5626</td>
+      <td>5626</td>
+      <td>5626</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">filter_genes</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">min_cells</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+AnnData object with n_obs × n_vars = 98878 × 20625
+    obs: &#39;Sample&#39;, &#39;doublet&#39;, &#39;n_genes&#39;, &#39;n_genes_by_counts&#39;, &#39;total_counts&#39;, &#39;total_counts_mt&#39;, &#39;pct_counts_mt&#39;, &#39;total_counts_ribo&#39;, &#39;pct_counts_ribo&#39;
+    var: &#39;n_cells&#39;
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s1">&#39;counts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+AnnData object with n_obs × n_vars = 98878 × 20625
+    obs: &#39;Sample&#39;, &#39;doublet&#39;, &#39;n_genes&#39;, &#39;n_genes_by_counts&#39;, &#39;total_counts&#39;, &#39;total_counts_mt&#39;, &#39;pct_counts_mt&#39;, &#39;total_counts_ribo&#39;, &#39;pct_counts_ribo&#39;
+    var: &#39;n_cells&#39;
+    layers: &#39;counts&#39;
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Normalize">
+<h3>Normalize<a class="headerlink" href="#Normalize" title="Permalink to this heading">§</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">normalize_total</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">target_sum</span> <span class="o">=</span> <span class="mf">1e4</span><span class="p">)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">adata</span><span class="p">)</span>
+<span class="n">adata</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="n">adata</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Sample</th>
+      <th>doublet</th>
+      <th>n_genes</th>
+      <th>n_genes_by_counts</th>
+      <th>total_counts</th>
+      <th>total_counts_mt</th>
+      <th>pct_counts_mt</th>
+      <th>total_counts_ribo</th>
+      <th>pct_counts_ribo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>CTGGCAGCACTCCTGT-1_21</th>
+      <td>L15cov</td>
+      <td>False</td>
+      <td>1889</td>
+      <td>1889</td>
+      <td>4812.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>9.0</td>
+      <td>0.187032</td>
+    </tr>
+    <tr>
+      <th>TCCCACAAGCGACTTT-1_21</th>
+      <td>L15cov</td>
+      <td>False</td>
+      <td>2125</td>
+      <td>2125</td>
+      <td>4318.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>CCTCCAAAGACCAACG-1_21</th>
+      <td>L15cov</td>
+      <td>False</td>
+      <td>2099</td>
+      <td>2099</td>
+      <td>4279.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>5.0</td>
+      <td>0.116850</td>
+    </tr>
+    <tr>
+      <th>GGTTGTAAGGTTACCT-1_21</th>
+      <td>L15cov</td>
+      <td>False</td>
+      <td>2019</td>
+      <td>2019</td>
+      <td>4194.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.023844</td>
+    </tr>
+    <tr>
+      <th>GGGATGACAGTATTCG-1_21</th>
+      <td>L15cov</td>
+      <td>False</td>
+      <td>2077</td>
+      <td>2077</td>
+      <td>4198.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>5.0</td>
+      <td>0.119104</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">scvi</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">SCVI</span><span class="o">.</span><span class="n">setup_anndata</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="s2">&quot;counts&quot;</span><span class="p">,</span>
+                             <span class="n">categorical_covariate_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Sample&quot;</span><span class="p">],</span> <span class="c1"># batch, technology</span>
+                             <span class="n">continuous_covariate_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pct_counts_mt&#39;</span><span class="p">,</span> <span class="s1">&#39;total_counts&#39;</span><span class="p">,</span> <span class="s1">&#39;pct_counts_ribo&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">scvi</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">SCVI</span><span class="p">(</span><span class="n">adata</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/usr/lib/python3.10/site-packages/scvi/model/base/_training_mixin.py:67: UserWarning: max_epochs=81 is less than n_epochs_kl_warmup=400. The max_kl_weight will not be reached during training.
+  warnings.warn(
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Epoch 81/81: 100% 81/81 [17:06&lt;00:00, 12.42s/it, loss=2.76e+03, v_num=1]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+`Trainer.fit` stopped: `max_epochs=81` reached.
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Epoch 81/81: 100% 81/81 [17:06&lt;00:00, 12.68s/it, loss=2.76e+03, v_num=1]
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># pickle.dump([model], open(f&quot;{output_directory}/model_combined.p&quot;, &quot;wb&quot;))</span>
+<span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_directory</span><span class="si">}</span><span class="s2">/model_combined/&quot;</span><span class="p">)</span>
+<span class="c1"># model = scvi.model.SCVI.load(f&quot;{output_directory}/model_combined/&quot;)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s1">&#39;X_scVI&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_latent_representation</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s1">&#39;scvi_normalized&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_normalized_expression</span><span class="p">(</span><span class="n">library_size</span> <span class="o">=</span> <span class="mf">1e4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Cluster">
+<h3>Cluster<a class="headerlink" href="#Cluster" title="Permalink to this heading">§</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pp</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">use_rep</span> <span class="o">=</span> <span class="s1">&#39;X_scVI&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata</span><span class="p">)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">leiden</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">resolution</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;leiden&#39;</span><span class="p">],</span> <span class="n">frameon</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/02-analysis-review_224_0.svg" src="_images/02-analysis-review_224_0.svg" /></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Sample&#39;</span><span class="p">],</span> <span class="n">frameon</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/02-analysis-review_225_0.svg" src="_images/02-analysis-review_225_0.svg" /></div>
+</div>
+</div>
+<div class="section" id="id9">
+<h3>Save/load checkpoint<a class="headerlink" href="#id9" title="Permalink to this heading">§</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_directory</span><span class="si">}</span><span class="s2">/adata_integrated.h5ad&quot;</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">adata</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">adata</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">output_directory</span><span class="si">}</span><span class="s2">/adata_integrated.h5ad&quot;</span><span class="p">)</span>
+<span class="n">adata</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+AnnData object with n_obs × n_vars = 98878 × 29029
+    obs: &#39;Sample&#39;, &#39;doublet&#39;, &#39;n_genes&#39;, &#39;n_genes_by_counts&#39;, &#39;total_counts&#39;, &#39;total_counts_mt&#39;, &#39;pct_counts_mt&#39;, &#39;total_counts_ribo&#39;, &#39;pct_counts_ribo&#39;
+    var: &#39;n_cells&#39;
+</pre></div></div>
+</div>
+</div>
+</div>
+<div class="section" id="Marker-identification">
+<h2>Marker identification<a class="headerlink" href="#Marker-identification" title="Permalink to this heading">§</a></h2>
+<p>Increase cluster resolution from 0.5 to <a class="reference external" href="https://scanpy.readthedocs.io/en/latest/generated/scanpy.tl.leiden.html#scanpy.tl.leiden">default value of 1</a>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">leiden</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">resolution</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">tl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="s1">&#39;leiden&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+WARNING: Default of the method has been changed to &#39;t-test&#39; from &#39;t-test_overestim_var&#39;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:394: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;names&#39;] = self.var_names[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:396: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;scores&#39;] = scores[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:399: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;pvals&#39;] = pvals[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:409: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;pvals_adj&#39;] = pvals_adj[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:420: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:394: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;names&#39;] = self.var_names[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:396: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;scores&#39;] = scores[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:399: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;pvals&#39;] = pvals[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:409: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;pvals_adj&#39;] = pvals_adj[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:420: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:394: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;names&#39;] = self.var_names[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:396: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;scores&#39;] = scores[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:399: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;pvals&#39;] = pvals[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:409: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;pvals_adj&#39;] = pvals_adj[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:420: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:394: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;names&#39;] = self.var_names[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:396: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;scores&#39;] = scores[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:399: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;pvals&#39;] = pvals[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:409: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;pvals_adj&#39;] = pvals_adj[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:420: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:394: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;names&#39;] = self.var_names[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:396: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;scores&#39;] = scores[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:399: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;pvals&#39;] = pvals[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:409: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;pvals_adj&#39;] = pvals_adj[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:420: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:394: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;names&#39;] = self.var_names[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:396: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;scores&#39;] = scores[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:399: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;pvals&#39;] = pvals[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:409: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;pvals_adj&#39;] = pvals_adj[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:420: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:394: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;names&#39;] = self.var_names[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:396: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;scores&#39;] = scores[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:399: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;pvals&#39;] = pvals[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:409: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;pvals_adj&#39;] = pvals_adj[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:420: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:394: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;names&#39;] = self.var_names[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:396: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;scores&#39;] = scores[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:399: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;pvals&#39;] = pvals[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:409: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;pvals_adj&#39;] = pvals_adj[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:420: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:394: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;names&#39;] = self.var_names[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:396: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;scores&#39;] = scores[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:399: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;pvals&#39;] = pvals[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:409: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;pvals_adj&#39;] = pvals_adj[global_indices]
+/usr/lib/python3.10/site-packages/scanpy/tools/_rank_genes_groups.py:420: PerformanceWarning: DataFrame is highly fragmented.  This is usually the result of calling `frame.insert` many times, which has poor performance.  Consider joining all columns at once using pd.concat(axis=1) instead. To get a de-fragmented frame, use `newframe = frame.copy()`
+  self.stats[group_name, &#39;logfoldchanges&#39;] = np.log2(
+</pre></div></div>
+</div>
+<p>Plot genes that distinguish each cluster.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">rank_genes_groups</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">n_genes</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/02-analysis-review_234_0.svg" src="_images/02-analysis-review_234_0.svg" /></div>
+</div>
+<p>Filter markers by adjusted p-value and log fold change.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">markers</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">rank_genes_groups_df</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">markers</span> <span class="o">=</span> <span class="n">markers</span><span class="p">[(</span><span class="n">markers</span><span class="o">.</span><span class="n">pvals_adj</span> <span class="o">&lt;</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">markers</span><span class="o">.</span><span class="n">logfoldchanges</span> <span class="o">&gt;</span> <span class="mf">.5</span><span class="p">)]</span>
+<span class="n">markers</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>group</th>
+      <th>names</th>
+      <th>scores</th>
+      <th>logfoldchanges</th>
+      <th>pvals</th>
+      <th>pvals_adj</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>CTSB</td>
+      <td>157.684479</td>
+      <td>4.972445</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0</td>
+      <td>LRMDA</td>
+      <td>137.313080</td>
+      <td>2.813497</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0</td>
+      <td>PLXDC2</td>
+      <td>135.515442</td>
+      <td>3.123800</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0</td>
+      <td>ZEB2</td>
+      <td>133.443405</td>
+      <td>3.335379</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0</td>
+      <td>FMN1</td>
+      <td>133.045715</td>
+      <td>3.743495</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>578222</th>
+      <td>28</td>
+      <td>CCL3</td>
+      <td>2.141156</td>
+      <td>4.313347</td>
+      <td>0.037839</td>
+      <td>0.048973</td>
+    </tr>
+    <tr>
+      <th>578223</th>
+      <td>28</td>
+      <td>VKORC1</td>
+      <td>2.140682</td>
+      <td>3.905211</td>
+      <td>0.037879</td>
+      <td>0.049022</td>
+    </tr>
+    <tr>
+      <th>578224</th>
+      <td>28</td>
+      <td>NDUFA2</td>
+      <td>2.137703</td>
+      <td>4.700588</td>
+      <td>0.038135</td>
+      <td>0.049349</td>
+    </tr>
+    <tr>
+      <th>578225</th>
+      <td>28</td>
+      <td>ZMPSTE24</td>
+      <td>2.136283</td>
+      <td>2.764338</td>
+      <td>0.038256</td>
+      <td>0.049503</td>
+    </tr>
+    <tr>
+      <th>578226</th>
+      <td>28</td>
+      <td>LRPAP1</td>
+      <td>2.135819</td>
+      <td>2.313233</td>
+      <td>0.038296</td>
+      <td>0.049551</td>
+    </tr>
+  </tbody>
+</table>
+<p>84872 rows × 6 columns</p>
+</div></div>
+</div>
+<p>Estimate differential expression for leiden clusters.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">markers_scvi</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">differential_expression</span><span class="p">(</span><span class="n">groupby</span> <span class="o">=</span> <span class="s1">&#39;leiden&#39;</span><span class="p">)</span>
+<span class="n">markers_scvi</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+DE...: 100% 29/29 [04:38&lt;00:00,  9.61s/it]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>proba_de</th>
+      <th>proba_not_de</th>
+      <th>bayes_factor</th>
+      <th>scale1</th>
+      <th>scale2</th>
+      <th>pseudocounts</th>
+      <th>delta</th>
+      <th>lfc_mean</th>
+      <th>lfc_median</th>
+      <th>lfc_std</th>
+      <th>...</th>
+      <th>raw_mean1</th>
+      <th>raw_mean2</th>
+      <th>non_zeros_proportion1</th>
+      <th>non_zeros_proportion2</th>
+      <th>raw_normalized_mean1</th>
+      <th>raw_normalized_mean2</th>
+      <th>is_de_fdr_0.05</th>
+      <th>comparison</th>
+      <th>group1</th>
+      <th>group2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>SPP1</th>
+      <td>0.9898</td>
+      <td>0.0102</td>
+      <td>4.575114</td>
+      <td>0.000638</td>
+      <td>0.000048</td>
+      <td>0.0</td>
+      <td>0.25</td>
+      <td>6.495259</td>
+      <td>6.727366</td>
+      <td>3.440886</td>
+      <td>...</td>
+      <td>1.076499</td>
+      <td>0.040538</td>
+      <td>0.181072</td>
+      <td>0.009292</td>
+      <td>6.256733</td>
+      <td>0.294361</td>
+      <td>True</td>
+      <td>0 vs Rest</td>
+      <td>0</td>
+      <td>Rest</td>
+    </tr>
+    <tr>
+      <th>CCL18</th>
+      <td>0.9898</td>
+      <td>0.0102</td>
+      <td>4.575114</td>
+      <td>0.000326</td>
+      <td>0.000043</td>
+      <td>0.0</td>
+      <td>0.25</td>
+      <td>6.902542</td>
+      <td>7.447420</td>
+      <td>4.287405</td>
+      <td>...</td>
+      <td>0.602506</td>
+      <td>0.042989</td>
+      <td>0.168400</td>
+      <td>0.017725</td>
+      <td>3.187437</td>
+      <td>0.270629</td>
+      <td>True</td>
+      <td>0 vs Rest</td>
+      <td>0</td>
+      <td>Rest</td>
+    </tr>
+    <tr>
+      <th>APOC1</th>
+      <td>0.9896</td>
+      <td>0.0104</td>
+      <td>4.555494</td>
+      <td>0.000148</td>
+      <td>0.000016</td>
+      <td>0.0</td>
+      <td>0.25</td>
+      <td>6.963109</td>
+      <td>7.430366</td>
+      <td>3.897622</td>
+      <td>...</td>
+      <td>0.276810</td>
+      <td>0.019038</td>
+      <td>0.135315</td>
+      <td>0.012533</td>
+      <td>1.356255</td>
+      <td>0.119619</td>
+      <td>True</td>
+      <td>0 vs Rest</td>
+      <td>0</td>
+      <td>Rest</td>
+    </tr>
+    <tr>
+      <th>C1QA</th>
+      <td>0.9894</td>
+      <td>0.0106</td>
+      <td>4.536244</td>
+      <td>0.000333</td>
+      <td>0.000045</td>
+      <td>0.0</td>
+      <td>0.25</td>
+      <td>7.422565</td>
+      <td>7.997816</td>
+      <td>4.413615</td>
+      <td>...</td>
+      <td>0.539626</td>
+      <td>0.045370</td>
+      <td>0.252483</td>
+      <td>0.025287</td>
+      <td>3.077946</td>
+      <td>0.308842</td>
+      <td>True</td>
+      <td>0 vs Rest</td>
+      <td>0</td>
+      <td>Rest</td>
+    </tr>
+    <tr>
+      <th>TSPAN5</th>
+      <td>0.9890</td>
+      <td>0.0110</td>
+      <td>4.498798</td>
+      <td>0.000006</td>
+      <td>0.000235</td>
+      <td>0.0</td>
+      <td>0.25</td>
+      <td>-5.034511</td>
+      <td>-5.320078</td>
+      <td>3.038231</td>
+      <td>...</td>
+      <td>0.002972</td>
+      <td>0.244487</td>
+      <td>0.002738</td>
+      <td>0.142439</td>
+      <td>0.029674</td>
+      <td>2.230635</td>
+      <td>True</td>
+      <td>0 vs Rest</td>
+      <td>0</td>
+      <td>Rest</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>PCBP2</th>
+      <td>0.6028</td>
+      <td>0.3972</td>
+      <td>0.417146</td>
+      <td>0.000112</td>
+      <td>0.000126</td>
+      <td>0.0</td>
+      <td>0.25</td>
+      <td>-0.146613</td>
+      <td>-0.167634</td>
+      <td>0.442000</td>
+      <td>...</td>
+      <td>0.133333</td>
+      <td>0.161815</td>
+      <td>0.133333</td>
+      <td>0.140631</td>
+      <td>1.616527</td>
+      <td>1.317526</td>
+      <td>False</td>
+      <td>28 vs Rest</td>
+      <td>28</td>
+      <td>Rest</td>
+    </tr>
+    <tr>
+      <th>API5</th>
+      <td>0.6020</td>
+      <td>0.3980</td>
+      <td>0.413805</td>
+      <td>0.000040</td>
+      <td>0.000042</td>
+      <td>0.0</td>
+      <td>0.25</td>
+      <td>-0.024984</td>
+      <td>-0.050644</td>
+      <td>0.501002</td>
+      <td>...</td>
+      <td>0.088889</td>
+      <td>0.053969</td>
+      <td>0.088889</td>
+      <td>0.050580</td>
+      <td>0.924425</td>
+      <td>0.441995</td>
+      <td>False</td>
+      <td>28 vs Rest</td>
+      <td>28</td>
+      <td>Rest</td>
+    </tr>
+    <tr>
+      <th>SEPTIN2</th>
+      <td>0.5982</td>
+      <td>0.4018</td>
+      <td>0.397971</td>
+      <td>0.000164</td>
+      <td>0.000179</td>
+      <td>0.0</td>
+      <td>0.25</td>
+      <td>-0.067447</td>
+      <td>-0.083257</td>
+      <td>0.518050</td>
+      <td>...</td>
+      <td>0.244444</td>
+      <td>0.243477</td>
+      <td>0.222222</td>
+      <td>0.197394</td>
+      <td>2.164344</td>
+      <td>2.037301</td>
+      <td>False</td>
+      <td>28 vs Rest</td>
+      <td>28</td>
+      <td>Rest</td>
+    </tr>
+    <tr>
+      <th>PI4KB</th>
+      <td>0.5702</td>
+      <td>0.4298</td>
+      <td>0.282667</td>
+      <td>0.000048</td>
+      <td>0.000047</td>
+      <td>0.0</td>
+      <td>0.25</td>
+      <td>0.065837</td>
+      <td>0.066301</td>
+      <td>0.450776</td>
+      <td>...</td>
+      <td>0.022222</td>
+      <td>0.058350</td>
+      <td>0.022222</td>
+      <td>0.053980</td>
+      <td>0.204813</td>
+      <td>0.473826</td>
+      <td>False</td>
+      <td>28 vs Rest</td>
+      <td>28</td>
+      <td>Rest</td>
+    </tr>
+    <tr>
+      <th>YWHAE</th>
+      <td>0.5520</td>
+      <td>0.4480</td>
+      <td>0.208755</td>
+      <td>0.000132</td>
+      <td>0.000140</td>
+      <td>0.0</td>
+      <td>0.25</td>
+      <td>-0.079388</td>
+      <td>-0.062251</td>
+      <td>0.425387</td>
+      <td>...</td>
+      <td>0.088889</td>
+      <td>0.171559</td>
+      <td>0.088889</td>
+      <td>0.148847</td>
+      <td>0.608118</td>
+      <td>1.433012</td>
+      <td>False</td>
+      <td>28 vs Rest</td>
+      <td>28</td>
+      <td>Rest</td>
+    </tr>
+  </tbody>
+</table>
+<p>598125 rows × 22 columns</p>
+</div></div>
+</div>
+<p>Filter differentially expressed genes by FDR and log fold change.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">markers_scvi</span> <span class="o">=</span> <span class="n">markers_scvi</span><span class="p">[(</span><span class="n">markers_scvi</span><span class="p">[</span><span class="s1">&#39;is_de_fdr_0.05&#39;</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">markers_scvi</span><span class="o">.</span><span class="n">lfc_mean</span> <span class="o">&gt;</span> <span class="mf">.5</span><span class="p">)]</span>
+<span class="n">markers_scvi</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>proba_de</th>
+      <th>proba_not_de</th>
+      <th>bayes_factor</th>
+      <th>scale1</th>
+      <th>scale2</th>
+      <th>pseudocounts</th>
+      <th>delta</th>
+      <th>lfc_mean</th>
+      <th>lfc_median</th>
+      <th>lfc_std</th>
+      <th>...</th>
+      <th>raw_mean1</th>
+      <th>raw_mean2</th>
+      <th>non_zeros_proportion1</th>
+      <th>non_zeros_proportion2</th>
+      <th>raw_normalized_mean1</th>
+      <th>raw_normalized_mean2</th>
+      <th>is_de_fdr_0.05</th>
+      <th>comparison</th>
+      <th>group1</th>
+      <th>group2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>SPP1</th>
+      <td>0.9898</td>
+      <td>0.0102</td>
+      <td>4.575114</td>
+      <td>0.000638</td>
+      <td>0.000048</td>
+      <td>0.0</td>
+      <td>0.25</td>
+      <td>6.495259</td>
+      <td>6.727366</td>
+      <td>3.440886</td>
+      <td>...</td>
+      <td>1.076499</td>
+      <td>0.040538</td>
+      <td>0.181072</td>
+      <td>0.009292</td>
+      <td>6.256733</td>
+      <td>0.294361</td>
+      <td>True</td>
+      <td>0 vs Rest</td>
+      <td>0</td>
+      <td>Rest</td>
+    </tr>
+    <tr>
+      <th>CCL18</th>
+      <td>0.9898</td>
+      <td>0.0102</td>
+      <td>4.575114</td>
+      <td>0.000326</td>
+      <td>0.000043</td>
+      <td>0.0</td>
+      <td>0.25</td>
+      <td>6.902542</td>
+      <td>7.447420</td>
+      <td>4.287405</td>
+      <td>...</td>
+      <td>0.602506</td>
+      <td>0.042989</td>
+      <td>0.168400</td>
+      <td>0.017725</td>
+      <td>3.187437</td>
+      <td>0.270629</td>
+      <td>True</td>
+      <td>0 vs Rest</td>
+      <td>0</td>
+      <td>Rest</td>
+    </tr>
+    <tr>
+      <th>APOC1</th>
+      <td>0.9896</td>
+      <td>0.0104</td>
+      <td>4.555494</td>
+      <td>0.000148</td>
+      <td>0.000016</td>
+      <td>0.0</td>
+      <td>0.25</td>
+      <td>6.963109</td>
+      <td>7.430366</td>
+      <td>3.897622</td>
+      <td>...</td>
+      <td>0.276810</td>
+      <td>0.019038</td>
+      <td>0.135315</td>
+      <td>0.012533</td>
+      <td>1.356255</td>
+      <td>0.119619</td>
+      <td>True</td>
+      <td>0 vs Rest</td>
+      <td>0</td>
+      <td>Rest</td>
+    </tr>
+    <tr>
+      <th>C1QA</th>
+      <td>0.9894</td>
+      <td>0.0106</td>
+      <td>4.536244</td>
+      <td>0.000333</td>
+      <td>0.000045</td>
+      <td>0.0</td>
+      <td>0.25</td>
+      <td>7.422565</td>
+      <td>7.997816</td>
+      <td>4.413615</td>
+      <td>...</td>
+      <td>0.539626</td>
+      <td>0.045370</td>
+      <td>0.252483</td>
+      <td>0.025287</td>
+      <td>3.077946</td>
+      <td>0.308842</td>
+      <td>True</td>
+      <td>0 vs Rest</td>
+      <td>0</td>
+      <td>Rest</td>
+    </tr>
+    <tr>
+      <th>MCEMP1</th>
+      <td>0.9888</td>
+      <td>0.0112</td>
+      <td>4.480577</td>
+      <td>0.000039</td>
+      <td>0.000008</td>
+      <td>0.0</td>
+      <td>0.25</td>
+      <td>5.592349</td>
+      <td>5.895313</td>
+      <td>3.543164</td>
+      <td>...</td>
+      <td>0.061634</td>
+      <td>0.013300</td>
+      <td>0.045366</td>
+      <td>0.010071</td>
+      <td>0.315246</td>
+      <td>0.083767</td>
+      <td>True</td>
+      <td>0 vs Rest</td>
+      <td>0</td>
+      <td>Rest</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>AL158206.1</th>
+      <td>0.8942</td>
+      <td>0.1058</td>
+      <td>2.134379</td>
+      <td>0.000003</td>
+      <td>0.000002</td>
+      <td>0.0</td>
+      <td>0.25</td>
+      <td>1.058239</td>
+      <td>0.996449</td>
+      <td>1.515791</td>
+      <td>...</td>
+      <td>0.000000</td>
+      <td>0.002145</td>
+      <td>0.000000</td>
+      <td>0.002135</td>
+      <td>0.000000</td>
+      <td>0.016850</td>
+      <td>True</td>
+      <td>28 vs Rest</td>
+      <td>28</td>
+      <td>Rest</td>
+    </tr>
+    <tr>
+      <th>AC004847.1</th>
+      <td>0.8942</td>
+      <td>0.1058</td>
+      <td>2.134379</td>
+      <td>0.000002</td>
+      <td>0.000002</td>
+      <td>0.0</td>
+      <td>0.25</td>
+      <td>0.636359</td>
+      <td>0.664043</td>
+      <td>1.732896</td>
+      <td>...</td>
+      <td>0.000000</td>
+      <td>0.001639</td>
+      <td>0.000000</td>
+      <td>0.001609</td>
+      <td>0.000000</td>
+      <td>0.014673</td>
+      <td>True</td>
+      <td>28 vs Rest</td>
+      <td>28</td>
+      <td>Rest</td>
+    </tr>
+    <tr>
+      <th>SNHG17</th>
+      <td>0.8942</td>
+      <td>0.1058</td>
+      <td>2.134379</td>
+      <td>0.000014</td>
+      <td>0.000008</td>
+      <td>0.0</td>
+      <td>0.25</td>
+      <td>1.102903</td>
+      <td>1.107450</td>
+      <td>1.149856</td>
+      <td>...</td>
+      <td>0.000000</td>
+      <td>0.011150</td>
+      <td>0.000000</td>
+      <td>0.010796</td>
+      <td>0.000000</td>
+      <td>0.087149</td>
+      <td>True</td>
+      <td>28 vs Rest</td>
+      <td>28</td>
+      <td>Rest</td>
+    </tr>
+    <tr>
+      <th>BAIAP2</th>
+      <td>0.8942</td>
+      <td>0.1058</td>
+      <td>2.134379</td>
+      <td>0.000056</td>
+      <td>0.000046</td>
+      <td>0.0</td>
+      <td>0.25</td>
+      <td>1.501894</td>
+      <td>0.933272</td>
+      <td>2.498250</td>
+      <td>...</td>
+      <td>0.066667</td>
+      <td>0.063237</td>
+      <td>0.066667</td>
+      <td>0.052938</td>
+      <td>0.852857</td>
+      <td>0.478457</td>
+      <td>True</td>
+      <td>28 vs Rest</td>
+      <td>28</td>
+      <td>Rest</td>
+    </tr>
+    <tr>
+      <th>ZNF530</th>
+      <td>0.8942</td>
+      <td>0.1058</td>
+      <td>2.134379</td>
+      <td>0.000003</td>
+      <td>0.000002</td>
+      <td>0.0</td>
+      <td>0.25</td>
+      <td>0.892193</td>
+      <td>0.836232</td>
+      <td>1.560018</td>
+      <td>...</td>
+      <td>0.000000</td>
+      <td>0.002256</td>
+      <td>0.000000</td>
+      <td>0.002216</td>
+      <td>0.000000</td>
+      <td>0.019131</td>
+      <td>True</td>
+      <td>28 vs Rest</td>
+      <td>28</td>
+      <td>Rest</td>
+    </tr>
+  </tbody>
+</table>
+<p>92424 rows × 22 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;leiden&#39;</span><span class="p">],</span> <span class="n">frameon</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">legend_loc</span> <span class="o">=</span> <span class="s2">&quot;on data&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/02-analysis-review_242_0.svg" src="_images/02-analysis-review_242_0.svg" /></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PTPRC&#39;</span><span class="p">,</span> <span class="s1">&#39;CD3E&#39;</span><span class="p">,</span> <span class="s1">&#39;CD4&#39;</span><span class="p">],</span> <span class="n">frameon</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="s1">&#39;scvi_normalized&#39;</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PTPRC&#39;</span><span class="p">,</span> <span class="s1">&#39;CD3E&#39;</span><span class="p">,</span> <span class="s1">&#39;CD8A&#39;</span><span class="p">],</span> <span class="n">frameon</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="s1">&#39;scvi_normalized&#39;</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>
+
+<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;EPCAM&#39;</span><span class="p">,</span> <span class="s1">&#39;MUC1&#39;</span><span class="p">],</span> <span class="n">frameon</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="s1">&#39;scvi_normalized&#39;</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;EPCAM&#39;</span><span class="p">,</span> <span class="s1">&#39;MUC1&#39;</span><span class="p">],</span> <span class="n">frameon</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">layer</span> <span class="o">=</span> <span class="s1">&#39;scvi_normalized&#39;</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <script type="application/vnd.jupyter.widget-state+json">
 {"state": {}, "version_major": 2, "version_minor": 0}
 </script></div>
-</div>
 </div>
 
         </article>
@@ -4869,6 +6618,15 @@ AnnData object with n_obs × n_vars = 5518 × 2000
 <li><a class="reference internal" href="#id8">Save/load checkpoint</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#Sample-integration">Sample integration</a><ul>
+<li><a class="reference internal" href="#Batch-processing">Batch processing</a></li>
+<li><a class="reference internal" href="#Filter-genes">Filter genes</a></li>
+<li><a class="reference internal" href="#Normalize">Normalize</a></li>
+<li><a class="reference internal" href="#Cluster">Cluster</a></li>
+<li><a class="reference internal" href="#id9">Save/load checkpoint</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#Marker-identification">Marker identification</a></li>
 </ul>
 </li>
 </ul>
